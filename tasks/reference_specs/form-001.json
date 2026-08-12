@@ -1,0 +1,149 @@
+{
+  "version": "0.2",
+  "title": "Contact us",
+  "entry": "home",
+  "state": {
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "email": {
+      "type": "string",
+      "default": ""
+    },
+    "message": {
+      "type": "string",
+      "default": ""
+    },
+    "submitted": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "contacts": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "seed": []
+    }
+  },
+  "screens": [
+    {
+      "id": "home",
+      "title": "Contact us",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Contact us"
+        },
+        {
+          "kind": "field",
+          "id": "name",
+          "label": "Full name",
+          "bind": "name"
+        },
+        {
+          "kind": "field",
+          "id": "email",
+          "label": "Email address",
+          "bind": "email"
+        },
+        {
+          "kind": "field",
+          "id": "message",
+          "label": "Message",
+          "bind": "message"
+        },
+        {
+          "kind": "button",
+          "id": "submit",
+          "label": "Submit",
+          "enabledWhen": {
+            "op": "and",
+            "clauses": [
+              {
+                "op": "nonempty",
+                "left": "name"
+              },
+              {
+                "op": "nonempty",
+                "left": "message"
+              },
+              {
+                "op": "matches",
+                "left": "email",
+                "right": "@"
+              }
+            ]
+          },
+          "action": [
+            {
+              "op": "append",
+              "target": "contacts",
+              "value": {
+                "name": "$state.name",
+                "email": "$state.email",
+                "message": "$state.message"
+              }
+            },
+            {
+              "op": "set",
+              "target": "submitted",
+              "value": true
+            }
+          ]
+        },
+        {
+          "kind": "banner",
+          "id": "confirmation",
+          "tone": "success",
+          "label": "Thanks, we will be in touch.",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "submitted"
+          }
+        },
+        {
+          "kind": "banner",
+          "id": "emailerror",
+          "tone": "error",
+          "label": "Enter a valid email address.",
+          "visibleWhen": {
+            "op": "and",
+            "clauses": [
+              {
+                "op": "nonempty",
+                "left": "email"
+              },
+              {
+                "op": "not",
+                "clauses": [
+                  {
+                    "op": "matches",
+                    "left": "email",
+                    "right": "@"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "kind": "image",
+          "id": "hero",
+          "a11yLabel": "Office photograph"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "version": "0.2",
+  "title": "Support tickets",
+  "entry": "list",
+  "state": {
+    "selectedTitle": { "type": "string", "default": "" }
+  },
+  "collections": {
+    "tickets": {
+      "fields": {
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "detail": { "type": "string" }
+      },
+      "seed": [
+        { "title": "Printer offline", "status": "open", "detail": "Third floor printer will not respond." },
+        { "title": "VPN drops hourly", "status": "open", "detail": "Disconnects roughly every 60 minutes." },
+        { "title": "Badge reader dead", "status": "open", "detail": "North entrance reader is unlit." },
+        { "title": "Slow file share", "status": "open", "detail": "Copies take minutes for small files." },
+        { "title": "Monitor flicker", "status": "open", "detail": "Second display flickers on wake." }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "list",
+      "title": "Support tickets",
+      "children": [
+        { "kind": "heading", "id": "listtitle", "label": "Support tickets" },
+        {
+          "kind": "list",
+          "id": "tickets",
+          "of": "tickets",
+          "rowLabel": "title",
+          "a11yLabel": "Support tickets",
+          "rowAction": [
+            { "op": "set", "target": "selectedTitle", "value": "$row.title" },
+            { "op": "navigate", "target": "detail" }
+          ]
+        },
+        {
+          "kind": "banner",
+          "id": "emptytickets",
+          "tone": "empty",
+          "label": "No tickets remain.",
+          "visibleWhen": { "op": "eq", "left": "tickets.length", "right": 0 }
+        }
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Ticket detail",
+      "children": [
+        { "kind": "heading", "id": "detailtitle", "label": "Ticket detail" },
+        { "kind": "text", "id": "detailname", "label": "Selected ticket", "bind": "selectedTitle" },
+        {
+          "kind": "button",
+          "id": "resolve",
+          "label": "Mark resolved",
+          "action": [
+            {
+              "op": "update",
+              "target": "tickets",
+              "value": {
+                "where": { "title": "$state.selectedTitle" },
+                "set": { "status": "resolved" }
+              }
+            },
+            { "op": "navigate", "target": "list" }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "back",
+          "label": "Back to list",
+          "action": { "op": "navigate", "target": "list" }
+        }
+      ]
+    }
+  ]
+}

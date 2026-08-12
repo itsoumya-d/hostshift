@@ -1,0 +1,26 @@
+// HostShift schema-coverage corpus.
+//
+// One JSON object per line: {"id", "prompt", "source", "hand_audited"?}
+//
+// RULES, both enforced by load_corpus():
+//   * every entry needs a `source`, and it must not be this project
+//   * prompts written for this study answer nothing; they must be collected
+//     from somewhere people were asking for applications for their own reasons
+//
+// Candidate sources, in rough order of how well they match the distribution a
+// mobile generative-UI runtime would actually see:
+//   1. Feature requests in public mobile-app issue trackers -- closest to real
+//      user intent, and nobody wrote them with a schema in mind
+//   2. Prompts posted publicly by users of app builders (Lovable, Bolt, v0,
+//      Replit Agent) -- note these skew heavily web, which will understate
+//      coverage for a mobile-native schema; say so if you use them
+//   3. App-store review requests of the form "I wish this app could ..."
+//
+// Aim for 100. Then hand-audit a stratified sample of at least 20, record the
+// verdict in `hand_audited`, and report the classifier agreement rate next to
+// the coverage figure. A coverage number without an agreement rate is a
+// pattern-matching artifact, not a measurement.
+//
+// Example rows (delete these; they are illustrative, not data):
+{"id": "ext-001", "prompt": "I want an app to log my daily water intake with a history list", "source": "example-do-not-use"}
+{"id": "ext-002", "prompt": "A whiteboard where my team can sketch together in real time", "source": "example-do-not-use", "hand_audited": "out_of_scope"}

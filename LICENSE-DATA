@@ -1,0 +1,24 @@
+HostShift Benchmark Data License
+================================
+Copyright (c) 2026 Soumya Debnath. All rights reserved.
+
+The following components of this repository are covered by the same
+Research-Only License as the code (see LICENSE):
+
+  - tasks/          (task suite, reference specs, external corpus)
+  - schema/         (UISpec schema definition)
+  - paper/          (paper source and figures)
+
+PERMITTED:
+  - Viewing for personal study
+  - Citing in academic publications
+  - Reproducing published results for peer review
+
+NOT PERMITTED (without written permission):
+  - Copying or redistributing the data
+  - Creating derivative datasets
+  - Reimplementing the benchmark specification
+  - Commercial use of any kind
+  - Training ML models on this data
+
+For commercial licensing: soumyadebnath16@gmail.com

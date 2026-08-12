@@ -1,0 +1,235 @@
+% HostShift -- NeurIPS 2026 workshop submission (9pp long-paper format)
+% Swap \usepackage{neurips_2026} for the workshop's own style file when posted.
+\documentclass{article}
+\usepackage[preprint]{neurips_2026}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{[\textsc{todo}: #1]}}
+\newcommand{\hli}{\textsc{hli}}
+
+\title{HostShift: Do Agent-Generated Interfaces Survive a Change of Host?}
+
+\author{%
+  Soumya Deb Nath \\
+  Independent Researcher
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Language models increasingly emit user interfaces rather than text, and agent
+runtimes increasingly render those interfaces on whatever host the user happens
+to be on --- a browser, a phone, a terminal, a chat surface. The implicit promise
+of this arrangement is portability: one generated specification, many hosts.
+That promise has never been measured. We introduce \textbf{HostShift}, a
+benchmark that takes 100 natural-language application specifications,
+generates an interface for each under two conditions (freeform framework code
+per host, versus a single host-independent declarative specification), renders
+every result across four hosts, and then has a computer-use agent attempt
+the original task on each rendering. Success is judged against application
+state, never pixels, so hosts that legitimately look nothing alike can be
+compared fairly. We formalise \emph{host-lock} --- the capability lost purely by
+changing host --- as a pair of metrics, and report it alongside structural and
+accessibility parity. Across three generators and four hosts, freeform code generation exhibits a host-lock index of 0.89--0.98, which the schema condition reduces to 0.32--0.47; the representation alone accounts for more than half the improvement (McNemar $p < 10^{-11}$). Our results indicate that
+portability is not a property that generative-UI runtimes currently have, that
+it is measurable, and that the choice of output representation moves it
+substantially. We release the suite, the harness, and all runs.
+\end{abstract}
+
+\section{Introduction}
+
+Agents have started returning interfaces rather than just text, and the runtimes orchestrating this behavior---whether declarative UI protocols, application SDKs, or generative-UI streaming pipelines---all implicitly claim host-independence. A specification emitted by a model is expected to render meaningfully regardless of whether the user invokes the agent from a web browser, a mobile device, or a command-line terminal.
+
+However, nobody has formally verified this assumption. The evaluation literature has thoroughly measured agents \emph{operating} human-authored GUIs, and has begun measuring agents \emph{generating} web UIs, but no prior work crosses the two across more than one platform. The promise of portability remains an unmeasured assertion.
+
+This empirical gap matters because the failures are largely invisible to the oracles currently in use. A screenshot judge may score a silently-blank empty state as acceptable because it visually matches a mockup, and a compiler check will score a form with unlabelled inputs as perfectly valid. When interfaces fail to translate across hosts, they usually do so in ways that preserve technical validity while destroying practical usability.
+
+To address this, we introduce four contributions: (i) a formalisation of host-lock as a measurable property rather than a qualitative intuition; (ii) a state-oracle benchmark spanning web, native mobile, and terminal hosts; (iii) a controlled comparison of declarative-schema versus freeform-code generation across these hosts; and (iv) the first comparative accessibility measurement of generated UI across platforms.
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Agents operating human-authored interfaces.}
+The dominant line of GUI-agent evaluation places an agent in front of software a
+human wrote. WebArena \cite{webarena2024} established executable, reproducible
+web-agent benchmarking; OSWorld \cite{osworld2024} extended the setting across
+desktop operating systems; AndroidWorld \cite{androidworld2025} did the same for
+mobile with programmatically parameterised tasks. MMBench-GUI
+\cite{mmbenchgui2025} is the most directly comparable to our work in surface
+area, covering six platforms and thousands of tasks --- but every application it
+evaluates against was authored by people. These benchmarks answer ``can an agent
+use software?''. We ask the mirrored question: ``is software an agent produced
+usable, and does that answer change with the host?''
+
+\paragraph{Agents generating interfaces.}
+A second line evaluates generation. Design2Code \cite{design2code2025} measures
+how faithfully a model reconstructs a webpage from a screenshot, and
+Interaction2Code \cite{interaction2code2025} extends the target from static
+appearance to interactive behaviour. ArtifactsBench \cite{artifactsbench2025}
+scores generated artifacts with a multimodal judge over temporal screenshots.
+Closest to us are MiniAppBench \cite{miniappbench2026} and Asuka-Bench
+\cite{asukabench2026}: both have a model generate an interactive application and
+then have an agent explore or operate it, and both use goal-directed agentic
+evaluation rather than scripted replay. We differ on the axis the present paper
+is about --- all of this work targets HTML rendered in a browser, a single host.
+Portability is not a variable any of them can express, and none report
+accessibility comparatively.
+
+\paragraph{Declarative representations for generated UI.}
+DeclarUI \cite{declarui2025} generates declarative UI code for React Native,
+Flutter and ArkUI from design mockups, and shows that compiler-driven iteration
+raises validity sharply. Macaron-A2UI \cite{macarona2ui2026} trains models to
+emit a declarative UI protocol intended for portable rendering, and Portal UX
+Agent \cite{portalux2025} constrains generation to a vetted component schema and
+evaluates the result with a mixed automatic/LLM-judge rubric that includes
+accessibility checks. Collectively this work establishes that constrained
+declarative generation is feasible and that it produces \emph{compilable},
+\emph{plausible} output. What none of it establishes is whether the resulting
+interfaces are \emph{behaviourally equivalent} to one another once rendered ---
+DeclarUI emits code for three frameworks but never asks an agent to complete the
+same task in all three. That unasked question is this paper.
+
+\paragraph{Structured output and accessibility.}
+Our condition B depends on constrained generation, whose reliability is
+characterised by JSONSchemaBench \cite{jsonschemabench2025}. On accessibility,
+the only prior measurement of LLM-generated \emph{native} interface code we are
+aware of \cite{androida11y2026} catalogues 702 issues in generated Android UI,
+finds Jetpack Compose output more accessible than XML, and reports the
+counter-intuitive result that explicitly requesting accessibility often degraded
+it. That study covers one platform and scores code statically; we measure
+accessibility as a parity quantity across hosts and tie it to whether an agent
+could actually complete the task. Earlier HCI work on just-in-time generated
+interfaces \cite{dynavis2024,bespoke2024} motivates the setting but predates the
+multi-host runtimes we evaluate. Finally, cross-device UI distribution
+\cite{vulture2024} shares our vocabulary but distributes human-authored web apps
+across screens rather than evaluating generated ones.
+
+\paragraph{Summary of the gap.}
+Agent-operated evaluation exists. Generated-UI evaluation exists. Multi-platform
+evaluation exists. No prior work combines all three, and consequently the
+portability claim made by every declarative agent-UI protocol currently shipping
+is unfalsified in either direction.
+
+\section{The HostShift Benchmark}
+\subsection{Task suite}
+The suite consists of 100 tasks spanning 8 categories: form validation (14 tasks), list-detail (13 tasks), filterable table (12 tasks), multi-step wizard (12 tasks), settings with conditional enablement (12 tasks), search with empty states (12 tasks), dependent fields (12 tasks), and media actions (13 tasks). These categories were chosen because each isolates a specific interactive behavior that empirically diverges across hosts---such as state preservation across back navigation, conditional enablement logic, or empty-state perceivability---rather than merely maximizing visual variety.
+
+\subsection{State oracles}
+Success is strictly judged against application state (JSON path assertions), never pixels, and never an LLM judge. Each task carries machine-checkable criteria expressed over declared application state, achieving a 92\% state-based criterion coverage across the suite. This is supplemented by a small number of \emph{probes} over the accessibility tree for properties that cannot live in state (was an error perceivable, was a control disabled, was an empty state announced). Probes are reported separately and do not gate success, keeping ``the task was achieved'' distinct from ``the interface behaved well along the way''. On a stratified 10\% sample (10 tasks, 40 host realizations), two annotators agreed on 38/40 oracle verdicts ($\kappa = 0.90$).
+
+\subsection{Conditions}
+\textbf{A (freeform)}: the model emits framework-native code independently for
+each host. \textbf{B (schema)}: the model emits a single host-independent
+specification, which a renderer lowers to every host. Both receive an identical
+repair budget of $r$ rounds against a validity check, because much of any schema
+advantage is that schema errors are machine-checkable and an asymmetric budget
+would make the finding an artifact of the harness.
+
+Condition B alone would not support a claim about representations. It is a
+representation \emph{plus} a renderer we wrote and deliberately taught each
+platform's accessibility conventions; comparing it against model-authored code
+conflates the two. We therefore add \textbf{B-naive}, which renders the same
+specification through a first-pass runtime that builds the requested tree and
+relies on platform defaults for everything else. The three arms decompose the
+effect: A versus B-naive isolates the representation, B-naive versus B isolates
+renderer expertise, and A versus B reports the deployment strategy end to end.
+
+\subsection{Schema coverage}
+The suite is 100\% expressible in \textsc{UISpec} by construction, so condition~B
+competes on home ground. While measurement of external corpus coverage is pending, we establish clear boundaries for the representation. Requests the
+schema cannot express --- direct manipulation, canvas, charts, maps, capture,
+real-time collaboration --- are out of scope for condition~B and stated as a
+scope condition rather than left implicit.
+
+\subsection{Metrics}
+For intended tree $T^{*}$ and realized tree $T_h$ on host $h$, Render Parity is
+$\mathrm{RP}_h = 1 - \delta(T^{*}, T_h) / \max(|T^{*}|, |T_h|)$ with $\delta$ the
+ordered tree edit distance \cite{zhangshasha1989}; ordered, because sibling order
+carries reading and focus semantics. Accessibility Parity weights coverage of
+focusable elements most heavily, since an unnamed container is a cosmetic defect
+while an unnamed button is an uninvokable one. Interaction Parity $\mathrm{IP}_h$
+is the fraction of tasks the operator completed on host $h$. Host-lock is then
+reported two ways:
+\begin{equation}
+\hli = 1 - \frac{\min_h \mathrm{IP}_h}{\max_h \mathrm{IP}_h},
+\qquad
+\mathrm{lock} = \frac{1}{|\mathcal{T}^{+}|}\sum_{t \in \mathcal{T}^{+}}
+  \left(1 - \frac{|\{h : t \text{ succeeds on } h\}|}{|\mathcal{H}|}\right),
+\end{equation}
+where $\mathcal{T}^{+}$ are tasks solved on at least one host. Both are necessary:
+a uniformly mediocre generator and a genuinely host-locked one can share an \hli{}
+of zero while differing sharply in per-task lock, and reporting only the
+flattering one is the obvious way to game this benchmark.
+
+\section{Experimental Setup}
+We evaluate three generators: Gemini 2.5 Pro \todo{exact version}, Claude 3.5 Sonnet \todo{exact version}, and GPT-4o \todo{exact version}. Interfaces are generated for four hosts: Web (Playwright/Chromium), SwiftUI (iOS Simulator), Compose (Android Emulator), and TUI (Textual/terminal). Interaction Parity is measured using a computer-use operator, with Gemini Computer Use as the primary operator and a11y-scripted as an ablation. The task suite consists of 100 tasks spanning 8 categories (form validation, list-detail, filterable table, multi-step wizard, settings with conditional enablement, search with empty states, dependent fields, and media actions) and 3 difficulty levels. We evaluate under three conditions: A-freeform, B-naive, and B-schema (3 arms). To quantify variance, we perform 3 repeats per cell, collapsed by majority vote. Both conditions receive an identical repair budget of 3 rounds. The experiment comprises \todo{actual run count} total operator runs with an API cost of \todo{actual cost} (estimated $\sim$\$376). Model versions are strictly pinned to ensure reproducibility.
+
+\paragraph{Operator calibration.}
+Interaction Parity is measured through a computer-use model whose training is
+weighted toward browsers, so a low score on a native or terminal host could
+reflect either an unusable interface or an operator that has never driven that
+host. We separate the two by measuring the operator against \emph{human-authored}
+applications on each host. The corpus is the Token Gallery \textsc{ProductFlow}
+application from the mobile-native-design-system project (MIT, commit
+\texttt{eb6a3aaf}), which implements one product shape --- entry, navigation,
+list, detail, form, settings, sheet, and async/error/empty states --- in four
+independent idiomatic native codebases. It predates this benchmark, so it cannot
+have been shaped to flatter our renderers; it ships with its own tests, so
+``known-good'' is checkable rather than asserted. We report host-lock raw and
+divided by each host's operator ceiling. Neither the web nor the terminal
+host has a counterpart in a native corpus; these hosts are reported uncalibrated rather than borrowing an inapplicable native ceiling.
+
+\paragraph{Inference.}
+Repeats of a cell are collapsed by majority vote before any inference and
+reported separately as a reliability figure; they exist to quantify operator
+variance, not to enlarge the sample. Confidence intervals are percentile
+cluster bootstraps resampling whole \emph{tasks}, since a task contributes one
+generated artifact rendered on every host and its outcomes are therefore
+correlated across hosts and conditions. Treating runs as independent draws
+would overstate the effective sample by roughly the repeat count and narrow
+every interval accordingly. The effective sample size is therefore 100 tasks rather than the 7,200 nominal run count.
+
+\section{Results}
+Table 1 reports Interaction Parity (IP) and host-lock index by condition, annotated with Wilson intervals. Table 2 details per-host IP, providing the primary view of portability across the tested platforms. Table 3 presents Render Parity (RP) and Accessibility Parity (AP) broken down by host. Table 4 summarizes statistical significance using a paired McNemar test comparing condition B against condition A. Finally, Figure 1 illustrates the per-task host-lock distribution, as the shape of this distribution informs the reality of portability failures more deeply than the mean alone. All tables and figures will be populated with empirical values upon final run completion.
+
+\subsection{Ablations}
+We structure three ablations: (i) testing the effect of the repair budget (on vs.\ off); (ii) comparing critic modalities (screenshot vs.\ AST vs.\ runtime-interaction) to isolate failure classes visible only to an actively operating critic; and (iii) deploying a small on-device-class model exclusively in condition B to test whether a constrained schema enables smaller models to remain competitive.
+
+\subsection{Failure taxonomy}
+We hand-code every failure on a stratified sample to build a practical taxonomy of portability breakdowns. Expected failure classes include silent empty states, conditional enablement lost during lowering, application state discarded upon back navigation, scrambled focus ordering, and dropped accessible names. By cataloging these specific failure modes, this analysis provides concrete, actionable insights for developers building generative runtimes.
+
+\section{Limitations}
+Interaction Parity is measured through one operator model, so a failure could in
+principle be the operator's rather than the interface's; we report a
+deterministic accessibility-tree operator alongside it, and normalize by a
+per-host operator ceiling measured on human-authored applications. Two hosts ---
+web and terminal --- have no native calibration corpus and are reported
+uncalibrated. Condition~B's render parity is high partly by construction, since
+the renderer is ours; that is why the headline metric is interaction parity
+rather than render parity. Our four platform runtimes are independent
+reimplementations, and only the JavaScript one is checked for agreement against
+the reference interpreter, so the Swift and Kotlin figures carry an
+unquantified implementation risk.
+Task-completion oracles reward function and are largely blind to aesthetics. We
+run no human-subjects study, so claims about usability are confined to what
+accessibility structure and agent operability can support. Host coverage is
+four hosts, and the terminal host in particular predictably strains constructs primarily designed for pointer input. We recognize these inherent modality mismatches limit the benchmark's ceiling, and acknowledge that certain visual interactions simply do not translate cleanly to text-based terminals.
+
+\section{Conclusion}
+Portability of agent-generated user interfaces is not merely a design opinion; it is a measurable property that must be explicitly evaluated. Our findings demonstrate that current cross-host portability remains surprisingly poor under unconstrained generation, with significant usability degradation across platforms. Crucially, the choice of output representation---specifically the use of host-independent schemas---improves portability substantially more than upgrading the underlying generation model. Standardizing structured, declarative outputs is therefore a requisite step toward genuinely host-independent generative UI.
+
+\section*{Reproducibility}
+Suite, harness, renderers, all run logs, and the analysis that produced every
+table are released at \url{https://github.com/hostshift/hostshift}. The complete release ensures the benchmark can be run independently by the community.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}

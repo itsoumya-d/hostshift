@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use HostShift in your research, please cite it as below."
+title: "HostShift: Measuring Cross-Platform Portability of LLM-Generated User Interfaces"
+authors:
+  - family-names: Debnath
+    given-names: Soumya
+type: software
+license: AGPL-3.0-or-later
+repository-code: "https://github.com/soumyadebnath/hostshift"
+date-released: "2026-08-12"
+keywords:
+  - benchmark
+  - cross-platform
+  - UI portability
+  - LLM
+  - generative UI
+  - accessibility

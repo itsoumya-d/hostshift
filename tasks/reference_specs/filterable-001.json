@@ -1,0 +1,131 @@
+{
+  "version": "0.2",
+  "title": "Product catalog",
+  "entry": "catalog",
+  "state": {
+    "searchQuery": {
+      "type": "string",
+      "default": ""
+    },
+    "selectedProduct": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "products": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "name": "Wireless Mouse",
+          "category": "Electronics",
+          "price": 29.99
+        },
+        {
+          "name": "Mechanical Keyboard",
+          "category": "Electronics",
+          "price": 99.99
+        },
+        {
+          "name": "Desk Mat",
+          "category": "Accessories",
+          "price": 19.99
+        },
+        {
+          "name": "USB-C Hub",
+          "category": "Electronics",
+          "price": 49.99
+        },
+        {
+          "name": "Monitor Stand",
+          "category": "Accessories",
+          "price": 39.99
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "catalog",
+      "title": "Product catalog",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "catalogTitle",
+          "label": "Product catalog"
+        },
+        {
+          "kind": "field",
+          "id": "searchField",
+          "label": "Search products",
+          "bind": "searchQuery"
+        },
+        {
+          "kind": "list",
+          "id": "productList",
+          "of": "products",
+          "rowLabel": "name",
+          "a11yLabel": "Products",
+          "rowAction": [
+            {
+              "op": "set",
+              "target": "selectedProduct",
+              "value": "$row.name"
+            },
+            {
+              "op": "navigate",
+              "target": "detail"
+            }
+          ]
+        },
+        {
+          "kind": "banner",
+          "id": "emptyProducts",
+          "tone": "empty",
+          "label": "No products match.",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "products.length",
+            "right": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Product details",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "detailTitle",
+          "label": "Product details"
+        },
+        {
+          "kind": "text",
+          "id": "productName",
+          "label": "Selected product",
+          "bind": "selectedProduct"
+        },
+        {
+          "kind": "button",
+          "id": "backButton",
+          "label": "Back to catalog",
+          "action": {
+            "op": "navigate",
+            "target": "catalog"
+          }
+        }
+      ]
+    }
+  ]
+}

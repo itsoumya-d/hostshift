@@ -1,0 +1,95 @@
+HostShift — Research-Only License
+===================================
+Copyright (c) 2026 Soumya Debnath. All rights reserved.
+
+TERMS AND CONDITIONS
+--------------------
+
+1. DEFINITIONS
+
+   "Software" means the HostShift source code, benchmark suite, task
+   specifications, schema definitions, reference implementations, and all
+   associated documentation in this repository.
+
+   "Author" means Soumya Debnath, the sole copyright holder.
+
+2. GRANT OF RIGHTS
+
+   Subject to the terms of this License, the Author grants you a
+   non-exclusive, non-transferable, non-sublicensable, revocable license to:
+
+   (a) VIEW the Software for personal study and academic review.
+   (b) CITE the Software and its associated publications in academic work.
+   (c) REPRODUCE experimental results described in the associated paper(s)
+       using unmodified copies of this Software, solely for the purpose of
+       academic peer review and verification.
+
+3. RESTRICTIONS
+
+   You may NOT, without prior written permission from the Author:
+
+   (a) COPY, REDISTRIBUTE, or REPUBLISH the Software or any substantial
+       portion thereof, in any medium or format.
+
+   (b) CREATE DERIVATIVE WORKS based on the Software, including but not
+       limited to modifications, translations, adaptations, or
+       REIMPLEMENTATIONS IN ANY OTHER PROGRAMMING LANGUAGE.
+
+   (c) USE the Software, in whole or in part, for any COMMERCIAL PURPOSE,
+       including but not limited to incorporation into commercial products,
+       services, or internal tools.
+
+   (d) TRAIN any machine learning model on the Software's source code,
+       task suite, or benchmark data.
+
+   (e) SUBLICENSE, sell, lease, rent, or otherwise transfer rights to the
+       Software to any third party.
+
+   (f) REMOVE or alter any copyright notices, license terms, or
+       attribution requirements from the Software.
+
+4. ACADEMIC USE
+
+   Academic researchers at accredited institutions may run the benchmark
+   for non-commercial research purposes, provided that:
+
+   (a) The Software is used in unmodified form.
+   (b) Any publication citing results obtained with the Software includes
+       the citation specified in CITATION.cff.
+   (c) The Author is acknowledged as the sole creator of the benchmark.
+
+5. COMMERCIAL LICENSING
+
+   For commercial use, integration, or licensing inquiries, contact the
+   Author directly. Commercial licenses are available on a case-by-case
+   basis.
+
+6. CONTRIBUTIONS
+
+   Any contributions submitted to this repository (via pull request or
+   otherwise) are assigned to the Author under the same terms as this
+   License, unless a separate written agreement is made.
+
+7. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED. THE AUTHOR SHALL NOT BE LIABLE FOR ANY CLAIM,
+   DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
+
+8. TERMINATION
+
+   This License terminates automatically if you violate any of its terms.
+   Upon termination, you must destroy all copies of the Software in your
+   possession.
+
+9. GOVERNING LAW
+
+   This License shall be governed by and construed in accordance with the
+   laws of India.
+
+---
+
+SPDX-License-Identifier: LicenseRef-HostShift-Research-Only
+
+For permissions beyond the scope of this license, contact:
+Soumya Debnath — soumyadebnath16@gmail.com

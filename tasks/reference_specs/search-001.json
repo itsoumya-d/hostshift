@@ -1,0 +1,85 @@
+{
+  "version": "0.2",
+  "title": "Search",
+  "entry": "search",
+  "state": {
+    "query": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "results": {
+      "fields": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "title": "HostShift Documentation",
+          "url": "https://hostshift.dev/docs",
+          "description": "Learn how to build host-independent UIs."
+        },
+        {
+          "title": "React Reference",
+          "url": "https://reactjs.org",
+          "description": "A JavaScript library for building user interfaces."
+        },
+        {
+          "title": "SwiftUI Tutorials",
+          "url": "https://developer.apple.com/xcode/swiftui/",
+          "description": "Better apps. Less code."
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "search",
+      "title": "Search",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "searchHeader",
+          "label": "Search Engine"
+        },
+        {
+          "kind": "field",
+          "id": "searchInput",
+          "label": "Search query",
+          "bind": "query"
+        },
+        {
+          "kind": "list",
+          "id": "searchResults",
+          "of": "results",
+          "rowLabel": "title",
+          "a11yLabel": "Search Results",
+          "rowAction": {
+            "op": "set",
+            "target": "query",
+            "value": "$row.title"
+          }
+        },
+        {
+          "kind": "banner",
+          "id": "noResultsBanner",
+          "tone": "empty",
+          "label": "No results found for your query.",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "results.length",
+            "right": 0
+          }
+        }
+      ]
+    }
+  ]
+}

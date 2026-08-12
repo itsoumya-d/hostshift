@@ -1,0 +1,110 @@
+{
+  "version": "0.2",
+  "title": "Settings",
+  "entry": "settings",
+  "state": {
+    "notificationsEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "emailNotifications": {
+      "type": "boolean",
+      "default": true
+    },
+    "pushNotifications": {
+      "type": "boolean",
+      "default": false
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "locationServices": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "screens": [
+    {
+      "id": "settings",
+      "title": "Application Settings",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "settingsTitle",
+          "label": "General Settings"
+        },
+        {
+          "kind": "toggle",
+          "id": "darkMode",
+          "label": "Dark Mode",
+          "bind": "darkMode"
+        },
+        {
+          "kind": "toggle",
+          "id": "locationServices",
+          "label": "Location Services",
+          "bind": "locationServices"
+        },
+        {
+          "kind": "heading",
+          "id": "notificationsTitle",
+          "label": "Notifications"
+        },
+        {
+          "kind": "toggle",
+          "id": "notificationsEnabled",
+          "label": "Enable Notifications",
+          "bind": "notificationsEnabled"
+        },
+        {
+          "kind": "toggle",
+          "id": "emailNotifications",
+          "label": "Email Notifications",
+          "bind": "emailNotifications",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "notificationsEnabled"
+          }
+        },
+        {
+          "kind": "toggle",
+          "id": "pushNotifications",
+          "label": "Push Notifications",
+          "bind": "pushNotifications",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "notificationsEnabled"
+          }
+        },
+        {
+          "kind": "button",
+          "id": "resetButton",
+          "label": "Reset to defaults",
+          "action": [
+            {
+              "op": "clear",
+              "target": "notificationsEnabled"
+            },
+            {
+              "op": "clear",
+              "target": "emailNotifications"
+            },
+            {
+              "op": "clear",
+              "target": "pushNotifications"
+            },
+            {
+              "op": "clear",
+              "target": "darkMode"
+            },
+            {
+              "op": "clear",
+              "target": "locationServices"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

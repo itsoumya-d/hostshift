@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hostshift.dev/schema/uispec-0.2.json",
+  "title": "HostShift UISpec",
+  "description": "Host-independent declarative UI specification. Condition B of the HostShift benchmark. Designed so that every construct has a faithful realization on web (React), iOS (SwiftUI), Android (Jetpack Compose), and terminal (TUI) hosts. Constructs that cannot be realized on all four hosts are deliberately excluded.",
+  "type": "object",
+  "required": [
+    "version",
+    "screens",
+    "entry"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "0.2"
+    },
+    "title": {
+      "type": "string"
+    },
+    "entry": {
+      "type": "string",
+      "description": "id of the initial screen"
+    },
+    "state": {
+      "type": "object",
+      "description": "Declared application state. The success oracle is evaluated against this object, never against pixels.",
+      "additionalProperties": {
+        "$ref": "#/$defs/stateField"
+      }
+    },
+    "collections": {
+      "type": "object",
+      "description": "Named record collections. Success criteria commonly assert over these.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/stateField"
+            }
+          },
+          "seed": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/screen"
+      }
+    }
+  },
+  "$defs": {
+    "stateField": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "string",
+            "number",
+            "boolean",
+            "date",
+            "enum"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {},
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        }
+      }
+    },
+    "screen": {
+      "type": "object",
+      "required": [
+        "id",
+        "children"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "stack",
+            "scroll",
+            "text",
+            "heading",
+            "field",
+            "select",
+            "toggle",
+            "button",
+            "list",
+            "listItem",
+            "image",
+            "divider",
+            "tabs",
+            "tab",
+            "dialog",
+            "banner"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "a11yLabel": {
+          "type": "string",
+          "description": "Explicit accessible name. When absent, the host renderer derives one from label; Accessibility Parity measures how often that derivation succeeds per host."
+        },
+        "bind": {
+          "type": "string",
+          "description": "dotted path into state or collections"
+        },
+        "axis": {
+          "enum": [
+            "vertical",
+            "horizontal"
+          ]
+        },
+        "tone": {
+          "enum": [
+            "info",
+            "success",
+            "error",
+            "empty"
+          ],
+          "description": "For banner nodes. Distinguishes an error message from an empty-state message from ordinary information. The oracle's error_visible and empty_state_visible probes key off this, so it must be explicit rather than inferred from wording -- inferring tone from text is exactly the kind of heuristic that breaks across locales and hosts."
+        },
+        "of": {
+          "type": "string",
+          "description": "for list: the collection it enumerates"
+        },
+        "action": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/action"
+              }
+            }
+          ],
+          "description": "One action or a sequence applied in order. Sequences exist because real controls do more than one thing -- a submit button records a row and flips a confirmation flag. Forcing one action per control would push that composition into each host renderer, where every platform would invent its own answer."
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/predicate"
+        },
+        "enabledWhen": {
+          "$ref": "#/$defs/predicate"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        },
+        "rowAction": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/action"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/action"
+              }
+            }
+          ],
+          "description": "For list nodes: what happens when a row is activated. Without this, list-detail navigation -- among the most common patterns in any application -- cannot be expressed at all."
+        },
+        "rowLabel": {
+          "type": "string",
+          "description": "For list nodes: which field of a row supplies its visible and accessible name. Required when rowAction is present, because a row a user can activate must be nameable or assistive technology has nothing to announce."
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": [
+        "op"
+      ],
+      "properties": {
+        "op": {
+          "enum": [
+            "navigate",
+            "set",
+            "append",
+            "remove",
+            "update",
+            "clear",
+            "submit",
+            "dismiss"
+          ]
+        },
+        "target": {
+          "type": "string"
+        },
+        "value": {
+          "description": "Literal, or a template. Strings of the form $state.<path>, $row.<field> and $payload are resolved against current state, the activated row, and the value supplied by the control. Resolution is recursive, so a whole record can be assembled declaratively."
+        },
+        "from": {
+          "type": "string"
+        },
+        "guardWhen": {
+          "$ref": "#/$defs/predicate"
+        }
+      }
+    },
+    "predicate": {
+      "type": "object",
+      "required": [
+        "op"
+      ],
+      "properties": {
+        "op": {
+          "enum": [
+            "eq",
+            "ne",
+            "gt",
+            "lt",
+            "gte",
+            "lte",
+            "truthy",
+            "falsy",
+            "and",
+            "or",
+            "not",
+            "nonempty",
+            "matches"
+          ]
+        },
+        "left": {
+          "type": "string"
+        },
+        "right": {},
+        "clauses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/predicate"
+          }
+        }
+      }
+    }
+  }
+}

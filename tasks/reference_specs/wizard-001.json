@@ -1,0 +1,161 @@
+{
+  "version": "0.2",
+  "title": "Checkout wizard",
+  "entry": "step1",
+  "state": {
+    "shippingName": {
+      "type": "string",
+      "default": ""
+    },
+    "shippingAddress": {
+      "type": "string",
+      "default": ""
+    },
+    "cardNumber": {
+      "type": "string",
+      "default": ""
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "screens": [
+    {
+      "id": "step1",
+      "title": "Step 1: Shipping",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "step1Title",
+          "label": "Shipping Information"
+        },
+        {
+          "kind": "field",
+          "id": "shippingName",
+          "label": "Full name",
+          "bind": "shippingName"
+        },
+        {
+          "kind": "field",
+          "id": "shippingAddress",
+          "label": "Address",
+          "bind": "shippingAddress"
+        },
+        {
+          "kind": "button",
+          "id": "nextToStep2",
+          "label": "Next",
+          "enabledWhen": {
+            "op": "and",
+            "clauses": [
+              {
+                "op": "nonempty",
+                "left": "shippingName"
+              },
+              {
+                "op": "nonempty",
+                "left": "shippingAddress"
+              }
+            ]
+          },
+          "action": {
+            "op": "navigate",
+            "target": "step2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "step2",
+      "title": "Step 2: Payment",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "step2Title",
+          "label": "Payment Method"
+        },
+        {
+          "kind": "field",
+          "id": "cardNumber",
+          "label": "Card number",
+          "bind": "cardNumber"
+        },
+        {
+          "kind": "button",
+          "id": "backToStep1",
+          "label": "Back",
+          "action": {
+            "op": "navigate",
+            "target": "step1"
+          }
+        },
+        {
+          "kind": "button",
+          "id": "nextToStep3",
+          "label": "Review",
+          "enabledWhen": {
+            "op": "nonempty",
+            "left": "cardNumber"
+          },
+          "action": {
+            "op": "navigate",
+            "target": "step3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "step3",
+      "title": "Step 3: Review",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "step3Title",
+          "label": "Review your order"
+        },
+        {
+          "kind": "text",
+          "id": "reviewName",
+          "label": "Shipping Name",
+          "bind": "shippingName"
+        },
+        {
+          "kind": "text",
+          "id": "reviewAddress",
+          "label": "Shipping Address",
+          "bind": "shippingAddress"
+        },
+        {
+          "kind": "button",
+          "id": "backToStep2",
+          "label": "Back",
+          "action": {
+            "op": "navigate",
+            "target": "step2"
+          }
+        },
+        {
+          "kind": "button",
+          "id": "submitOrder",
+          "label": "Place Order",
+          "action": {
+            "op": "set",
+            "target": "completed",
+            "value": true
+          }
+        },
+        {
+          "kind": "banner",
+          "id": "completionBanner",
+          "tone": "success",
+          "label": "Order placed successfully!",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "completed"
+          }
+        }
+      ]
+    }
+  ]
+}

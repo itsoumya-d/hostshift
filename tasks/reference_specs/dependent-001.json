@@ -1,0 +1,108 @@
+{
+  "version": "0.2",
+  "title": "Address form",
+  "entry": "address",
+  "state": {
+    "country": {
+      "type": "enum",
+      "options": ["US", "CA", "UK", "Other"],
+      "default": "US"
+    },
+    "stateCode": {
+      "type": "string",
+      "default": ""
+    },
+    "provinceCode": {
+      "type": "string",
+      "default": ""
+    },
+    "postalCode": {
+      "type": "string",
+      "default": ""
+    },
+    "submitted": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "screens": [
+    {
+      "id": "address",
+      "title": "Enter Address",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Shipping Address"
+        },
+        {
+          "kind": "select",
+          "id": "countrySelect",
+          "label": "Country",
+          "bind": "country"
+        },
+        {
+          "kind": "field",
+          "id": "stateField",
+          "label": "State",
+          "bind": "stateCode",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "country",
+            "right": "US"
+          }
+        },
+        {
+          "kind": "field",
+          "id": "provinceField",
+          "label": "Province",
+          "bind": "provinceCode",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "country",
+            "right": "CA"
+          }
+        },
+        {
+          "kind": "field",
+          "id": "postalField",
+          "label": "Postal Code",
+          "bind": "postalCode",
+          "enabledWhen": {
+            "op": "not",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "country",
+                "right": "Other"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "enabledWhen": {
+            "op": "nonempty",
+            "left": "postalCode"
+          },
+          "action": {
+            "op": "submit",
+            "target": "submitted"
+          }
+        },
+        {
+          "kind": "banner",
+          "id": "successBanner",
+          "tone": "success",
+          "label": "Address saved",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "submitted"
+          }
+        }
+      ]
+    }
+  ]
+}

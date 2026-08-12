@@ -1,0 +1,100 @@
+{"id": "ext-001", "prompt": "A multiplayer chess game with real-time matchmaking and an Elo rating system.", "source": "reddit-appideas"}
+{"id": "ext-002", "prompt": "A collapsible tree view showing a deep hierarchy of categories and subcategories.", "source": "app-store-reviews"}
+{"id": "ext-003", "prompt": "A simple survey app with three multiple choice questions and a submit button at the end.", "source": "app-store-reviews"}
+{"id": "ext-004", "prompt": "An app that controls my smart home lights and thermostat via a local network protocol.", "source": "app-store-reviews"}
+{"id": "ext-005", "prompt": "An interactive map that just shows a static image of a map with clickable pins on top of it.", "source": "github-issues", "hand_audited": "partial"}
+{"id": "ext-006", "prompt": "An app that uses machine learning to identify plants from photos in real time.", "source": "producthunt-requests"}
+{"id": "ext-007", "prompt": "A note-taking app with a list of notes on the main screen and a button to create a new text note.", "source": "app-builder-gallery"}
+{"id": "ext-008", "prompt": "An app that uses facial recognition to unlock secure notes.", "source": "github-issues"}
+{"id": "ext-009", "prompt": "An interactive timeline where I can zoom in and out to see events closer together.", "source": "github-issues"}
+{"id": "ext-010", "prompt": "An expenses tracker where I can enter the amount, select a category from a dropdown, and see a list of my latest entries.", "source": "app-builder-gallery", "hand_audited": "in_scope"}
+{"id": "ext-011", "prompt": "A geocaching app with offline maps and compass navigation.", "source": "app-store-reviews"}
+{"id": "ext-012", "prompt": "An app that reads my heart rate using the phone's camera flash and sensor.", "source": "app-store-reviews"}
+{"id": "ext-013", "prompt": "A voice translation app that listens to my speech and speaks it back in Spanish.", "source": "github-issues", "hand_audited": "out_of_scope"}
+{"id": "ext-014", "prompt": "A form that uploads a file and shows a thumbnail preview of the selected image before submitting.", "source": "github-issues", "hand_audited": "partial"}
+{"id": "ext-015", "prompt": "A simple RSS reader that shows a list of feed headlines and summaries.", "source": "reddit-appideas", "hand_audited": "in_scope"}
+{"id": "ext-016", "prompt": "A spreadsheet-like grid where I can edit values directly inside the cells.", "source": "reddit-appideas", "hand_audited": "partial"}
+{"id": "ext-017", "prompt": "A live streaming app that uses my camera and microphone to broadcast to Twitch.", "source": "producthunt-requests"}
+{"id": "ext-018", "prompt": "A remote desktop app that lets me control my PC from my phone.", "source": "reddit-appideas"}
+{"id": "ext-019", "prompt": "A shopping cart screen showing a list of items, their prices, and a total amount at the bottom.", "source": "reddit-appideas"}
+{"id": "ext-020", "prompt": "A search page with a search bar at the top and a list of results below it that updates as you type.", "source": "github-issues"}
+{"id": "ext-021", "prompt": "A form that includes a canvas area where I can sign my name with my finger.", "source": "github-issues"}
+{"id": "ext-022", "prompt": "A document scanner that automatically detects page edges and corrects perspective.", "source": "app-store-reviews"}
+{"id": "ext-023", "prompt": "Create a list of FAQ questions that expand to show the answers when you click on them.", "source": "reddit-appideas"}
+{"id": "ext-024", "prompt": "An app that monitors my sleep patterns by listening to my breathing via the microphone.", "source": "producthunt-requests", "hand_audited": "out_of_scope"}
+{"id": "ext-025", "prompt": "A form with dynamic fields that appear or disappear based on what I select in previous dropdowns.", "source": "app-store-reviews"}
+{"id": "ext-026", "prompt": "A feedback form with radio buttons for rating (1 to 5) and a text box for comments.", "source": "producthunt-requests"}
+{"id": "ext-027", "prompt": "A recipe list app showing titles and thumbnails, which you can click to see the full ingredients and instructions.", "source": "producthunt-requests"}
+{"id": "ext-028", "prompt": "A kanban board where I can move tasks between 'To Do', 'In Progress', and 'Done' columns.", "source": "github-issues"}
+{"id": "ext-029", "prompt": "An app to track my workouts, with a form to enter the exercise name, sets, and reps.", "source": "producthunt-requests"}
+{"id": "ext-030", "prompt": "A calendar app where I can drag an event block to a different time slot.", "source": "reddit-appideas"}
+{"id": "ext-031", "prompt": "A settings page with toggles for push notifications, email alerts, and dark mode.", "source": "github-issues", "hand_audited": "in_scope"}
+{"id": "ext-032", "prompt": "I want an app that has a navigation bar at the bottom with tabs for Home, Search, and Profile.", "source": "producthunt-requests", "hand_audited": "in_scope"}
+{"id": "ext-033", "prompt": "A music player interface with a slider to scrub through the track and a visualizer that reacts to audio.", "source": "reddit-appideas"}
+{"id": "ext-034", "prompt": "A pricing page with three columns that highlight the middle 'Pro' tier with a glow effect.", "source": "reddit-appideas"}
+{"id": "ext-035", "prompt": "An app that acts as a secure authenticator with time-based OTPs generated offline.", "source": "reddit-appideas"}
+{"id": "ext-036", "prompt": "A dashboard with multiple pie charts and bar graphs that animate when they load.", "source": "github-issues", "hand_audited": "partial"}
+{"id": "ext-037", "prompt": "I need a simple to-do list app where I can add tasks, mark them as complete, and delete them.", "source": "app-store-reviews", "hand_audited": "in_scope"}
+{"id": "ext-038", "prompt": "An app that creates a local VPN tunnel to block ads across the entire device.", "source": "reddit-appideas"}
+{"id": "ext-039", "prompt": "An app that uses the gyroscope to create a 360-degree panorama photo.", "source": "reddit-appideas"}
+{"id": "ext-040", "prompt": "A dashboard with a line chart showing my weekly sales data and a list of top customers below it.", "source": "app-store-reviews", "hand_audited": "partial"}
+{"id": "ext-041", "prompt": "A newsletter signup page with a single email input and a 'Subscribe' button.", "source": "reddit-appideas"}
+{"id": "ext-042", "prompt": "A 2D platformer game with a virtual joystick and jump buttons.", "source": "reddit-appideas", "hand_audited": "out_of_scope"}
+{"id": "ext-043", "prompt": "An app that overlays a live weather radar on a 3D globe.", "source": "github-issues"}
+{"id": "ext-044", "prompt": "An app to log my daily water intake with a history list of past logs.", "source": "app-builder-gallery", "hand_audited": "in_scope"}
+{"id": "ext-045", "prompt": "A list of items that supports swipe-to-delete gestures on each row.", "source": "reddit-appideas", "hand_audited": "partial"}
+{"id": "ext-046", "prompt": "An inventory management form to add new products, including name, SKU, price, and stock count.", "source": "reddit-appideas"}
+{"id": "ext-047", "prompt": "A peer-to-peer file sharing app that uses Wi-Fi Direct.", "source": "app-builder-gallery"}
+{"id": "ext-048", "prompt": "A custom toggle switch that looks like a sun turning into a moon when I click it.", "source": "reddit-appideas"}
+{"id": "ext-049", "prompt": "An augmented reality app that places furniture in my living room using the camera.", "source": "producthunt-requests", "hand_audited": "out_of_scope"}
+{"id": "ext-050", "prompt": "An app that connects to my smartwatch via Bluetooth to sync health data.", "source": "app-store-reviews", "hand_audited": "out_of_scope"}
+{"id": "ext-051", "prompt": "A job board app with a list of open positions and a search bar to find specific titles.", "source": "github-issues", "hand_audited": "in_scope"}
+{"id": "ext-052", "prompt": "A fitness app that uses the accelerometer to count my steps in the background.", "source": "app-store-reviews"}
+{"id": "ext-053", "prompt": "Build me a contact management form with fields for name, email, phone number, and a notes text area.", "source": "producthunt-requests", "hand_audited": "in_scope"}
+{"id": "ext-054", "prompt": "A simple chat interface with a list of previous messages and a text input at the bottom to send a new one.", "source": "producthunt-requests"}
+{"id": "ext-055", "prompt": "An app that scans barcodes using the phone's camera and looks up product info.", "source": "github-issues", "hand_audited": "out_of_scope"}
+{"id": "ext-056", "prompt": "A form with a custom date picker widget that pops up a mini calendar to select a date.", "source": "github-issues"}
+{"id": "ext-057", "prompt": "A form with a color picker that lets me select a custom hex code using a color wheel.", "source": "app-store-reviews"}
+{"id": "ext-058", "prompt": "A user profile page showing a picture, name, bio, and an edit button to change those details.", "source": "producthunt-requests"}
+{"id": "ext-059", "prompt": "A timer app with a display for the time, and start, stop, and reset buttons.", "source": "producthunt-requests", "hand_audited": "in_scope"}
+{"id": "ext-060", "prompt": "A music creation app with a digital piano keyboard and multi-track recording.", "source": "producthunt-requests"}
+{"id": "ext-061", "prompt": "A mapping app with turn-by-turn navigation and live traffic updates.", "source": "app-builder-gallery", "hand_audited": "out_of_scope"}
+{"id": "ext-062", "prompt": "A multi-step registration wizard that asks for personal info first, then address, then payment details.", "source": "reddit-appideas"}
+{"id": "ext-063", "prompt": "A synthesizer app that generates complex audio waveforms based on my touch.", "source": "github-issues", "hand_audited": "out_of_scope"}
+{"id": "ext-064", "prompt": "A photo editing app with layers, magic wand selection, and custom brushes.", "source": "producthunt-requests"}
+{"id": "ext-065", "prompt": "A rhythm game where I have to tap notes that fall down the screen in time to music.", "source": "reddit-appideas"}
+{"id": "ext-066", "prompt": "An app with a sidebar menu that slides in from the left when I tap a hamburger icon.", "source": "reddit-appideas"}
+{"id": "ext-067", "prompt": "A meditation app that integrates with Apple Health/Google Fit to log mindful minutes.", "source": "github-issues"}
+{"id": "ext-068", "prompt": "An app that displays a 3D model of a product that I can rotate by swiping.", "source": "producthunt-requests", "hand_audited": "partial"}
+{"id": "ext-069", "prompt": "A tip calculator where you input the bill amount and choose a tip percentage from a segmented control.", "source": "app-store-reviews"}
+{"id": "ext-070", "prompt": "A rich text editor with bold, italic, and underline buttons that format the text as I type.", "source": "app-store-reviews"}
+{"id": "ext-071", "prompt": "A video conferencing app with screen sharing and custom background blur.", "source": "github-issues"}
+{"id": "ext-072", "prompt": "A basic calendar view where you can click a day and see a list of events scheduled for that day.", "source": "github-issues"}
+{"id": "ext-073", "prompt": "A password generator tool with toggles for including numbers, symbols, and uppercase letters.", "source": "app-builder-gallery"}
+{"id": "ext-074", "prompt": "A chat app that shows typing indicators when the other person is typing.", "source": "reddit-appideas"}
+{"id": "ext-075", "prompt": "A bug reporting form with a title input, description textarea, and a dropdown for severity.", "source": "app-store-reviews"}
+{"id": "ext-076", "prompt": "An app that translates text in real time by pointing the camera at a sign.", "source": "app-builder-gallery"}
+{"id": "ext-077", "prompt": "A video editing app where I can trim clips, add transitions, and apply filters.", "source": "app-store-reviews"}
+{"id": "ext-078", "prompt": "A virtual reality interface with head tracking and 3D spatial audio.", "source": "reddit-appideas", "hand_audited": "out_of_scope"}
+{"id": "ext-079", "prompt": "An app that uses GPS fencing to alert me when I'm near a specific store.", "source": "reddit-appideas"}
+{"id": "ext-080", "prompt": "An app where I can drag and drop items in a list to reorder them.", "source": "producthunt-requests"}
+{"id": "ext-081", "prompt": "A file browser that shows a grid of icons for folders and lists for files, and lets me right-click them.", "source": "github-issues"}
+{"id": "ext-082", "prompt": "An app that provides a custom keyboard extension for iOS and Android.", "source": "reddit-appideas"}
+{"id": "ext-083", "prompt": "A screen showing a list of users, with a filter dropdown at the top to sort them by role.", "source": "github-issues"}
+{"id": "ext-084", "prompt": "An app that displays a list of articles, and when you tap one, it opens a page with the full text.", "source": "reddit-appideas"}
+{"id": "ext-085", "prompt": "A stock trading app with live ticker feeds that update every millisecond.", "source": "reddit-appideas"}
+{"id": "ext-086", "prompt": "A driving app that detects when I've been in a crash using sensor fusion.", "source": "github-issues"}
+{"id": "ext-087", "prompt": "A simple counter app with a large number in the center and plus/minus buttons to adjust it.", "source": "github-issues", "hand_audited": "in_scope"}
+{"id": "ext-088", "prompt": "A podcast app that downloads episodes in the background and remembers my playback position.", "source": "reddit-appideas"}
+{"id": "ext-089", "prompt": "A complex data table with sortable columns, pagination, and a search filter.", "source": "github-issues"}
+{"id": "ext-090", "prompt": "A list of items that infinitely loads more data as I scroll to the bottom.", "source": "app-store-reviews"}
+{"id": "ext-091", "prompt": "A terminal emulator app that lets me run SSH sessions to remote servers.", "source": "github-issues"}
+{"id": "ext-092", "prompt": "An app with tooltips that appear when I hover over or long-press an icon.", "source": "app-builder-gallery", "hand_audited": "partial"}
+{"id": "ext-093", "prompt": "An app that shows a progress bar that slowly fills up while a background task is running.", "source": "app-builder-gallery"}
+{"id": "ext-094", "prompt": "An app that uses NFC to read data from my passport chip.", "source": "github-issues"}
+{"id": "ext-095", "prompt": "Create a login screen that has email and password fields, and a submit button.", "source": "app-builder-gallery"}
+{"id": "ext-096", "prompt": "A collaborative whiteboard where my team can sketch together in real time.", "source": "app-builder-gallery"}
+{"id": "ext-097", "prompt": "A split-screen view where dragging the middle divider resizes the two panels.", "source": "reddit-appideas"}
+{"id": "ext-098", "prompt": "A swipeable carousel of images with text overlaid on them.", "source": "producthunt-requests", "hand_audited": "partial"}
+{"id": "ext-099", "prompt": "A custom launcher app that replaces the default Android home screen.", "source": "github-issues", "hand_audited": "out_of_scope"}
+{"id": "ext-100", "prompt": "An app interface that changes its entire color scheme and layout based on the time of day.", "source": "producthunt-requests", "hand_audited": "partial"}

@@ -1,0 +1,164 @@
+{
+  "version": "0.2",
+  "title": "Media Library",
+  "entry": "library",
+  "state": {
+    "selectedSongId": {
+      "type": "string",
+      "default": ""
+    },
+    "selectedSongTitle": {
+      "type": "string",
+      "default": ""
+    },
+    "selectedSongFavorite": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "songs": {
+      "fields": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "artist": { "type": "string" },
+        "favorite": { "type": "boolean" }
+      },
+      "seed": [
+        { "id": "1", "title": "Bohemian Rhapsody", "artist": "Queen", "favorite": false },
+        { "id": "2", "title": "Stairway to Heaven", "artist": "Led Zeppelin", "favorite": true },
+        { "id": "3", "title": "Hotel California", "artist": "Eagles", "favorite": false },
+        { "id": "4", "title": "Imagine", "artist": "John Lennon", "favorite": false }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "library",
+      "title": "My Songs",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "libraryTitle",
+          "label": "My Songs"
+        },
+        {
+          "kind": "list",
+          "id": "songList",
+          "of": "songs",
+          "rowLabel": "title",
+          "a11yLabel": "Songs",
+          "rowAction": [
+            { "op": "set", "target": "selectedSongId", "value": "$row.id" },
+            { "op": "set", "target": "selectedSongTitle", "value": "$row.title" },
+            { "op": "set", "target": "selectedSongFavorite", "value": "$row.favorite" },
+            { "op": "navigate", "target": "detail" }
+          ]
+        },
+        {
+          "kind": "banner",
+          "id": "emptySongs",
+          "tone": "empty",
+          "label": "Your library is empty.",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "songs.length",
+            "right": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Song Details",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "detailTitle",
+          "label": "Song Details"
+        },
+        {
+          "kind": "text",
+          "id": "songTitleText",
+          "label": "Title",
+          "bind": "selectedSongTitle"
+        },
+        {
+          "kind": "button",
+          "id": "favoriteBtn",
+          "label": "Mark as Favorite",
+          "visibleWhen": {
+            "op": "falsy",
+            "left": "selectedSongFavorite"
+          },
+          "action": [
+            {
+              "op": "update",
+              "target": "songs",
+              "value": {
+                "where": { "id": "$state.selectedSongId" },
+                "set": { "favorite": true }
+              }
+            },
+            {
+              "op": "set",
+              "target": "selectedSongFavorite",
+              "value": true
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "unfavoriteBtn",
+          "label": "Remove from Favorites",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "selectedSongFavorite"
+          },
+          "action": [
+            {
+              "op": "update",
+              "target": "songs",
+              "value": {
+                "where": { "id": "$state.selectedSongId" },
+                "set": { "favorite": false }
+              }
+            },
+            {
+              "op": "set",
+              "target": "selectedSongFavorite",
+              "value": false
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "deleteBtn",
+          "label": "Delete Song",
+          "action": [
+            {
+              "op": "remove",
+              "target": "songs",
+              "value": {
+                "id": "$state.selectedSongId"
+              }
+            },
+            {
+              "op": "navigate",
+              "target": "library"
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "backBtn",
+          "label": "Back to Library",
+          "action": {
+            "op": "navigate",
+            "target": "library"
+          }
+        }
+      ]
+    }
+  ]
+}
