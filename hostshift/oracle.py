@@ -84,7 +84,14 @@ def check(criterion: dict, state: dict, ui_facts: dict | None = None) -> Criteri
     if kind == "state_equals":
         got = _get(state, criterion["path"])
         want = criterion["value"]
-        return CriterionResult(kind, got == want, f"{criterion['path']}={got!r} want {want!r}")
+        if isinstance(want, (int, float)) and isinstance(got, (int, float)):
+            eq = abs(float(want) - float(got)) < 1e-9
+        elif isinstance(want, str) and isinstance(got, str):
+            eq = want.strip().lower() == got.strip().lower()
+        else:
+            eq = got == want
+        return CriterionResult(kind, eq, f"{criterion['path']}={got!r} want {want!r}")
+
 
     if kind == "state_truthy":
         got = _get(state, criterion["path"])

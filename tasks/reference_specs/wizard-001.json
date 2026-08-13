@@ -1,63 +1,56 @@
 {
   "version": "0.2",
-  "title": "Checkout wizard",
+  "title": "Account Setup Wizard",
   "entry": "step1",
   "state": {
-    "shippingName": {
+    "username": {
       "type": "string",
       "default": ""
     },
-    "shippingAddress": {
-      "type": "string",
-      "default": ""
+    "plan": {
+      "type": "enum",
+      "options": ["Free", "Pro", "Enterprise"],
+      "default": "Free"
     },
-    "cardNumber": {
-      "type": "string",
-      "default": ""
-    },
-    "completed": {
-      "type": "boolean",
-      "default": false
+    "wizard": {
+      "type": "object",
+      "default": {
+        "completed": false
+      }
+    }
+  },
+  "collections": {
+    "accounts": {
+      "fields": {
+        "username": { "type": "string" },
+        "plan": { "type": "string" }
+      },
+      "seed": []
     }
   },
   "screens": [
     {
       "id": "step1",
-      "title": "Step 1: Shipping",
+      "title": "Step 1: Username",
       "children": [
         {
           "kind": "heading",
           "id": "step1Title",
-          "label": "Shipping Information"
+          "label": "Create Your Account"
         },
         {
           "kind": "field",
-          "id": "shippingName",
-          "label": "Full name",
-          "bind": "shippingName"
-        },
-        {
-          "kind": "field",
-          "id": "shippingAddress",
-          "label": "Address",
-          "bind": "shippingAddress"
+          "id": "username",
+          "label": "Username",
+          "bind": "username"
         },
         {
           "kind": "button",
           "id": "nextToStep2",
           "label": "Next",
           "enabledWhen": {
-            "op": "and",
-            "clauses": [
-              {
-                "op": "nonempty",
-                "left": "shippingName"
-              },
-              {
-                "op": "nonempty",
-                "left": "shippingAddress"
-              }
-            ]
+            "op": "nonempty",
+            "left": "username"
           },
           "action": {
             "op": "navigate",
@@ -68,18 +61,19 @@
     },
     {
       "id": "step2",
-      "title": "Step 2: Payment",
+      "title": "Step 2: Choose Plan",
       "children": [
         {
           "kind": "heading",
           "id": "step2Title",
-          "label": "Payment Method"
+          "label": "Select Your Plan"
         },
         {
-          "kind": "field",
-          "id": "cardNumber",
-          "label": "Card number",
-          "bind": "cardNumber"
+          "kind": "select",
+          "id": "planSelect",
+          "label": "Plan",
+          "bind": "plan",
+          "options": ["Free", "Pro", "Enterprise"]
         },
         {
           "kind": "button",
@@ -94,10 +88,6 @@
           "kind": "button",
           "id": "nextToStep3",
           "label": "Review",
-          "enabledWhen": {
-            "op": "nonempty",
-            "left": "cardNumber"
-          },
           "action": {
             "op": "navigate",
             "target": "step3"
@@ -112,19 +102,19 @@
         {
           "kind": "heading",
           "id": "step3Title",
-          "label": "Review your order"
+          "label": "Review Your Account"
         },
         {
           "kind": "text",
-          "id": "reviewName",
-          "label": "Shipping Name",
-          "bind": "shippingName"
+          "id": "reviewUsername",
+          "label": "Username",
+          "bind": "username"
         },
         {
           "kind": "text",
-          "id": "reviewAddress",
-          "label": "Shipping Address",
-          "bind": "shippingAddress"
+          "id": "reviewPlan",
+          "label": "Plan",
+          "bind": "plan"
         },
         {
           "kind": "button",
@@ -137,22 +127,32 @@
         },
         {
           "kind": "button",
-          "id": "submitOrder",
-          "label": "Place Order",
-          "action": {
-            "op": "set",
-            "target": "completed",
-            "value": true
-          }
+          "id": "createAccount",
+          "label": "Create Account",
+          "action": [
+            {
+              "op": "append",
+              "target": "accounts",
+              "value": {
+                "username": "$state.username",
+                "plan": "$state.plan"
+              }
+            },
+            {
+              "op": "set",
+              "target": "wizard.completed",
+              "value": true
+            }
+          ]
         },
         {
           "kind": "banner",
           "id": "completionBanner",
           "tone": "success",
-          "label": "Order placed successfully!",
+          "label": "Account created successfully!",
           "visibleWhen": {
             "op": "truthy",
-            "left": "completed"
+            "left": "wizard.completed"
           }
         }
       ]

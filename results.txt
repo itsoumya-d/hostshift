@@ -1,0 +1,86 @@
+=== ORACLE EDGE CASES ===
+--- Empty state -> should fail gracefully ---
+PASS (0.01ms)
+
+--- State with extra keys -> should still match ---
+PASS (0.00ms)
+
+--- Case sensitivity in collection_contains matching ---
+PASS (0.01ms)
+
+--- Numeric precision (0.99999 vs 1.0) ---
+FAIL: False (0.01ms)
+
+--- Unicode values in state ---
+PASS (0.01ms)
+
+--- Deeply nested state paths (a.b.c.d.e) ---
+PASS (0.00ms)
+
+--- Missing collection vs empty collection ---
+PASS (0.01ms)
+
+--- Negative criteria behavior ---
+FAIL: False (0.01ms)
+
+--- What happens with 0 criteria? (vacuous pass) ---
+PASS (0.00ms)
+
+--- What happens with duplicate criteria? ---
+PASS (0.00ms)
+
+=== METRICS EDGE CASES ===
+--- render_parity with empty trees / single node ---
+PASS (0.02ms)
+
+--- render_parity with very deep trees (100 levels) ---
+PASS (3.67ms)
+
+--- render_parity with very wide trees (100 children) ---
+PASS (14.55ms)
+
+--- accessibility_parity with all-unnamed nodes ---
+PASS (0.01ms)
+
+--- wilson_interval edge cases ---
+PASS (0.01ms)
+
+--- host_lock_index with 1 task, with 100 tasks ---
+PASS (0.17ms)
+
+--- tree_edit_distance symmetry ---
+PASS (0.01ms)
+
+--- tree_edit_distance triangle inequality ---
+PASS (0.01ms)
+
+=== RENDERING EDGE CASES ===
+--- Spec with no screens ---
+PASS (0.02ms)
+
+--- Spec with empty screen ---
+PASS (0.02ms)
+
+--- Spec with circular navigation ---
+PASS (0.01ms)
+
+--- Spec with 50 fields on one screen ---
+PASS (0.05ms)
+
+--- Spec with deeply nested conditional visibility ---
+PASS (0.02ms)
+
+--- Toggle that enables/disables other toggles ---
+PASS (0.01ms)
+
+--- Button with 10 chained actions ---
+PASS (0.02ms)
+
+--- Collection with 1000 seed items ---
+PASS (1.86ms)
+
+=== PERFORMANCE BENCHMARKS ===
+Time 1000 oracle grade() calls: 1.63ms
+Time 1000 render_parity() calls: 10.39ms
+Time rendering a spec on all 4 hosts x 100: 1.68ms
+Memory footprint of a large session: Peak: 4.76 MB

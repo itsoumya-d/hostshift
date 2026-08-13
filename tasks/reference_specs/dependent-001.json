@@ -3,18 +3,12 @@
   "title": "Address form",
   "entry": "address",
   "state": {
-    "country": {
-      "type": "enum",
-      "options": ["US", "CA", "UK", "Other"],
-      "default": "US"
-    },
-    "stateCode": {
-      "type": "string",
-      "default": ""
-    },
-    "provinceCode": {
-      "type": "string",
-      "default": ""
+    "address": {
+      "type": "object",
+      "default": {
+        "country": "US",
+        "region": ""
+      }
     },
     "postalCode": {
       "type": "string",
@@ -39,29 +33,14 @@
           "kind": "select",
           "id": "countrySelect",
           "label": "Country",
-          "bind": "country"
+          "bind": "address.country",
+          "options": ["US", "CA", "UK", "India", "Other"]
         },
         {
           "kind": "field",
-          "id": "stateField",
-          "label": "State",
-          "bind": "stateCode",
-          "visibleWhen": {
-            "op": "eq",
-            "left": "country",
-            "right": "US"
-          }
-        },
-        {
-          "kind": "field",
-          "id": "provinceField",
-          "label": "Province",
-          "bind": "provinceCode",
-          "visibleWhen": {
-            "op": "eq",
-            "left": "country",
-            "right": "CA"
-          }
+          "id": "regionField",
+          "label": "Region",
+          "bind": "address.region"
         },
         {
           "kind": "field",
@@ -73,7 +52,7 @@
             "clauses": [
               {
                 "op": "eq",
-                "left": "country",
+                "left": "address.country",
                 "right": "Other"
               }
             ]
@@ -85,12 +64,15 @@
           "label": "Submit",
           "enabledWhen": {
             "op": "nonempty",
-            "left": "postalCode"
+            "left": "address.region"
           },
-          "action": {
-            "op": "submit",
-            "target": "submitted"
-          }
+          "action": [
+            {
+              "op": "set",
+              "target": "submitted",
+              "value": true
+            }
+          ]
         },
         {
           "kind": "banner",

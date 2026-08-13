@@ -6,22 +6,25 @@
     "query": {
       "type": "string",
       "default": ""
+    },
+    "route": {
+      "type": "string",
+      "default": "search"
     }
   },
   "collections": {
     "results": {
       "fields": {
-        "title": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "description": { "type": "string" }
       },
       "seed": [
+        {
+          "title": "Soup recipes for beginners",
+          "url": "https://recipes.example.com/soup",
+          "description": "Easy soup recipes anyone can make."
+        },
         {
           "title": "HostShift Documentation",
           "url": "https://hostshift.dev/docs",
@@ -62,11 +65,10 @@
           "of": "results",
           "rowLabel": "title",
           "a11yLabel": "Search Results",
-          "rowAction": {
-            "op": "set",
-            "target": "query",
-            "value": "$row.title"
-          }
+          "rowAction": [
+            { "op": "set", "target": "route", "value": "detail" },
+            { "op": "navigate", "target": "detail" }
+          ]
         },
         {
           "kind": "banner",
@@ -78,6 +80,26 @@
             "left": "results.length",
             "right": 0
           }
+        }
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Result Detail",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "detailTitle",
+          "label": "Result Details"
+        },
+        {
+          "kind": "button",
+          "id": "backToSearch",
+          "label": "Back to Search",
+          "action": [
+            { "op": "set", "target": "route", "value": "search" },
+            { "op": "navigate", "target": "search" }
+          ]
         }
       ]
     }

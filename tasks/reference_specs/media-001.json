@@ -1,161 +1,155 @@
 {
   "version": "0.2",
-  "title": "Media Library",
-  "entry": "library",
+  "title": "Photo Gallery",
+  "entry": "gallery",
   "state": {
-    "selectedSongId": {
+    "selectedPhotoName": {
       "type": "string",
       "default": ""
     },
-    "selectedSongTitle": {
-      "type": "string",
-      "default": ""
+    "selectedPhotoFavourite": {
+      "type": "boolean",
+      "default": false
     },
-    "selectedSongFavorite": {
+    "confirmDeleteVisible": {
       "type": "boolean",
       "default": false
     }
   },
   "collections": {
-    "songs": {
+    "photos": {
       "fields": {
-        "id": { "type": "string" },
-        "title": { "type": "string" },
-        "artist": { "type": "string" },
-        "favorite": { "type": "boolean" }
+        "name": { "type": "string" },
+        "favourite": { "type": "boolean" }
       },
       "seed": [
-        { "id": "1", "title": "Bohemian Rhapsody", "artist": "Queen", "favorite": false },
-        { "id": "2", "title": "Stairway to Heaven", "artist": "Led Zeppelin", "favorite": true },
-        { "id": "3", "title": "Hotel California", "artist": "Eagles", "favorite": false },
-        { "id": "4", "title": "Imagine", "artist": "John Lennon", "favorite": false }
+        { "name": "sunset", "favourite": false },
+        { "name": "harbour", "favourite": false },
+        { "name": "mountain", "favourite": false },
+        { "name": "forest", "favourite": true },
+        { "name": "river", "favourite": false },
+        { "name": "skyline", "favourite": false }
       ]
     }
   },
   "screens": [
     {
-      "id": "library",
-      "title": "My Songs",
+      "id": "gallery",
+      "title": "My Photos",
       "children": [
         {
           "kind": "heading",
-          "id": "libraryTitle",
-          "label": "My Songs"
+          "id": "galleryTitle",
+          "label": "My Photos"
         },
         {
           "kind": "list",
-          "id": "songList",
-          "of": "songs",
-          "rowLabel": "title",
-          "a11yLabel": "Songs",
+          "id": "photoGrid",
+          "of": "photos",
+          "rowLabel": "name",
+          "a11yLabel": "Photos",
           "rowAction": [
-            { "op": "set", "target": "selectedSongId", "value": "$row.id" },
-            { "op": "set", "target": "selectedSongTitle", "value": "$row.title" },
-            { "op": "set", "target": "selectedSongFavorite", "value": "$row.favorite" },
+            { "op": "set", "target": "selectedPhotoName", "value": "$row.name" },
+            { "op": "set", "target": "selectedPhotoFavourite", "value": "$row.favourite" },
             { "op": "navigate", "target": "detail" }
           ]
-        },
-        {
-          "kind": "banner",
-          "id": "emptySongs",
-          "tone": "empty",
-          "label": "Your library is empty.",
-          "visibleWhen": {
-            "op": "eq",
-            "left": "songs.length",
-            "right": 0
-          }
         }
       ]
     },
     {
       "id": "detail",
-      "title": "Song Details",
+      "title": "Photo Actions",
       "children": [
         {
           "kind": "heading",
           "id": "detailTitle",
-          "label": "Song Details"
+          "label": "Photo"
         },
         {
           "kind": "text",
-          "id": "songTitleText",
-          "label": "Title",
-          "bind": "selectedSongTitle"
+          "id": "photoName",
+          "label": "Name",
+          "bind": "selectedPhotoName"
         },
         {
           "kind": "button",
-          "id": "favoriteBtn",
-          "label": "Mark as Favorite",
+          "id": "favouriteBtn",
+          "label": "Favourite",
           "visibleWhen": {
             "op": "falsy",
-            "left": "selectedSongFavorite"
+            "left": "selectedPhotoFavourite"
           },
           "action": [
             {
               "op": "update",
-              "target": "songs",
+              "target": "photos",
               "value": {
-                "where": { "id": "$state.selectedSongId" },
-                "set": { "favorite": true }
+                "where": { "name": "$state.selectedPhotoName" },
+                "set": { "favourite": true }
               }
             },
             {
               "op": "set",
-              "target": "selectedSongFavorite",
+              "target": "selectedPhotoFavourite",
               "value": true
             }
           ]
         },
         {
           "kind": "button",
-          "id": "unfavoriteBtn",
-          "label": "Remove from Favorites",
+          "id": "deleteBtn",
+          "label": "Delete",
+          "action": [
+            {
+              "op": "set",
+              "target": "confirmDeleteVisible",
+              "value": true
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "confirmDeleteBtn",
+          "label": "Confirm Delete",
           "visibleWhen": {
             "op": "truthy",
-            "left": "selectedSongFavorite"
+            "left": "confirmDeleteVisible"
           },
           "action": [
             {
-              "op": "update",
-              "target": "songs",
-              "value": {
-                "where": { "id": "$state.selectedSongId" },
-                "set": { "favorite": false }
-              }
+              "op": "remove",
+              "target": "photos",
+              "value": { "name": "$state.selectedPhotoName" }
             },
             {
+              "op": "navigate",
+              "target": "gallery"
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "cancelDeleteBtn",
+          "label": "Cancel",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "confirmDeleteVisible"
+          },
+          "action": [
+            {
               "op": "set",
-              "target": "selectedSongFavorite",
+              "target": "confirmDeleteVisible",
               "value": false
             }
           ]
         },
         {
           "kind": "button",
-          "id": "deleteBtn",
-          "label": "Delete Song",
-          "action": [
-            {
-              "op": "remove",
-              "target": "songs",
-              "value": {
-                "id": "$state.selectedSongId"
-              }
-            },
-            {
-              "op": "navigate",
-              "target": "library"
-            }
-          ]
-        },
-        {
-          "kind": "button",
           "id": "backBtn",
-          "label": "Back to Library",
+          "label": "Back to Gallery",
           "action": {
             "op": "navigate",
-            "target": "library"
+            "target": "gallery"
           }
         }
       ]

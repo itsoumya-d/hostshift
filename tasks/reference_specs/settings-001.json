@@ -3,17 +3,14 @@
   "title": "Settings",
   "entry": "settings",
   "state": {
-    "notificationsEnabled": {
-      "type": "boolean",
-      "default": true
-    },
-    "emailNotifications": {
-      "type": "boolean",
-      "default": true
-    },
-    "pushNotifications": {
-      "type": "boolean",
-      "default": false
+    "notifications": {
+      "type": "object",
+      "default": {
+        "master": false,
+        "email": false,
+        "sms": false,
+        "push": false
+      }
     },
     "darkMode": {
       "type": "boolean",
@@ -53,28 +50,38 @@
         },
         {
           "kind": "toggle",
-          "id": "notificationsEnabled",
+          "id": "master",
           "label": "Enable Notifications",
-          "bind": "notificationsEnabled"
+          "bind": "notifications.master"
         },
         {
           "kind": "toggle",
-          "id": "emailNotifications",
+          "id": "email",
           "label": "Email Notifications",
-          "bind": "emailNotifications",
+          "bind": "notifications.email",
           "visibleWhen": {
             "op": "truthy",
-            "left": "notificationsEnabled"
+            "left": "notifications.master"
           }
         },
         {
           "kind": "toggle",
-          "id": "pushNotifications",
-          "label": "Push Notifications",
-          "bind": "pushNotifications",
+          "id": "sms",
+          "label": "SMS Notifications",
+          "bind": "notifications.sms",
           "visibleWhen": {
             "op": "truthy",
-            "left": "notificationsEnabled"
+            "left": "notifications.master"
+          }
+        },
+        {
+          "kind": "toggle",
+          "id": "push",
+          "label": "Push Notifications",
+          "bind": "notifications.push",
+          "visibleWhen": {
+            "op": "truthy",
+            "left": "notifications.master"
           }
         },
         {
@@ -82,26 +89,12 @@
           "id": "resetButton",
           "label": "Reset to defaults",
           "action": [
-            {
-              "op": "clear",
-              "target": "notificationsEnabled"
-            },
-            {
-              "op": "clear",
-              "target": "emailNotifications"
-            },
-            {
-              "op": "clear",
-              "target": "pushNotifications"
-            },
-            {
-              "op": "clear",
-              "target": "darkMode"
-            },
-            {
-              "op": "clear",
-              "target": "locationServices"
-            }
+            { "op": "clear", "target": "notifications.master" },
+            { "op": "clear", "target": "notifications.email" },
+            { "op": "clear", "target": "notifications.sms" },
+            { "op": "clear", "target": "notifications.push" },
+            { "op": "clear", "target": "darkMode" },
+            { "op": "clear", "target": "locationServices" }
           ]
         }
       ]
