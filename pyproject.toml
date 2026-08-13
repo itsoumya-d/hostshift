@@ -7,10 +7,10 @@ name = "hostshift"
 version = "0.1.0"
 description = "Cross-platform UI portability benchmark for LLM-generated interfaces"
 readme = "README.md"
-license = {text = "AGPL-3.0-or-later"}
+license = {text = "LicenseRef-HostShift-Research-Only"}
 requires-python = ">=3.11"
 authors = [
-    {name = "Soumya Debnath"},
+    {name = "Soumya Debnath", email = "admin@otaitech.com"},
 ]
 keywords = [
     "benchmark",
@@ -23,7 +23,7 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

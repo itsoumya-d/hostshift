@@ -1,0 +1,4996 @@
+{
+  "metadata": {
+    "total_runs": 125,
+    "condition_a": {
+      "attempted": 64,
+      "gen_ok": 64,
+      "gen_rate": 1.0,
+      "renderable": 21,
+      "rend_rate": 0.328125,
+      "passed": 0,
+      "pass_rate": 0.0,
+      "rp": {
+        "web": 0.328125,
+        "swiftui": 0.328125,
+        "compose": 0.328125,
+        "tui": 0.24246875
+      },
+      "ap": {
+        "web": 0.28578125,
+        "swiftui": 0.28578125,
+        "compose": 0.28578125,
+        "tui": 0.109625
+      }
+    },
+    "condition_b": {
+      "attempted": 61,
+      "gen_ok": 61,
+      "gen_rate": 1.0,
+      "renderable": 20,
+      "rend_rate": 0.32786885245901637,
+      "passed": 2,
+      "pass_rate": 0.03278688524590164,
+      "rp": {
+        "web": 0.32786885245901637,
+        "swiftui": 0.32786885245901637,
+        "compose": 0.32786885245901637,
+        "tui": 0.18798360655737706
+      },
+      "ap": {
+        "web": 0.32596721311475413,
+        "swiftui": 0.32596721311475413,
+        "compose": 0.32596721311475413,
+        "tui": 0.1159016393442623
+      }
+    }
+  },
+  "runs": [
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.808,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.808,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.808,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 0.75,
+          "ap": 0.333,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "expense_form: bind to undeclared state 'state.amount'; expense_form: bind to und"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "expense_form: bind to undeclared state 'state.amount'; expense_form: bind to und"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "expense_form: bind to undeclared state 'state.amount'; expense_form: bind to und"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "expense_form: bind to undeclared state 'state.amount'; expense_form: bind to und"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; list_screen: list references unknown collection "
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; list_screen: list references unknown collection "
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; list_screen: list references unknown collection "
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; list_screen: list references unknown collection "
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "filter-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "filter-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "filter-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "filter-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; step_2: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; step_2: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; step_2: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; step_2: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.625,
+          "ap": 0.35,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "wizard-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; scheduler_view: list references unknown collecti"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; scheduler_view: list references unknown collecti"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; scheduler_view: list references unknown collecti"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; scheduler_view: list references unknown collecti"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "wizard-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "booking_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "booking_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "booking_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "booking_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "settings-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 0.75,
+          "ap": 0.35,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "settings-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "search-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "search-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "dependent-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; ?: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; ?: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; ?: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; ?: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "dependent-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photo_gallery: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photo_gallery: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photo_gallery: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photo_gallery: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "media-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.34,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.34,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.34,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "media-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'NoneType' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'NoneType' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'NoneType' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'NoneType' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 1,
+          "criteria_total": 4,
+          "rp": 0.786,
+          "ap": 0.329,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": true,
+          "criteria_met": 4,
+          "criteria_total": 4,
+          "rp": 0.643,
+          "ap": 0.357,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "form-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.925,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.925,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.925,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.75,
+          "ap": 0.325,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "form-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "form-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.733,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.733,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.733,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.833,
+          "ap": 0.333,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "form-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.7,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'int' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "homeScreen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "homeScreen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "homeScreen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "homeScreen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-003",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "notes_list: list references unknown collection None; note_detail: bind to undecl"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "notes_list: list references unknown collection None; note_detail: bind to undecl"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "notes_list: list references unknown collection None; note_detail: bind to undecl"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "notes_list: list references unknown collection None; note_detail: bind to undecl"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "filter-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "filter-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "filter-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "filter-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.7,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.6,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "wizard-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.636,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.636,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.636,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.857,
+          "ap": 0.329,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "wizard-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.971,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.971,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 0.971,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 0.643,
+          "ap": 0.329,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "settings-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 1,
+          "rp": 0.75,
+          "ap": 0.35,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "settings-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "search-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "searchScreen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "search-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.667,
+          "ap": 0.333,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.583,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "dependent-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.96,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.7,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "dependent-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photos_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photos_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photos_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "photos_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "media-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.92,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.92,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.92,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.8,
+          "ap": 0.34,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "media-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'bool' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "main_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "form-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.933,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.933,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 0.933,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.667,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "list-002",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "rp": 0.667,
+          "ap": 0.367,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 0.786,
+          "ap": 0.329,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.789,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 0.786,
+          "ap": 0.329,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 0.625,
+          "ap": 0.35,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 1.0,
+          "ap": 0.95,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "0/2",
+          "rp": 0.625,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 0.583,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.943,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.943,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.943,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 0.643,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 1.0,
+          "ap": 0.967,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "1/4",
+          "rp": 0.583,
+          "ap": 0.3,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "form-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "crit": "2/4",
+          "rp": 0.833,
+          "ap": 0.933,
+          "renderable": true
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 0,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "tickets_list_screen: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "list-001",
+      "repeat": 1,
+      "hosts": {
+        "web": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticket_list: list references unknown collection None"
+        }
+      }
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "search_screen: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "unknown predicate op 'equals'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 0.65,
+          "ap": 0.36,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 1,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 1,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 1,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 1,
+          "rp": 0.5,
+          "ap": 0.4,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "A",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "version",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-flash-latest",
+      "condition": "B",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "confirmation_screen: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "version",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "form-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 3,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 3,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 3,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 3,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "state",
+        "collections",
+        "screens",
+        "entry"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'str' object has no attribute 'get'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "version",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "settings-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 4,
+          "steps": 4,
+          "rp": 0.5,
+          "ap": 0.3,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "A",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "condition": "B",
+      "task": "search-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; results_screen: list references unknown collecti"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; results_screen: list references unknown collecti"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; results_screen: list references unknown collecti"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "entry 'home' matches no screen; results_screen: list references unknown collecti"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "state",
+        "collections",
+        "screens",
+        "entry"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 3,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 3,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 3,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 3,
+          "rp": 0.7,
+          "ap": 0.38,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "wizard-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 0.6,
+          "ap": 0.34,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'list' object has no attribute 'keys'"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'list' object has no attribute 'keys'"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'list' object has no attribute 'keys'"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "'list' object has no attribute 'keys'"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "dependent-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 1.0,
+          "ap": 1.0,
+          "renderable": true
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 2,
+          "rp": 0.6,
+          "ap": 0.34,
+          "renderable": true
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "screens",
+        "collections"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "media-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 3,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "A",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "home: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens",
+        "version"
+      ]
+    },
+    {
+      "model": "gemini-flash-lite-latest",
+      "condition": "B",
+      "task": "list-001",
+      "hosts": {
+        "web": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "swiftui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "compose": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        },
+        "tui": {
+          "success": false,
+          "criteria_met": 0,
+          "criteria_total": 2,
+          "steps": 0,
+          "rp": 0.0,
+          "ap": 0.0,
+          "renderable": false,
+          "error": "ticketList: list references unknown collection None"
+        }
+      },
+      "generated_spec_keys": [
+        "version",
+        "title",
+        "entry",
+        "state",
+        "collections",
+        "screens"
+      ]
+    }
+  ]
+}
