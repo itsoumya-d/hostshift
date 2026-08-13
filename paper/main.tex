@@ -38,7 +38,7 @@ the original task on each rendering. Success is judged against application
 state, never pixels, so hosts that legitimately look nothing alike can be
 compared fairly. We formalise \emph{host-lock} --- the capability lost purely by
 changing host --- as a pair of metrics, and report it alongside structural and
-accessibility parity. Across four models in the Gemini family and four hosts, freeform code generation exhibits low cross-host renderability (33\%), which the schema condition improves to 50\% (a 1.5$\times$ relative lift in renderability and a +0.143 increase in average Render Parity). Crucially, schema guidance acts as a strong equalizer for smaller models: \texttt{gemini-3.1-flash-lite} improves from 0\% renderability under freeform generation to 50\% under schema guidance. Once rendered, Web, SwiftUI, and Compose achieve perfect structural parity ($\mathrm{RP}=1.000$), while terminal hosts exhibit a modality bottleneck ($\mathrm{RP}=0.729$). Our results indicate that portability is measurable, that current freeform generation fails to achieve it, and that host-independent declarative schemas substantially close the gap. We release the suite, the harness, and all runs.
+accessibility parity. Across three models in the Gemini family and 125 generation runs evaluated on four hosts, both conditions exhibit low cross-host renderability ($\approx$33\%), confirming that current generation frequently produces invalid output regardless of condition. Schema guidance disproportionately benefits the smallest model: \texttt{gemini-3.1-flash-lite} improves from 11.5\% to 30.8\% renderability (a 2.7$\times$ lift). Once rendered, Web, SwiftUI, and Compose achieve perfect structural parity ($\mathrm{RP}=1.000$) with strong accessibility parity ($\mathrm{AP}=0.931$), while the terminal host exhibits a clear modality bottleneck ($\mathrm{RP}=0.658$, $\mathrm{AP}=0.344$). Task completion under schema guidance (3.3\%) exceeds freeform (0.0\%), though the difference does not reach significance at our current sample size (Fisher $p=0.24$). Our results establish that portability is measurable, that structural parity is achievable across graphical hosts, and that text-mode hosts impose a quantifiable fidelity ceiling. We release the suite, the harness, and all runs.
 \end{abstract}
 
 \section{Introduction}
@@ -167,7 +167,7 @@ of zero while differing sharply in per-task lock, and reporting only the
 flattering one is the obvious way to game this benchmark.
 
 \section{Experimental Setup}
-We evaluate four generative models across the Gemini family: Gemini 3.5 Flash, Gemini 3.1 Flash Lite, Gemini Flash Lite, and Gemini Flash. Interfaces are generated for four hosts: Web (Playwright/Chromium), SwiftUI (iOS Simulator), Compose (Android Emulator), and TUI (Textual/terminal). Interaction Parity is measured using a computer-use operator, with a deterministic accessibility-scripted operator as an ablation. The task suite consists of 100 tasks spanning 8 categories (form validation, list-detail, filterable table, multi-step wizard, settings with conditional enablement, search with empty states, dependent fields, and media actions) and 3 difficulty levels. We evaluate under three conditions: A-freeform, B-naive, and B-schema. To quantify variance, we perform repeated runs per cell. Both conditions receive an identical repair budget of 3 rounds. The experiment comprises 44 total API generation runs evaluated across 176 host sessions.
+We evaluate three generative models across the Gemini family: Gemini 3.1 Flash Lite, Gemini Flash Lite, and Gemini Flash. Interfaces are generated for four hosts: Web (Playwright/Chromium), SwiftUI (iOS Simulator), Compose (Android Emulator), and TUI (Textual/terminal). Interaction Parity is measured using a computer-use operator, with a deterministic accessibility-scripted operator as an ablation. The task suite consists of 100 tasks spanning 8 categories (form validation, list-detail, filterable table, multi-step wizard, settings with conditional enablement, search with empty states, dependent fields, and media actions) and 3 difficulty levels. We evaluate under two conditions: A-freeform and B-schema. Both conditions receive an identical repair budget of 3 rounds. The experiment comprises 125 total generation runs (64 Condition~A, 61 Condition~B) evaluated across 500 host sessions. All reported numbers are computed directly from the released run logs; Wilson score 95\% confidence intervals are provided for key rates.
 
 \paragraph{Operator calibration.}
 Interaction Parity is measured through a computer-use model whose training is
@@ -194,60 +194,60 @@ correlated across hosts and conditions.
 
 \section{Results}
 
-We present empirical results evaluated across 125 total generation runs spanning 18 task specifications in 8 categories across multiple model tiers in the Gemini family.
+We report empirical results across 125 generation runs spanning 18 task specifications in 8 categories, evaluated on three Gemini-family model tiers. All numbers are computed directly from the released run logs; $N$ counts and Wilson 95\% CIs are provided throughout.
 
 \begin{table}[h]
 \centering
-\caption{\textbf{Condition A vs.\ Condition B Summary across 125 unified experiment runs.} Renderability represents cross-host lowering success; Task Pass (IP) measures whether the computer-use operator successfully completed the task on application state.}
+\caption{\textbf{Condition A vs.\ Condition B across 125 runs.} Renderable = at least one host produced a valid widget tree. IP = task completed on $\geq$1 host. RP and AP are averaged over renderable runs only ($N$=21 for~A, $N$=20 for~B). Fisher's exact $p$-values test each rate difference.}
 \label{tab:condition_summary}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Condition} & \textbf{Evaluated} & \textbf{Rend \%} & \textbf{Task Pass (IP)} & \textbf{RP (Web)} & \textbf{RP (SwiftUI)} & \textbf{RP (TUI)} \\
+\textbf{Condition} & \textbf{$N$} & \textbf{Rend.\ [95\% CI]} & \textbf{IP [95\% CI]} & \textbf{RP (Web)} & \textbf{RP (TUI)} \\
 \midrule
-Reference (Ground Truth) & 32 & 100\% & 100\% & 1.000 & 1.000 & 0.750 \\
-Condition A (Freeform)   & 64 & 32.8\% & 0.0\% & 0.328 & 0.328 & 0.242 \\
-Condition B (Schema-first) & 61 & \textbf{32.8\%} & \textbf{3.3\%} & \textbf{0.328} & \textbf{0.328} & \textbf{0.188} \\
+A (Freeform)       & 64 & 32.8\% [22.6, 45.0] & 0.0\% [0.0, 5.7]          & 1.000 & 0.739 \\
+B (Schema-first)   & 61 & 32.8\% [22.3, 45.3] & 3.3\% [0.9, 11.2]        & 1.000 & 0.573 \\
+\midrule
+\multicolumn{6}{l}{\small Fisher's exact: renderability $p=0.57$; task completion $p=0.24$. Neither reaches $p<0.05$.} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-As shown in Table~\ref{tab:condition_summary}, freeform code generation (Condition A) completely fails task completion (0.0\% Interaction Parity), as unconstrained models invent arbitrary variable bindings and non-standard action targets that fail state oracle validation. In contrast, Condition B (Schema-Guided) is the only condition capable of task completion (3.3\% overall, with 100\% completion across Web, iOS, Android, and TUI on structured tasks like \texttt{form-001}).
+As Table~\ref{tab:condition_summary} shows, both conditions exhibit low renderability ($\approx$33\%), and the two task-completion successes in Condition~B (both \texttt{form-001}, achieving 4/4 host completion) do not yet reach significance. The more robust finding is \emph{structural}: renderable specifications achieve $\mathrm{RP}=1.000$ across all three graphical hosts regardless of condition, meaning that when generation produces valid output, the renderer delivers perfect structural fidelity. The gap between conditions is therefore upstream of rendering: schema guidance reduces the frequency of state-variable drift that makes generated specs ungradeable rather than unrenderable.
 
 \begin{table}[h]
 \centering
-\caption{\textbf{Model Scale vs.\ Cross-Host Renderability.} Comparison across model tiers.}
+\caption{\textbf{Model Scale vs.\ Cross-Host Renderability.} Schema guidance disproportionately benefits the smallest model tier.}
 \label{tab:model_scale}
 \begin{tabular}{llcc}
 \toprule
-\textbf{Model} & \textbf{Capacity Class} & \textbf{Cond A Rend \%} & \textbf{Cond B Rend \%} \\
+\textbf{Model} & \textbf{Tier} & \textbf{Cond A Rend.} & \textbf{Cond B Rend.} \\
 \midrule
-gemini-3.1-flash-lite & Ultra-Compact & 16.7\% (3/18) & \textbf{22.2\%} (4/18) \\
-gemini-flash-lite-latest & Compact     & \textbf{61.1\%} (11/18) & 22.2\% (4/18) \\
-gemini-flash-latest      & Medium      & 11.1\% (2/18) & 0.0\% (0/18)* \\
+gemini-3.1-flash-lite    & Ultra-Compact & 11.5\% (3/26) & \textbf{30.8\%} (8/26) \\
+gemini-flash-lite-latest & Compact       & \textbf{53.8\%} (14/26) & 30.8\% (8/26) \\
+gemini-flash-latest      & Medium        & 33.3\% (4/12) & 44.4\% (4/9) \\
 \bottomrule
-\multicolumn{4}{l}{\small *gemini-flash-latest Condition B runs were affected by free-tier API rate limiting.}
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:model_scale} reveals that while larger models in Condition A can occasionally emit plausible JSON layouts, Condition B remains necessary to enforce predictable state variable paths required for task execution.
+Table~\ref{tab:model_scale} reveals that schema guidance provides a 2.7$\times$ renderability lift for the smallest model (\texttt{gemini-3.1-flash-lite}: 11.5\% $\rightarrow$ 30.8\%). For the compact tier, freeform generation outperforms schema guidance (53.8\% vs.\ 30.8\%), suggesting that larger models can compensate for the absence of a schema through their own structural knowledge, but smaller models cannot. The medium tier shows a modest schema advantage (33.3\% $\rightarrow$ 44.4\%), though the smaller Condition~B sample ($N$=9 vs.\ 12) limits the comparison.
 
 \begin{table}[h]
 \centering
-\caption{\textbf{Host Parity When Renderable.} Once a specification validly lowers to host UI trees, graphical hosts achieve identical widget parity, while TUI serves as a structural bottleneck.}
+\caption{\textbf{Host Parity When Renderable} ($N$=41 renderable specs pooled across both conditions). The three graphical hosts achieve identical structural fidelity; the terminal host exhibits a modality bottleneck.}
 \label{tab:host_parity}
-\begin{tabular}{lcci}
+\begin{tabular}{lccc}
 \toprule
-\textbf{Host Platform} & \textbf{Render Parity (RP)} & \textbf{Accessibility Parity (AP)} & \textbf{Portability Status} \\
+\textbf{Host Platform} & \textbf{RP} & \textbf{AP} & \textbf{Portability Status} \\
 \midrule
-Web (HTML/DOM)       & 1.000 & 1.000 & Perfect Parity \\
-SwiftUI (iOS)        & 1.000 & 1.000 & Perfect Parity \\
-Compose (Android)    & 1.000 & 1.000 & Perfect Parity \\
-TUI (Terminal/Textual)& 0.700 & 0.360 & Modality Bottleneck ($\Delta = 0.300$) \\
+Web (HTML/DOM)         & 1.000 & 0.931 & Near-Perfect Parity \\
+SwiftUI (iOS)          & 1.000 & 0.931 & Near-Perfect Parity \\
+Compose (Android)      & 1.000 & 0.931 & Near-Perfect Parity \\
+TUI (Terminal/Textual) & 0.658 & 0.344 & Modality Bottleneck ($\Delta_{\mathrm{RP}} = 0.342$) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:host_parity} highlights that when a specification is successfully rendered, Web, SwiftUI, and Compose achieve identical structural widget trees ($\mathrm{RP}=1.000$). The text-based terminal (TUI) exhibits an intrinsic parity gap ($\mathrm{RP}=0.700$), directly reflecting the modal limitations of text-only layouts when representing rich visual widgets.
+Table~\ref{tab:host_parity} reports the central structural finding: when a specification is successfully rendered, Web, SwiftUI, and Compose produce identical widget trees ($\mathrm{RP}=1.000$) with an accessibility-name coverage rate of $\mathrm{AP}=0.931$ (7\% of focusable elements lack accessible names, a cosmetic rather than functional gap). The terminal host suffers a $\mathrm{RP}=0.658$ ceiling because images, banners, and multi-column layouts cannot be faithfully expressed in text mode --- a genuine modality limitation rather than a renderer defect, as $\mathrm{AP}=0.344$ confirms that the majority of interactive elements also lose their accessible names in the lowering. This three-way parity among graphical hosts, combined with the quantified TUI ceiling, is the most reproducible finding in this study and holds regardless of condition or model.
 
 \subsection{Ablations}
 We structure three ablations: (i) testing the effect of the repair budget (on vs.\ off); (ii) comparing critic modalities (screenshot vs.\ AST vs.\ runtime-interaction) to isolate failure classes visible only to an actively operating critic; and (iii) deploying a small on-device-class model exclusively in condition B to test whether a constrained schema enables smaller models to remain competitive.
@@ -273,7 +273,7 @@ accessibility structure and agent operability can support. Host coverage is
 four hosts, and the terminal host in particular predictably strains constructs primarily designed for pointer input. We recognize these inherent modality mismatches limit the benchmark's ceiling, and acknowledge that certain visual interactions simply do not translate cleanly to text-based terminals.
 
 \section{Conclusion}
-Portability of agent-generated user interfaces is not merely a design opinion; it is a measurable property that must be explicitly evaluated. Our findings demonstrate that current cross-host portability remains surprisingly poor under unconstrained generation, with significant usability degradation across platforms. Crucially, the choice of output representation---specifically the use of host-independent schemas---improves portability substantially more than upgrading the underlying generation model. Standardizing structured, declarative outputs is therefore a requisite step toward genuinely host-independent generative UI.
+Portability of agent-generated user interfaces is not merely a design opinion; it is a measurable property that must be explicitly evaluated. Our findings establish three results. First, structural parity is achievable: the three graphical hosts produce identical widget trees ($\mathrm{RP}=1.000$) whenever generation succeeds, confirming that the renderer, not the host, is the solved component of the pipeline. Second, accessibility parity lags behind structural parity ($\mathrm{AP}=0.931$), and text-mode hosts impose a hard modality ceiling ($\mathrm{RP}=0.658$). Third, current generation reliability is the binding constraint: both conditions achieve only $\approx$33\% renderability, and the task-completion difference between conditions (3.3\% vs.\ 0.0\%) does not yet reach significance ($p=0.24$). Schema guidance does measurably help the smallest model tier (2.7$\times$ renderability lift), suggesting it is most valuable precisely where model capacity is most constrained. Scaling the evaluation to more tasks, models, and runs is necessary before drawing causal claims about schema superiority for task completion. We release the full suite, harness, and all 125 run logs to support that effort.
 
 \section*{Reproducibility}
 Suite, harness, renderers, all run logs, and the analysis that produced every
