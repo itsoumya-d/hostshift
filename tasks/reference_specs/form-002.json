@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "An expense entry for",
+  "entry": "main",
+  "state": {
+    "new_expenses_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "new_expenses_category": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "expenses": {
+      "fields": {
+        "amount": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "amount": 40,
+          "category": "Meals"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_expenses_amount",
+          "label": "expenses amount",
+          "bind": "new_expenses_amount"
+        },
+        {
+          "kind": "field",
+          "id": "new_expenses_category",
+          "label": "expenses category",
+          "bind": "new_expenses_category"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "expenses",
+              "value": {
+                "amount": "$state.new_expenses_amount",
+                "category": "$state.new_expenses_category"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

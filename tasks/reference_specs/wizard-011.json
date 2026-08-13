@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "A wizard whose finis",
+  "entry": "main",
+  "state": {
+    "new_entries_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "entries": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Meera"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_entries_name",
+          "label": "entries name",
+          "bind": "new_entries_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "entries",
+              "value": {
+                "name": "$state.new_entries_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

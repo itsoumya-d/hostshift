@@ -1,0 +1,47 @@
+{
+  "version": "0.2",
+  "title": "An audio list where ",
+  "entry": "main",
+  "state": {
+    "nowPlaying": {
+      "type": "string",
+      "default": ""
+    },
+    "playingCount": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "nowPlaying",
+          "label": "Nowplaying",
+          "bind": "nowPlaying"
+        },
+        {
+          "kind": "field",
+          "id": "playingCount",
+          "label": "Playingcount",
+          "bind": "playingCount"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

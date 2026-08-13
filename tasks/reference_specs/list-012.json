@@ -1,0 +1,74 @@
+{
+  "version": "0.2",
+  "title": "A shopping list show",
+  "entry": "main",
+  "state": {
+    "itemCount": {
+      "type": "number",
+      "default": 0
+    },
+    "new_shopping_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "shopping": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Rice"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "itemCount",
+          "label": "Itemcount",
+          "bind": "itemCount"
+        },
+        {
+          "kind": "field",
+          "id": "new_shopping_name",
+          "label": "shopping name",
+          "bind": "new_shopping_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "shopping",
+              "value": {
+                "name": "$state.new_shopping_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

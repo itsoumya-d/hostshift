@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "An order form where ",
+  "entry": "main",
+  "state": {
+    "order": {
+      "type": "object",
+      "default": {
+        "quantity": 0,
+        "unitPrice": 0,
+        "total": 0
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "orderquantity",
+          "label": "Order.quantity",
+          "bind": "order.quantity"
+        },
+        {
+          "kind": "field",
+          "id": "orderunitPrice",
+          "label": "Order.unitprice",
+          "bind": "order.unitPrice"
+        },
+        {
+          "kind": "field",
+          "id": "ordertotal",
+          "label": "Order.total",
+          "bind": "order.total"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

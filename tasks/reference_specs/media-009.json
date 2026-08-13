@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A video list where e",
+  "entry": "main",
+  "state": {
+    "new_shares_item": {
+      "type": "string",
+      "default": ""
+    },
+    "new_shares_destination": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "shares": {
+      "fields": {
+        "item": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "item": "Launch clip",
+          "destination": "Email"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_shares_item",
+          "label": "shares item",
+          "bind": "new_shares_item"
+        },
+        {
+          "kind": "field",
+          "id": "new_shares_destination",
+          "label": "shares destination",
+          "bind": "new_shares_destination"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "shares",
+              "value": {
+                "item": "$state.new_shares_item",
+                "destination": "$state.new_shares_destination"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

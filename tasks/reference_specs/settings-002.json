@@ -1,0 +1,45 @@
+{
+  "version": "0.2",
+  "title": "A display settings s",
+  "entry": "main",
+  "state": {
+    "display": {
+      "type": "object",
+      "default": {
+        "darkMode": false
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "displaydarkMode",
+          "label": "Display.darkmode",
+          "bind": "display.darkMode"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "display.darkMode",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

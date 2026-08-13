@@ -1,0 +1,94 @@
+{
+  "version": "0.2",
+  "title": "A prioritised task l",
+  "entry": "main",
+  "state": {
+    "new_tasks_title": {
+      "type": "string",
+      "default": ""
+    },
+    "new_tasks_position": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "tasks": {
+      "fields": {
+        "title": {
+          "type": "string"
+        },
+        "position": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "title": "Write tests",
+          "position": 0
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_tasks_title",
+          "label": "tasks title",
+          "bind": "new_tasks_title"
+        },
+        {
+          "kind": "field",
+          "id": "new_tasks_position",
+          "label": "tasks position",
+          "bind": "new_tasks_position"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "tasks",
+              "value": {
+                "title": "$state.new_tasks_title",
+                "position": "$state.new_tasks_position"
+              }
+            },
+            {
+              "op": "update",
+              "target": "tasks",
+              "value": {
+                "where": {
+                  "title": "Write tests"
+                },
+                "set": {
+                  "position": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

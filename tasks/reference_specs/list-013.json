@@ -1,0 +1,67 @@
+{
+  "version": "0.2",
+  "title": "A templates list whe",
+  "entry": "main",
+  "state": {
+    "new_templates_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "templates": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Invoice copy"
+        },
+        {
+          "name": "Invoice"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_templates_name",
+          "label": "templates name",
+          "bind": "new_templates_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "templates",
+              "value": {
+                "name": "$state.new_templates_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

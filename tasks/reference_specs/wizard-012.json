@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A five-step wizard w",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "step": 0,
+        "furthestStep": 0
+      }
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "wizardstep",
+          "label": "Wizard.step",
+          "bind": "wizard.step"
+        },
+        {
+          "kind": "field",
+          "id": "wizardfurthestStep",
+          "label": "Wizard.furtheststep",
+          "bind": "wizard.furthestStep"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

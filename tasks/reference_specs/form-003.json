@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "A change-password fo",
+  "entry": "main",
+  "state": {
+    "password": {
+      "type": "string",
+      "default": ""
+    },
+    "saved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "password",
+          "label": "Password",
+          "bind": "password"
+        },
+        {
+          "kind": "toggle",
+          "id": "saved",
+          "label": "Saved",
+          "bind": "saved"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "saved",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

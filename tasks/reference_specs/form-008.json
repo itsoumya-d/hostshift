@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "An invite form that ",
+  "entry": "main",
+  "state": {
+    "new_invites_email": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "invites": {
+      "fields": {
+        "email": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "email": "new@corp.com"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_invites_email",
+          "label": "invites email",
+          "bind": "new_invites_email"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "invites",
+              "value": {
+                "email": "$state.new_invites_email"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "title": "A form where ticking",
+  "entry": "main",
+  "state": {
+    "billingDiffers": {
+      "type": "boolean",
+      "default": false
+    },
+    "billing": {
+      "type": "object",
+      "default": {
+        "city": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "billingDiffers",
+          "label": "Billingdiffers",
+          "bind": "billingDiffers"
+        },
+        {
+          "kind": "field",
+          "id": "billingcity",
+          "label": "Billing.city",
+          "bind": "billing.city"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "billingDiffers",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

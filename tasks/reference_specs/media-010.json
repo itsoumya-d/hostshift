@@ -1,0 +1,47 @@
+{
+  "version": "0.2",
+  "title": "A photo viewer suppo",
+  "entry": "main",
+  "state": {
+    "viewerIndex": {
+      "type": "number",
+      "default": 0
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "viewerIndex",
+          "label": "Viewerindex",
+          "bind": "viewerIndex"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

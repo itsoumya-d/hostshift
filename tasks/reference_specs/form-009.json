@@ -1,0 +1,88 @@
+{
+  "version": "0.2",
+  "title": "A shipping form with",
+  "entry": "main",
+  "state": {
+    "new_shipments_city": {
+      "type": "string",
+      "default": ""
+    },
+    "new_shipments_postcode": {
+      "type": "string",
+      "default": ""
+    },
+    "new_shipments_country": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "shipments": {
+      "fields": {
+        "city": {
+          "type": "string"
+        },
+        "postcode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "city": "Pune",
+          "postcode": "411001",
+          "country": "India"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_shipments_city",
+          "label": "shipments city",
+          "bind": "new_shipments_city"
+        },
+        {
+          "kind": "field",
+          "id": "new_shipments_postcode",
+          "label": "shipments postcode",
+          "bind": "new_shipments_postcode"
+        },
+        {
+          "kind": "field",
+          "id": "new_shipments_country",
+          "label": "shipments country",
+          "bind": "new_shipments_country"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "shipments",
+              "value": {
+                "city": "$state.new_shipments_city",
+                "postcode": "$state.new_shipments_postcode",
+                "country": "$state.new_shipments_country"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

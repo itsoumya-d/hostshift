@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A media grid with an",
+  "entry": "main",
+  "state": {
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "canyon"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        },
+        {
+          "id": "item4"
+        },
+        {
+          "id": "item5"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

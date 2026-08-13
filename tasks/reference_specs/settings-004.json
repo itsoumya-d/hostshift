@@ -1,0 +1,67 @@
+{
+  "version": "0.2",
+  "title": "A settings screen wh",
+  "entry": "main",
+  "state": {
+    "settings": {
+      "type": "object",
+      "default": {
+        "dirty": false,
+        "autoSync": false
+      }
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "settingsdirty",
+          "label": "Settings.dirty",
+          "bind": "settings.dirty"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "toggle",
+          "id": "settingsautoSync",
+          "label": "Settings.autosync",
+          "bind": "settings.autoSync"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "settings.dirty",
+              "value": true
+            },
+            {
+              "op": "set",
+              "target": "settings.autoSync",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

@@ -1,0 +1,102 @@
+{
+  "version": "0.2",
+  "title": "A gallery with a fav",
+  "entry": "main",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "favouritesOnly": false
+      }
+    },
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_photos_favourite": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "favourite": {
+          "type": "boolean"
+        }
+      },
+      "seed": [
+        {
+          "name": "dunes",
+          "favourite": 0
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "filterfavouritesOnly",
+          "label": "Filter.favouritesonly",
+          "bind": "filter.favouritesOnly"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_favourite",
+          "label": "photos favourite",
+          "bind": "new_photos_favourite"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "filter.favouritesOnly",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name",
+                "favourite": "$state.new_photos_favourite"
+              }
+            },
+            {
+              "op": "update",
+              "target": "photos",
+              "value": {
+                "where": {
+                  "name": "dunes"
+                },
+                "set": {
+                  "favourite": false
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

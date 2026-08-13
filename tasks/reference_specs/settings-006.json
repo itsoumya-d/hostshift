@@ -1,0 +1,59 @@
+{
+  "version": "0.2",
+  "title": "A settings screen wi",
+  "entry": "main",
+  "state": {
+    "settings": {
+      "type": "object",
+      "default": {
+        "theme": "",
+        "fontScale": 0,
+        "autoSync": false
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "settingstheme",
+          "label": "Settings.theme",
+          "bind": "settings.theme"
+        },
+        {
+          "kind": "field",
+          "id": "settingsfontScale",
+          "label": "Settings.fontscale",
+          "bind": "settings.fontScale"
+        },
+        {
+          "kind": "toggle",
+          "id": "settingsautoSync",
+          "label": "Settings.autosync",
+          "bind": "settings.autoSync"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "settings.autoSync",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

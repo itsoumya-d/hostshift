@@ -1,0 +1,97 @@
+{
+  "version": "0.2",
+  "title": "An inventory list wh",
+  "entry": "main",
+  "state": {
+    "new_inventory_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_inventory_qty": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "inventory": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "qty": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "name": "Blue widget",
+          "qty": 0
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        },
+        {
+          "id": "item4"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_inventory_name",
+          "label": "inventory name",
+          "bind": "new_inventory_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_inventory_qty",
+          "label": "inventory qty",
+          "bind": "new_inventory_qty"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "inventory",
+              "value": {
+                "name": "$state.new_inventory_name",
+                "qty": "$state.new_inventory_qty"
+              }
+            },
+            {
+              "op": "update",
+              "target": "inventory",
+              "value": {
+                "where": {
+                  "name": "Blue widget"
+                },
+                "set": {
+                  "qty": 8
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

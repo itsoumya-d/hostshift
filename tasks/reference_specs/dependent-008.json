@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A form where a numer",
+  "entry": "main",
+  "state": {
+    "event": {
+      "type": "object",
+      "default": {
+        "seatLimit": 0,
+        "invited": 0
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "eventseatLimit",
+          "label": "Event.seatlimit",
+          "bind": "event.seatLimit"
+        },
+        {
+          "kind": "field",
+          "id": "eventinvited",
+          "label": "Event.invited",
+          "bind": "event.invited"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

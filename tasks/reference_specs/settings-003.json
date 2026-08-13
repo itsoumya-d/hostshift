@@ -1,0 +1,84 @@
+{
+  "version": "0.2",
+  "title": "A privacy screen wit",
+  "entry": "main",
+  "state": {
+    "privacy": {
+      "type": "object",
+      "default": {
+        "analytics": false,
+        "crashReports": false,
+        "location": false
+      }
+    },
+    "saved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "privacyanalytics",
+          "label": "Privacy.analytics",
+          "bind": "privacy.analytics"
+        },
+        {
+          "kind": "toggle",
+          "id": "privacycrashReports",
+          "label": "Privacy.crashreports",
+          "bind": "privacy.crashReports"
+        },
+        {
+          "kind": "toggle",
+          "id": "privacylocation",
+          "label": "Privacy.location",
+          "bind": "privacy.location"
+        },
+        {
+          "kind": "toggle",
+          "id": "saved",
+          "label": "Saved",
+          "bind": "saved"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "privacy.analytics",
+              "value": true
+            },
+            {
+              "op": "set",
+              "target": "privacy.crashReports",
+              "value": true
+            },
+            {
+              "op": "set",
+              "target": "privacy.location",
+              "value": true
+            },
+            {
+              "op": "set",
+              "target": "saved",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

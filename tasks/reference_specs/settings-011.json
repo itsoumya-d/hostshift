@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "title": "A settings screen wi",
+  "entry": "main",
+  "state": {
+    "account": {
+      "type": "object",
+      "default": {
+        "deleted": false
+      }
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "accountdeleted",
+          "label": "Account.deleted",
+          "bind": "account.deleted"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "account.deleted",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

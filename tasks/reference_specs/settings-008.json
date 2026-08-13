@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A settings screen wi",
+  "entry": "main",
+  "state": {
+    "sync": {
+      "type": "object",
+      "default": {
+        "frequency": "",
+        "selectedCount": 0
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "syncfrequency",
+          "label": "Sync.frequency",
+          "bind": "sync.frequency"
+        },
+        {
+          "kind": "field",
+          "id": "syncselectedCount",
+          "label": "Sync.selectedcount",
+          "bind": "sync.selectedCount"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

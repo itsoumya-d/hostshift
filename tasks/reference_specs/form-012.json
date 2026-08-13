@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "title": "A booking enquiry fo",
+  "entry": "main",
+  "state": {
+    "form": {
+      "type": "object",
+      "default": {
+        "name": "",
+        "email": ""
+      }
+    }
+  },
+  "collections": {
+    "enquiries": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": []
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "formname",
+          "label": "Form.name",
+          "bind": "form.name"
+        },
+        {
+          "kind": "field",
+          "id": "formemail",
+          "label": "Form.email",
+          "bind": "form.email"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

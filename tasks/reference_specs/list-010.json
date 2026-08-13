@@ -1,0 +1,95 @@
+{
+  "version": "0.2",
+  "title": "A courses list where",
+  "entry": "main",
+  "state": {
+    "route": {
+      "type": "string",
+      "default": ""
+    },
+    "new_lessons_title": {
+      "type": "string",
+      "default": ""
+    },
+    "new_lessons_complete": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "lessons": {
+      "fields": {
+        "title": {
+          "type": "string"
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      },
+      "seed": [
+        {
+          "title": "Paging",
+          "complete": 0
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "field",
+          "id": "new_lessons_title",
+          "label": "lessons title",
+          "bind": "new_lessons_title"
+        },
+        {
+          "kind": "field",
+          "id": "new_lessons_complete",
+          "label": "lessons complete",
+          "bind": "new_lessons_complete"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "lessons",
+              "value": {
+                "title": "$state.new_lessons_title",
+                "complete": "$state.new_lessons_complete"
+              }
+            },
+            {
+              "op": "update",
+              "target": "lessons",
+              "value": {
+                "where": {
+                  "title": "Paging"
+                },
+                "set": {
+                  "complete": true
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

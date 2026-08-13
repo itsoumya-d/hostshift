@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A product form where",
+  "entry": "main",
+  "state": {
+    "product": {
+      "type": "object",
+      "default": {
+        "category": "",
+        "subcategory": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "productcategory",
+          "label": "Product.category",
+          "bind": "product.category"
+        },
+        {
+          "kind": "field",
+          "id": "productsubcategory",
+          "label": "Product.subcategory",
+          "bind": "product.subcategory"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

@@ -1,0 +1,67 @@
+{
+  "version": "0.2",
+  "title": "A reading list with ",
+  "entry": "main",
+  "state": {
+    "new_reading_title": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "reading": {
+      "fields": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "title": "Zhang and Shasha 1989"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_reading_title",
+          "label": "reading title",
+          "bind": "new_reading_title"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "reading",
+              "value": {
+                "title": "$state.new_reading_title"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

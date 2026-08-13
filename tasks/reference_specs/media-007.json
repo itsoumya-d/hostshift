@@ -1,0 +1,85 @@
+{
+  "version": "0.2",
+  "title": "A photo detail scree",
+  "entry": "main",
+  "state": {
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_photos_caption": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "meadow",
+          "caption": "pending"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_caption",
+          "label": "photos caption",
+          "bind": "new_photos_caption"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name",
+                "caption": "$state.new_photos_caption"
+              }
+            },
+            {
+              "op": "update",
+              "target": "photos",
+              "value": {
+                "where": {
+                  "name": "meadow"
+                },
+                "set": {
+                  "caption": "Spring morning"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

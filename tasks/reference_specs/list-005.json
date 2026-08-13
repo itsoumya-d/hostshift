@@ -1,0 +1,35 @@
+{
+  "version": "0.2",
+  "title": "An archive list that",
+  "entry": "main",
+  "state": {},
+  "collections": {
+    "archive": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": []
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

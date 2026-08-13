@@ -1,0 +1,56 @@
+{
+  "version": "0.2",
+  "title": "A notes list of four",
+  "entry": "main",
+  "state": {
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "notes": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "item0"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

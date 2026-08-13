@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A recurring reminder",
+  "entry": "main",
+  "state": {
+    "reminder": {
+      "type": "object",
+      "default": {
+        "frequency": "",
+        "dayOfWeek": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "reminderfrequency",
+          "label": "Reminder.frequency",
+          "bind": "reminder.frequency"
+        },
+        {
+          "kind": "field",
+          "id": "reminderdayOfWeek",
+          "label": "Reminder.dayofweek",
+          "bind": "reminder.dayOfWeek"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

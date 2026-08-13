@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "A tag creation form ",
+  "entry": "main",
+  "state": {
+    "new_tags_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "tags": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "urgent"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_tags_name",
+          "label": "tags name",
+          "bind": "new_tags_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "tags",
+              "value": {
+                "name": "$state.new_tags_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

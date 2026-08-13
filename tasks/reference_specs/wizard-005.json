@@ -1,0 +1,61 @@
+{
+  "version": "0.2",
+  "title": "A four-step onboardi",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "step": 0,
+        "completed": false
+      }
+    }
+  },
+  "collections": {
+    "profiles": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": []
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "wizardstep",
+          "label": "Wizard.step",
+          "bind": "wizard.step"
+        },
+        {
+          "kind": "toggle",
+          "id": "wizardcompleted",
+          "label": "Wizard.completed",
+          "bind": "wizard.completed"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "wizard.completed",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

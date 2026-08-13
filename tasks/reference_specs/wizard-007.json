@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "A checkout wizard wh",
+  "entry": "main",
+  "state": {
+    "new_orders_city": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "orders": {
+      "fields": {
+        "city": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "city": "Kochi"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_orders_city",
+          "label": "orders city",
+          "bind": "new_orders_city"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "orders",
+              "value": {
+                "city": "$state.new_orders_city"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A form with an 'othe",
+  "entry": "main",
+  "state": {
+    "referral": {
+      "type": "object",
+      "default": {
+        "source": "",
+        "detail": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "referralsource",
+          "label": "Referral.source",
+          "bind": "referral.source"
+        },
+        {
+          "kind": "field",
+          "id": "referraldetail",
+          "label": "Referral.detail",
+          "bind": "referral.detail"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

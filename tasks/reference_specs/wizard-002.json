@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A two-step booking f",
+  "entry": "main",
+  "state": {
+    "new_bookings_date": {
+      "type": "string",
+      "default": ""
+    },
+    "new_bookings_slot": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "bookings": {
+      "fields": {
+        "date": {
+          "type": "string"
+        },
+        "slot": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "date": "2026-09-15",
+          "slot": "14:00"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_bookings_date",
+          "label": "bookings date",
+          "bind": "new_bookings_date"
+        },
+        {
+          "kind": "field",
+          "id": "new_bookings_slot",
+          "label": "bookings slot",
+          "bind": "new_bookings_slot"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "bookings",
+              "value": {
+                "date": "$state.new_bookings_date",
+                "slot": "$state.new_bookings_slot"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

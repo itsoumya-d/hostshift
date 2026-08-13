@@ -1,0 +1,68 @@
+{
+  "version": "0.2",
+  "title": "A search screen show",
+  "entry": "main",
+  "state": {
+    "query": {
+      "type": "string",
+      "default": ""
+    },
+    "new_recentSearches_term": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "recentSearches": {
+      "fields": {
+        "term": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "term": "atlas"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "query",
+          "label": "Query",
+          "bind": "query"
+        },
+        {
+          "kind": "field",
+          "id": "new_recentSearches_term",
+          "label": "recentSearches term",
+          "bind": "new_recentSearches_term"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "recentSearches",
+              "value": {
+                "term": "$state.new_recentSearches_term"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

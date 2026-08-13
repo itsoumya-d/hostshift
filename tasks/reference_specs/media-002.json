@@ -1,0 +1,47 @@
+{
+  "version": "0.2",
+  "title": "A photo grid of six ",
+  "entry": "main",
+  "state": {
+    "route": {
+      "type": "string",
+      "default": ""
+    },
+    "lastViewed": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "field",
+          "id": "lastViewed",
+          "label": "Lastviewed",
+          "bind": "lastViewed"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "version": "0.2",
+  "title": "A contacts list whos",
+  "entry": "main",
+  "state": {
+    "route": {
+      "type": "string",
+      "default": ""
+    },
+    "new_contacts_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_contacts_phone": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "contacts": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Ravi Menon",
+          "phone": "pending"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "field",
+          "id": "new_contacts_name",
+          "label": "contacts name",
+          "bind": "new_contacts_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_contacts_phone",
+          "label": "contacts phone",
+          "bind": "new_contacts_phone"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "contacts",
+              "value": {
+                "name": "$state.new_contacts_name",
+                "phone": "$state.new_contacts_phone"
+              }
+            },
+            {
+              "op": "update",
+              "target": "contacts",
+              "value": {
+                "where": {
+                  "name": "Ravi Menon"
+                },
+                "set": {
+                  "phone": "5550100"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

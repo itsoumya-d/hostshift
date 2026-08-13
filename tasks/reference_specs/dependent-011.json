@@ -1,0 +1,59 @@
+{
+  "version": "0.2",
+  "title": "A form where two fie",
+  "entry": "main",
+  "state": {
+    "range": {
+      "type": "object",
+      "default": {
+        "min": 0,
+        "max": 0,
+        "valid": false
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "rangemin",
+          "label": "Range.min",
+          "bind": "range.min"
+        },
+        {
+          "kind": "field",
+          "id": "rangemax",
+          "label": "Range.max",
+          "bind": "range.max"
+        },
+        {
+          "kind": "toggle",
+          "id": "rangevalid",
+          "label": "Range.valid",
+          "bind": "range.valid"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "range.valid",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

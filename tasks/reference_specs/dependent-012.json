@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "A discount form wher",
+  "entry": "main",
+  "state": {
+    "cart": {
+      "type": "object",
+      "default": {
+        "promo": "",
+        "discount": 0,
+        "total": 0
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "cartpromo",
+          "label": "Cart.promo",
+          "bind": "cart.promo"
+        },
+        {
+          "kind": "field",
+          "id": "cartdiscount",
+          "label": "Cart.discount",
+          "bind": "cart.discount"
+        },
+        {
+          "kind": "field",
+          "id": "carttotal",
+          "label": "Cart.total",
+          "bind": "cart.total"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

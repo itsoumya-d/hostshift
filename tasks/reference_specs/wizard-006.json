@@ -1,0 +1,85 @@
+{
+  "version": "0.2",
+  "title": "A conditional wizard",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "totalSteps": 0
+      }
+    },
+    "new_accounts_type": {
+      "type": "string",
+      "default": ""
+    },
+    "new_accounts_taxId": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "accounts": {
+      "fields": {
+        "type": {
+          "type": "string"
+        },
+        "taxId": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "type": "Business",
+          "taxId": "GST-4491"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "wizardtotalSteps",
+          "label": "Wizard.totalsteps",
+          "bind": "wizard.totalSteps"
+        },
+        {
+          "kind": "field",
+          "id": "new_accounts_type",
+          "label": "accounts type",
+          "bind": "new_accounts_type"
+        },
+        {
+          "kind": "field",
+          "id": "new_accounts_taxId",
+          "label": "accounts taxId",
+          "bind": "new_accounts_taxId"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "accounts",
+              "value": {
+                "type": "$state.new_accounts_type",
+                "taxId": "$state.new_accounts_taxId"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A registration form ",
+  "entry": "main",
+  "state": {
+    "new_registrations_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_registrations_age": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "registrations": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "name": "Priya",
+          "age": 34
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_registrations_name",
+          "label": "registrations name",
+          "bind": "new_registrations_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_registrations_age",
+          "label": "registrations age",
+          "bind": "new_registrations_age"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "registrations",
+              "value": {
+                "name": "$state.new_registrations_name",
+                "age": "$state.new_registrations_age"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

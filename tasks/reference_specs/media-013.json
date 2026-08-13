@@ -1,0 +1,85 @@
+{
+  "version": "0.2",
+  "title": "A gallery where a de",
+  "entry": "main",
+  "state": {
+    "dialogOpen": {
+      "type": "boolean",
+      "default": false
+    },
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "orchard"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        },
+        {
+          "id": "item4"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "dialogOpen",
+          "label": "Dialogopen",
+          "bind": "dialogOpen"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "dialogOpen",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

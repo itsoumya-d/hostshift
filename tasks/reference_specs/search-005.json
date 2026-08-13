@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "title": "A search with a clea",
+  "entry": "main",
+  "state": {
+    "query": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "results": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": []
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "query",
+          "label": "Query",
+          "bind": "query"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

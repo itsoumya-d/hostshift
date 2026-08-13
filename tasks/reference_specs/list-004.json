@@ -1,0 +1,67 @@
+{
+  "version": "0.2",
+  "title": "A projects list wher",
+  "entry": "main",
+  "state": {
+    "new_projects_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "projects": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Q4 migration"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_projects_name",
+          "label": "projects name",
+          "bind": "new_projects_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "projects",
+              "value": {
+                "name": "$state.new_projects_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

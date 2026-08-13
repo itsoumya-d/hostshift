@@ -1,0 +1,95 @@
+{
+  "version": "0.2",
+  "title": "A gallery where a ro",
+  "entry": "main",
+  "state": {
+    "route": {
+      "type": "string",
+      "default": ""
+    },
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_photos_rotation": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "rotation": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "name": "tower",
+          "rotation": 0
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_rotation",
+          "label": "photos rotation",
+          "bind": "new_photos_rotation"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name",
+                "rotation": "$state.new_photos_rotation"
+              }
+            },
+            {
+              "op": "update",
+              "target": "photos",
+              "value": {
+                "where": {
+                  "name": "tower"
+                },
+                "set": {
+                  "rotation": 90
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

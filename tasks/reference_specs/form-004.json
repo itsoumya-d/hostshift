@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "A feedback form with",
+  "entry": "main",
+  "state": {
+    "new_feedback_subject": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "feedback": {
+      "fields": {
+        "subject": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "subject": "Slow export"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_feedback_subject",
+          "label": "feedback subject",
+          "bind": "new_feedback_subject"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "feedback",
+              "value": {
+                "subject": "$state.new_feedback_subject"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

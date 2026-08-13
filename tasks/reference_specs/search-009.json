@@ -1,0 +1,37 @@
+{
+  "version": "0.2",
+  "title": "A search over a list",
+  "entry": "main",
+  "state": {
+    "selectedId": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "selectedId",
+          "label": "Selectedid",
+          "bind": "selectedId"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

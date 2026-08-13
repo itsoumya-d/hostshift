@@ -1,0 +1,45 @@
+{
+  "version": "0.2",
+  "title": "A sound settings scr",
+  "entry": "main",
+  "state": {
+    "sound": {
+      "type": "object",
+      "default": {
+        "muted": false
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "soundmuted",
+          "label": "Sound.muted",
+          "bind": "sound.muted"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "sound.muted",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

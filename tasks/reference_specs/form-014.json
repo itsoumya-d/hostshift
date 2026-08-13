@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A leave request form",
+  "entry": "main",
+  "state": {
+    "new_leave_start": {
+      "type": "string",
+      "default": ""
+    },
+    "new_leave_end": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "leave": {
+      "fields": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "start": "2026-09-10",
+          "end": "2026-09-14"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_leave_start",
+          "label": "leave start",
+          "bind": "new_leave_start"
+        },
+        {
+          "kind": "field",
+          "id": "new_leave_end",
+          "label": "leave end",
+          "bind": "new_leave_end"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "leave",
+              "value": {
+                "start": "$state.new_leave_start",
+                "end": "$state.new_leave_end"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

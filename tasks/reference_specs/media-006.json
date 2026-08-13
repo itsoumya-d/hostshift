@@ -1,0 +1,97 @@
+{
+  "version": "0.2",
+  "title": "A gallery where each",
+  "entry": "main",
+  "state": {
+    "albumCounts": {
+      "type": "object",
+      "default": {
+        "Unsorted": 0
+      }
+    },
+    "new_photos_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_photos_album": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "album": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "reef",
+          "album": "pending"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "albumCountsUnsorted",
+          "label": "Albumcounts.unsorted",
+          "bind": "albumCounts.Unsorted"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_name",
+          "label": "photos name",
+          "bind": "new_photos_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_photos_album",
+          "label": "photos album",
+          "bind": "new_photos_album"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "photos",
+              "value": {
+                "name": "$state.new_photos_name",
+                "album": "$state.new_photos_album"
+              }
+            },
+            {
+              "op": "update",
+              "target": "photos",
+              "value": {
+                "where": {
+                  "name": "reef"
+                },
+                "set": {
+                  "album": "Travel"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

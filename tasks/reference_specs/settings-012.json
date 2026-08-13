@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "title": "A settings screen wh",
+  "entry": "main",
+  "state": {
+    "settings": {
+      "type": "object",
+      "default": {
+        "offlineMode": false
+      }
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "settingsofflineMode",
+          "label": "Settings.offlinemode",
+          "bind": "settings.offlineMode"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "settings.offlineMode",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

@@ -1,0 +1,49 @@
+{
+  "version": "0.2",
+  "title": "A two-level settings",
+  "entry": "main",
+  "state": {
+    "notifications": {
+      "type": "object",
+      "default": {
+        "enabledCount": 0
+      }
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "notificationsenabledCount",
+          "label": "Notifications.enabledcount",
+          "bind": "notifications.enabledCount"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

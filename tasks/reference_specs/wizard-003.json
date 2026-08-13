@@ -1,0 +1,75 @@
+{
+  "version": "0.2",
+  "title": "A two-step survey wi",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "completed": false
+      }
+    },
+    "new_responses_rating": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "responses": {
+      "fields": {
+        "rating": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "rating": 4
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "wizardcompleted",
+          "label": "Wizard.completed",
+          "bind": "wizard.completed"
+        },
+        {
+          "kind": "field",
+          "id": "new_responses_rating",
+          "label": "responses rating",
+          "bind": "new_responses_rating"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "wizard.completed",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "responses",
+              "value": {
+                "rating": "$state.new_responses_rating"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

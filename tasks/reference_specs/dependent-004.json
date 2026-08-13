@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "A three-level depend",
+  "entry": "main",
+  "state": {
+    "location": {
+      "type": "object",
+      "default": {
+        "country": "",
+        "state": "",
+        "city": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "locationcountry",
+          "label": "Location.country",
+          "bind": "location.country"
+        },
+        {
+          "kind": "field",
+          "id": "locationstate",
+          "label": "Location.state",
+          "bind": "location.state"
+        },
+        {
+          "kind": "field",
+          "id": "locationcity",
+          "label": "Location.city",
+          "bind": "location.city"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

@@ -1,0 +1,80 @@
+{
+  "version": "0.2",
+  "title": "A notifications list",
+  "entry": "main",
+  "state": {
+    "unreadCount": {
+      "type": "number",
+      "default": 0
+    },
+    "new_notifications_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "notifications": {
+      "fields": {
+        "read": {
+          "type": "boolean"
+        }
+      },
+      "seed": [
+        {
+          "read": 0
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "unreadCount",
+          "label": "Unreadcount",
+          "bind": "unreadCount"
+        },
+        {
+          "kind": "field",
+          "id": "new_notifications_read",
+          "label": "notifications read",
+          "bind": "new_notifications_read"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "notifications",
+              "value": {
+                "read": "$state.new_notifications_read"
+              }
+            },
+            {
+              "op": "update",
+              "target": "notifications",
+              "value": {
+                "where": {
+                  "name": "Ravi Menon"
+                },
+                "set": {
+                  "read": true
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

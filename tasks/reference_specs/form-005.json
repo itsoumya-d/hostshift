@@ -1,0 +1,58 @@
+{
+  "version": "0.2",
+  "title": "A phone number entry",
+  "entry": "main",
+  "state": {
+    "new_numbers_digits": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "numbers": {
+      "fields": {
+        "digits": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "digits": "4155550142"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "new_numbers_digits",
+          "label": "numbers digits",
+          "bind": "new_numbers_digits"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "append",
+              "target": "numbers",
+              "value": {
+                "digits": "$state.new_numbers_digits"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

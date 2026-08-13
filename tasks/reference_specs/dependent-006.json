@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "A payment form where",
+  "entry": "main",
+  "state": {
+    "payment": {
+      "type": "object",
+      "default": {
+        "method": "",
+        "account": "",
+        "cardNumber": ""
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "paymentmethod",
+          "label": "Payment.method",
+          "bind": "payment.method"
+        },
+        {
+          "kind": "field",
+          "id": "paymentaccount",
+          "label": "Payment.account",
+          "bind": "payment.account"
+        },
+        {
+          "kind": "field",
+          "id": "paymentcardNumber",
+          "label": "Payment.cardnumber",
+          "bind": "payment.cardNumber"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

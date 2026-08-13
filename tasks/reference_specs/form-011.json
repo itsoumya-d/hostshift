@@ -1,0 +1,55 @@
+{
+  "version": "0.2",
+  "title": "A profile form with ",
+  "entry": "main",
+  "state": {
+    "profile": {
+      "type": "object",
+      "default": {
+        "displayName": ""
+      }
+    },
+    "saved": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "profiledisplayName",
+          "label": "Profile.displayname",
+          "bind": "profile.displayName"
+        },
+        {
+          "kind": "toggle",
+          "id": "saved",
+          "label": "Saved",
+          "bind": "saved"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "saved",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

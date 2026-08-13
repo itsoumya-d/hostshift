@@ -1,0 +1,59 @@
+{
+  "version": "0.2",
+  "title": "A mail list of five ",
+  "entry": "main",
+  "state": {
+    "archivedCount": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "inbox": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "item0"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "archivedCount",
+          "label": "Archivedcount",
+          "bind": "archivedCount"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

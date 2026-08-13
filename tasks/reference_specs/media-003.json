@@ -1,0 +1,68 @@
+{
+  "version": "0.2",
+  "title": "A gallery supporting",
+  "entry": "main",
+  "state": {
+    "selectionMode": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "photos": {
+      "fields": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "item0"
+        },
+        {
+          "id": "item1"
+        },
+        {
+          "id": "item2"
+        },
+        {
+          "id": "item3"
+        },
+        {
+          "id": "item4"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "selectionMode",
+          "label": "Selectionmode",
+          "bind": "selectionMode"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "selectionMode",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "version": "0.2",
+  "title": "A two-step import fl",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "completed": false
+      }
+    },
+    "new_imports_format": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "imports": {
+      "fields": {
+        "format": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "format": "CSV"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "wizardcompleted",
+          "label": "Wizard.completed",
+          "bind": "wizard.completed"
+        },
+        {
+          "kind": "field",
+          "id": "new_imports_format",
+          "label": "imports format",
+          "bind": "new_imports_format"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "wizard.completed",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "imports",
+              "value": {
+                "format": "$state.new_imports_format"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

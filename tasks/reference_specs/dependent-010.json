@@ -1,0 +1,73 @@
+{
+  "version": "0.2",
+  "title": "A form where togglin",
+  "entry": "main",
+  "state": {
+    "emergencyEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "new_records_name": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "emergencyEnabled",
+          "label": "Emergencyenabled",
+          "bind": "emergencyEnabled"
+        },
+        {
+          "kind": "field",
+          "id": "new_records_name",
+          "label": "records name",
+          "bind": "new_records_name"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "emergencyEnabled",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "records",
+              "value": {
+                "name": "$state.new_records_name"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {
+    "records": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Arun"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "version": "0.2",
+  "title": "An accessibility set",
+  "entry": "main",
+  "state": {
+    "a11y": {
+      "type": "object",
+      "default": {
+        "fontScale": "",
+        "reduceMotion": false
+      }
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "a11yfontScale",
+          "label": "A11y.fontscale",
+          "bind": "a11y.fontScale"
+        },
+        {
+          "kind": "toggle",
+          "id": "a11yreduceMotion",
+          "label": "A11y.reducemotion",
+          "bind": "a11y.reduceMotion"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "a11y.reduceMotion",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "collections": {}
+}

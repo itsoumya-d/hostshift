@@ -1,0 +1,47 @@
+{
+  "version": "0.2",
+  "title": "A search that is cas",
+  "entry": "main",
+  "state": {
+    "selectedId": {
+      "type": "string",
+      "default": ""
+    },
+    "route": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "selectedId",
+          "label": "Selectedid",
+          "bind": "selectedId"
+        },
+        {
+          "kind": "field",
+          "id": "route",
+          "label": "Route",
+          "bind": "route"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": []
+        }
+      ]
+    }
+  ]
+}

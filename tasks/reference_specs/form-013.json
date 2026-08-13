@@ -1,0 +1,53 @@
+{
+  "version": "0.2",
+  "title": "A username picker th",
+  "entry": "main",
+  "state": {
+    "username": {
+      "type": "string",
+      "default": ""
+    },
+    "claimed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {},
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "field",
+          "id": "username",
+          "label": "Username",
+          "bind": "username"
+        },
+        {
+          "kind": "toggle",
+          "id": "claimed",
+          "label": "Claimed",
+          "bind": "claimed"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "claimed",
+              "value": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

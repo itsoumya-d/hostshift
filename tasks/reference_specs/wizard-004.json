@@ -1,0 +1,105 @@
+{
+  "version": "0.2",
+  "title": "A three-step wizard ",
+  "entry": "main",
+  "state": {
+    "wizard": {
+      "type": "object",
+      "default": {
+        "completed": false
+      }
+    },
+    "new_companies_name": {
+      "type": "string",
+      "default": ""
+    },
+    "new_companies_sector": {
+      "type": "string",
+      "default": ""
+    },
+    "new_companies_headcount": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "collections": {
+    "companies": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "sector": {
+          "type": "string"
+        },
+        "headcount": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "name": "Acme",
+          "sector": "Retail",
+          "headcount": 25
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "main",
+      "title": "Main Screen",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Main"
+        },
+        {
+          "kind": "toggle",
+          "id": "wizardcompleted",
+          "label": "Wizard.completed",
+          "bind": "wizard.completed"
+        },
+        {
+          "kind": "field",
+          "id": "new_companies_name",
+          "label": "companies name",
+          "bind": "new_companies_name"
+        },
+        {
+          "kind": "field",
+          "id": "new_companies_sector",
+          "label": "companies sector",
+          "bind": "new_companies_sector"
+        },
+        {
+          "kind": "field",
+          "id": "new_companies_headcount",
+          "label": "companies headcount",
+          "bind": "new_companies_headcount"
+        },
+        {
+          "kind": "button",
+          "id": "submitBtn",
+          "label": "Submit",
+          "action": [
+            {
+              "op": "set",
+              "target": "wizard.completed",
+              "value": true
+            },
+            {
+              "op": "append",
+              "target": "companies",
+              "value": {
+                "name": "$state.new_companies_name",
+                "sector": "$state.new_companies_sector",
+                "headcount": "$state.new_companies_headcount"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
