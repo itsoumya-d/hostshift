@@ -44,9 +44,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/soumyadebnath/hostshift"
-Repository = "https://github.com/soumyadebnath/hostshift"
-Issues = "https://github.com/soumyadebnath/hostshift/issues"
+Homepage = "https://github.com/itsoumya-d/hostshift"
+Repository = "https://github.com/itsoumya-d/hostshift"
+Issues = "https://github.com/itsoumya-d/hostshift/issues"
 
 [tool.setuptools.packages.find]
 include = ["hostshift*"]
