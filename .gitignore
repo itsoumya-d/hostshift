@@ -26,6 +26,16 @@ Thumbs.db
 # Experiment outputs (regenerated per run)
 runs/
 *.jsonl.bak
+.pytest_cache/
+
+# Sibling projects kept out of this repo's scope
+autopilot-fde/
+linkedin_ai_agent_posts/
+linkedin_frontier_ai_blueprints/
+linkedin_uiux_fde_series/
+
+# Agent tooling
+.opencode/
 
 # API keys (NEVER commit)
 .env

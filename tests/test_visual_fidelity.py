@@ -1,3 +1,8 @@
+import sys
+import pathlib
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+
 from hostshift.widgettree import Widget
 from hostshift.visual_fidelity import (
     layout_coherence_score,
@@ -104,21 +109,18 @@ def test_combined_imperfect():
     tree1 = Widget(kind="container", children=[Widget(kind="action", name="S"), Widget(kind="input", name="V")])
     assert combined_visual_fidelity_score(tree1) < 1.0, "test_combined_imperfect failed"
 
-if __name__ == '__main__':
-    test_lcs_no_duplicate_ids()
-    test_lcs_with_duplicate_ids()
-    test_lcs_reasonable_depth()
-    test_lcs_orphaned_heading()
-    test_lcs_button_after_input()
-    test_lcs_button_before_input()
-    test_ids_empty_tree()
-    test_ids_good_ratio()
-    test_ids_unlabelled_interactive()
-    test_ids_too_many_children()
-    test_chc_single_tree()
-    test_chc_identical_trees()
-    test_chc_different_trees()
-    test_combined_single()
-    test_combined_multiple()
-    test_combined_imperfect()
-    print("All tests passed!")
+if __name__ == "__main__":
+    import traceback
+
+    fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    failed = 0
+    for fn in fns:
+        try:
+            fn()
+            print(f"  PASS  {fn.__name__}")
+        except Exception:
+            failed += 1
+            print(f"  FAIL  {fn.__name__}")
+            traceback.print_exc()
+    print(f"\n{len(fns) - failed}/{len(fns)} passed")
+    sys.exit(1 if failed else 0)
