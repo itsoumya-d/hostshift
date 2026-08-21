@@ -6,8 +6,8 @@ depress it -- a criterion that passes when it should not is invisible in the
 results and fatal to the claim.
 """
 
-import sys
 import pathlib
+import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 

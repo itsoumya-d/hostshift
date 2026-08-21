@@ -353,7 +353,7 @@ enum Instrumentation {{
         let resp = (header.data(using: .utf8) ?? Data()) + body
         connection.send(content: resp, completion: .contentProcessed({{ _ in connection.cancel() }}))
     }}
-    
+
     static func project(_ state: SpecState) -> [String: Any] {{
         let screens = SPEC["screens"] as? [[String: Any]] ?? []
         let route = state.route.isEmpty ? (SPEC["entry"] as? String) : state.route

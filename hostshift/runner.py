@@ -9,7 +9,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import random
 import statistics
 import sys
@@ -18,11 +17,22 @@ from pathlib import Path
 from .calibration import CalibrationStore, corpus_provenance
 from .calibration import report as calibration_summary
 from .harness import (
-    CONDITION_A, CONDITION_B, CONDITION_B_NAIVE, CONDITIONS, HOSTS, RunRecord, Store,
+    CONDITION_A,
+    CONDITION_B,
+    CONDITION_B_NAIVE,
+    CONDITIONS,
+    HOSTS,
+    RunRecord,
+    Store,
 )
 from .metrics import (
-    TaskOutcome, bootstrap_hli, bootstrap_ip, collapse_repeats, host_lock_index,
-    mcnemar, repeat_reliability,
+    TaskOutcome,
+    bootstrap_hli,
+    bootstrap_ip,
+    collapse_repeats,
+    host_lock_index,
+    mcnemar,
+    repeat_reliability,
 )
 from .oracle import load_suite, validate_suite
 
@@ -106,7 +116,8 @@ def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
         print(f"Repeat reliability: {rel['unanimous_rate']:.3f} unanimous "
               f"({rel['cells_with_repeats']} cells, mean {rel['mean_repeats']} attempts)")
     print()
-    header = f"{'generator':<20}{'cond':<12}{'IP':>7}{'95% CI':>16}{'HLI':>7}{'HLI CI':>16}{'lock':>7}"
+    header = (f"{'generator':<20}{'cond':<12}{'IP':>7}{'95% CI':>16}"
+              f"{'HLI':>7}{'HLI CI':>16}{'lock':>7}")
     print(header)
     print("-" * 78)
 

@@ -14,11 +14,19 @@ import tempfile
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from hostshift.calibration import (  # noqa: E402
-    CALIBRATION_TASKS, CORPUS_REF, FIXTURE_PATHS, HOST_FIXTURE,
-    CalibrationRun, CalibrationStore, report,
+    CALIBRATION_TASKS,
+    CORPUS_REF,
+    FIXTURE_PATHS,
+    HOST_FIXTURE,
+    CalibrationRun,
+    CalibrationStore,
+    report,
 )
 from hostshift.metrics import (  # noqa: E402
-    OperatorCeiling, TaskOutcome, host_lock_index, normalized_host_lock,
+    OperatorCeiling,
+    TaskOutcome,
+    host_lock_index,
+    normalized_host_lock,
 )
 
 

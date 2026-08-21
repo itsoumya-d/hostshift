@@ -34,14 +34,15 @@ def _version_stamp() -> str:
     return h.hexdigest()[:16]
 
 
-def verify_license() -> LicenseCheck:
+def verify_license(root: pathlib.Path | None = None) -> LicenseCheck:
     """Report which licenses govern this checkout.
 
     Valid means: the expected dual-license pair is present and readable.
     This is an informational check for run records, not a gate.
     """
-    code = _LICENSE_ROOT / "LICENSE"
-    data = _LICENSE_ROOT / "LICENSE-DATA"
+    root = root or _LICENSE_ROOT
+    code = root / "LICENSE"
+    data = root / "LICENSE-DATA"
     if not code.exists() or not data.exists():
         return LicenseCheck(
             valid=False,

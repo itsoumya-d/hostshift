@@ -17,8 +17,14 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from hostshift.metrics import (  # noqa: E402
-    TaskOutcome, bootstrap_hli, bootstrap_ip, cluster_bootstrap,
-    collapse_repeats, host_lock_index, interaction_parity, repeat_reliability,
+    TaskOutcome,
+    bootstrap_hli,
+    bootstrap_ip,
+    cluster_bootstrap,
+    collapse_repeats,
+    host_lock_index,
+    interaction_parity,
+    repeat_reliability,
     wilson_interval,
 )
 

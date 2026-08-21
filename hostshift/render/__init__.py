@@ -20,13 +20,27 @@ To exercise the pipeline without hosts, ask for simulation explicitly:
 from __future__ import annotations
 
 from .base import (
-    CAREFUL, COMPOSE, NAIVE, PROFILES, RENDERERS, SWIFTUI, TUI, WEB,
-    HostProfile, RendererProfile, RenderError, realize,
+    CAREFUL,
+    COMPOSE,
+    NAIVE,
+    PROFILES,
+    RENDERERS,
+    SWIFTUI,
+    TUI,
+    WEB,
+    HostProfile,
+    RendererProfile,
+    RenderError,
+    realize,
 )
 from .compose import ComposeRenderer, ComposeSession, SimulatedComposeSession
 from .semantics import SpecError, initial_state, project, ui_facts, validate_spec
 from .session import (
-    REFERENCE, ReferenceSession, SimulatedSession, assert_measurable, intended_tree,
+    REFERENCE,
+    ReferenceSession,
+    SimulatedSession,
+    assert_measurable,
+    intended_tree,
 )
 from .swiftui import SimulatedSwiftUISession, SwiftUIRenderer, SwiftUISession
 from .tui import SimulatedTuiSession, TuiRenderer, TuiSession

@@ -17,8 +17,14 @@ import tempfile
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from hostshift.coverage import (  # noqa: E402
-    IN_SCOPE, OUT_OF_SCOPE, VERDICTS, analyse, classify, format_report,
-    load_corpus, suite_self_check,
+    IN_SCOPE,
+    OUT_OF_SCOPE,
+    VERDICTS,
+    analyse,
+    classify,
+    format_report,
+    load_corpus,
+    suite_self_check,
 )
 
 SUITE = str(pathlib.Path(__file__).resolve().parents[1] / "tasks" / "suite_v1.jsonl")

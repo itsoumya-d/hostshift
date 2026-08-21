@@ -23,7 +23,7 @@ import json
 import os
 import re
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Protocol
 
@@ -100,7 +100,7 @@ class Generator(Protocol):
 class Renderer(Protocol):
     host: str
 
-    def render(self, artifact: Artifact) -> "Session":
+    def render(self, artifact: Artifact) -> Session:
         """Bring the artifact up and return a live session."""
 
 
@@ -159,11 +159,12 @@ class ComputerUseOperator:
         self.model = model
         self.api_key = os.environ.get(api_key_env)
         self._client = None
+        self._types = None
 
     def run(self, session: Session, goal: str, max_steps: int) -> int:
         if not self.api_key:
             raise RuntimeError(
-                f"no API key in environment; set it before running the operator"
+                "no API key in environment; set it before running the operator"
             )
         steps = 0
         while steps < max_steps:
@@ -177,7 +178,10 @@ class ComputerUseOperator:
     def _get_client(self):
         if self._client is None:
             from google import genai
+            from google.genai import types
+
             self._client = genai.Client(api_key=self.api_key)
+            self._types = types
         return self._client
 
     def _next_action(self, session: Session, goal: str, step: int) -> dict | None:
@@ -191,8 +195,6 @@ class ComputerUseOperator:
         because silently converting an API outage into {"op": "done"} would
         record a fabricated task termination instead of a measurement failure.
         """
-        from google.genai import types
-
         client = self._get_client()
 
         actions = session.actions()
@@ -207,8 +209,9 @@ class ComputerUseOperator:
             f"Available actions: {json.dumps(actions)}\n\n"
             "Based on the above, decide the next action to achieve the goal.\n"
             "Return a JSON object with one of the following formats:\n"
-            "1. To perform an action: {\"op\": \"invoke\", \"id\": \"<node_id>\", \"value\": <optional_value>}\n"
-            "2. If the goal is achieved: {\"op\": \"done\"}"
+            '1. To perform an action: {"op": "invoke", "id": "<node_id>",'
+            ' "value": <optional_value>}\n'
+            '2. If the goal is achieved: {"op": "done"}'
         )
 
         last_exc: Exception | None = None
@@ -219,8 +222,10 @@ class ComputerUseOperator:
                 response = client.models.generate_content(
                     model=self.model,
                     contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
+                    config=(
+                        self._types.GenerateContentConfig(
+                            response_mime_type="application/json")
+                        if self._types is not None else None
                     ),
                 )
                 return json.loads(response.text)

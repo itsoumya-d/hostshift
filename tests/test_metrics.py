@@ -6,17 +6,11 @@ properties (identity, symmetry, triangle-inequality-ish behaviour) rather than
 just smoke-tested.
 """
 
-import sys
 import pathlib
+import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-from hostshift.widgettree import (  # noqa: E402
-    Widget,
-    tree_edit_distance,
-    normalized_ted,
-    from_spec,
-)
 from hostshift.metrics import (  # noqa: E402
     TaskOutcome,
     accessibility_parity,
@@ -25,6 +19,12 @@ from hostshift.metrics import (  # noqa: E402
     mcnemar,
     render_parity,
     wilson_interval,
+)
+from hostshift.widgettree import (  # noqa: E402
+    Widget,
+    from_spec,
+    normalized_ted,
+    tree_edit_distance,
 )
 
 

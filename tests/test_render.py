@@ -15,9 +15,22 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
 from hostshift.metrics import accessibility_parity, render_parity  # noqa: E402
 from hostshift.render import (  # noqa: E402
-    CAREFUL, COMPOSE, HOSTS, NAIVE, SWIFTUI, TUI, WEB,
-    ReferenceSession, RenderError, assert_measurable, emit_all, get_renderer,
-    intended_tree, open_session, realize, validate_spec,
+    CAREFUL,
+    COMPOSE,
+    HOSTS,
+    NAIVE,
+    SWIFTUI,
+    TUI,
+    WEB,
+    ReferenceSession,
+    RenderError,
+    assert_measurable,
+    emit_all,
+    get_renderer,
+    intended_tree,
+    open_session,
+    realize,
+    validate_spec,
 )
 from hostshift.render import semantics as sem  # noqa: E402
 from hostshift.render.session import SimulatedSession  # noqa: E402

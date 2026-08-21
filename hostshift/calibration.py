@@ -39,7 +39,13 @@ import subprocess
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-from .metrics import OperatorCeiling, TaskOutcome, calibration_report, host_lock_index, normalized_host_lock
+from .metrics import (
+    OperatorCeiling,
+    TaskOutcome,
+    calibration_report,
+    host_lock_index,
+    normalized_host_lock,
+)
 
 CORPUS_REPO = "https://github.com/itsoumya-d/mobile-native-design-system"
 
@@ -104,7 +110,8 @@ CALIBRATION_TASKS = [
                     "detail", "state mutation from a nested screen"),
     CalibrationTask("cal-form-valid", "Fill the form correctly and submit it",
                     "form", "validation gating"),
-    CalibrationTask("cal-form-invalid", "Submit the form with an invalid field and observe the rejection",
+    CalibrationTask("cal-form-invalid",
+                    "Submit the form with an invalid field and observe the rejection",
                     "form", "error perceivability"),
     CalibrationTask("cal-settings", "Change a specific setting and confirm it persists",
                     "settings", "toggle plus persistence"),

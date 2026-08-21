@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 
 from ..widgettree import Widget
-from .base import RenderError, WEB
+from .base import WEB, RenderError
 from .session import SimulatedSession
 
 RUNTIME_JS = r"""

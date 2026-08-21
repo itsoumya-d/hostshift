@@ -1,15 +1,16 @@
-import sys
 import pathlib
+import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-from hostshift.widgettree import Widget
 from hostshift.visual_fidelity import (
-    layout_coherence_score,
-    information_density_score,
+    combined_visual_fidelity_score,
     cross_host_visual_consistency,
-    combined_visual_fidelity_score
+    information_density_score,
+    layout_coherence_score,
 )
+from hostshift.widgettree import Widget
+
 
 def test_lcs_no_duplicate_ids():
     tree = Widget(kind="container", children=[
@@ -28,7 +29,7 @@ def test_lcs_with_duplicate_ids():
 def test_lcs_reasonable_depth():
     tree = Widget(kind="container")
     curr = tree
-    for i in range(12):
+    for _ in range(12):
         new_node = Widget(kind="container")
         curr.children.append(new_node)
         curr = new_node

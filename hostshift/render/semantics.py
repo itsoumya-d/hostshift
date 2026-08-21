@@ -324,7 +324,7 @@ class ProjectedNode:
     action: Any = None
     row_action: Any = None
     row_label: str | None = None
-    children: list["ProjectedNode"] = field(default_factory=list)
+    children: list[ProjectedNode] = field(default_factory=list)
 
     def walk(self):
         yield self

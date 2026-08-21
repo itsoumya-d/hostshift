@@ -17,8 +17,8 @@ sibling order is semantically meaningful (focus order, reading order).
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Callable, Sequence
 
 # The canonical vocabulary. Deliberately small. A construct earns a place here
 # only if all four reference hosts can realize it faithfully; anything else
@@ -115,7 +115,7 @@ class Widget:
     name: str | None = None          # accessible name, if the host exposed one
     node_id: str | None = None       # spec id, when traceable
     focusable: bool = False
-    children: list["Widget"] = field(default_factory=list)
+    children: list[Widget] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if self.kind not in CANONICAL_KINDS:

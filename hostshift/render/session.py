@@ -27,11 +27,16 @@ import copy
 import os
 
 from ..widgettree import Widget
+from . import semantics as sem
 from .base import (
-    CAREFUL, PROFILES, HostProfile, RendererProfile, RenderError, host_ui_facts,
+    CAREFUL,
+    PROFILES,
+    HostProfile,
+    RendererProfile,
+    RenderError,
+    host_ui_facts,
     realize,
 )
-from . import semantics as sem
 
 # The reference profile: full fidelity, nothing lost. Used for the control
 # condition, which establishes the ceiling every real host is measured against.

@@ -49,3 +49,22 @@ Issues = "https://github.com/itsoumya-d/hostshift/issues"
 
 [tool.setuptools.packages.find]
 include = ["hostshift*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "BLE001",  # standalone test runners catch broadly by design
+    "RUF100",  # legacy noqa markers; cleaned opportunistically
+    "PLW1510", # subprocess without check= is how the golden tests assert stderr
+    "B905",    # zip() strictness adds nothing in these local, equal-length uses
+    "ISC004",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"hostshift/render/*" = ["E501"]  # embedded Kotlin/Swift/JS/Textual source templates
+"tests/*" = ["E501"]
+"scripts/*" = ["E501"]

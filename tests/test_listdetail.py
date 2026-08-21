@@ -21,7 +21,11 @@ os.environ.setdefault("HOSTSHIFT_ALLOW_SIMULATED", "1")
 from hostshift.metrics import TaskOutcome, host_lock_index  # noqa: E402
 from hostshift.oracle import grade, load_suite  # noqa: E402
 from hostshift.render import (  # noqa: E402
-    HOSTS, ReferenceSession, RenderError, open_session, validate_spec,
+    HOSTS,
+    ReferenceSession,
+    RenderError,
+    open_session,
+    validate_spec,
 )
 from hostshift.render import semantics as sem  # noqa: E402
 
