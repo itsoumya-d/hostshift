@@ -134,6 +134,7 @@ hostshift/render/bridge.py      loopback instrumentation contract for iOS/Androi
 hostshift/calibration.py    operator ceilings against hand-written native apps
 hostshift/license_guard.py  provenance stamping for run records
 hostshift/coverage.py       what UISpec 0.2 can and cannot express
+hostshift/visual_fidelity.py    structural layout/density/consistency heuristics
 tasks/reference_specs/      hand-written specs incl. 11 solver-verified filter specs
 scripts/build_filter_specs.py   regenerate the filter fixtures
 scripts/verify_filter_specs.py  prove every filter spec is solvable end to end
@@ -150,6 +151,7 @@ tests/test_coverage.py      15 tests — schema-coverage classifier, both direct
 tests/test_harness.py       14 tests — store, repair loop, both operators
 tests/test_runner_cli.py     6 tests — CLI smoke in isolated temp stores
 tests/test_license_guard.py  4 tests — provenance stamping
+tests/test_visual_fidelity.py 16 tests — layout/density/consistency heuristics
 tests/test_bridge.py         3 tests — bridge client vs live stub server
 tests/test_guards.py         6 tests — the anti-simulation measurement rails
 paper/main.tex              skeleton; related work already written

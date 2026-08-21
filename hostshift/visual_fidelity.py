@@ -1,3 +1,18 @@
+"""Structural visual-fidelity heuristics.
+
+Render Parity answers "did the host build the tree the spec asked for?" --
+it says nothing about whether the realized layout is *sane*: whether ids are
+unique, depth is navigable, headings precede the content they head, and
+actions follow the fields they submit. These heuristics score exactly those
+properties on a single canonical tree, plus a cross-host consistency figure
+that asks how much structure survives from one host to the next.
+
+They are deliberately cheap, deterministic, and computed on the canonical
+tree rather than on pixels -- so, like every other metric here, a SwiftUI
+form and a terminal form are scored by the same rules. Probes, not gates:
+they diagnose generated interfaces, they do not decide task success.
+"""
+
 from __future__ import annotations
 
 from .widgettree import Widget, normalized_ted
@@ -100,7 +115,7 @@ def cross_host_visual_consistency(trees: list[Widget]) -> float:
 
     return sum(scores) / len(scores)
 
-def combined_visual_fidelity_score(tree: Widget, other_trees: list[Widget] = None) -> float:
+def combined_visual_fidelity_score(tree: Widget, other_trees: list[Widget] | None = None) -> float:
     """Weighted average of Layout Coherence, Information Density, and Cross-Host Consistency."""
     lcs = layout_coherence_score(tree)
     ids = information_density_score(tree)

@@ -26,11 +26,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 os.environ.setdefault("HOSTSHIFT_ALLOW_SIMULATED", "1")
 
 from hostshift.metrics import (  # noqa: E402
-    TaskOutcome, accessibility_parity, host_lock_index, render_parity,
+    TaskOutcome,
+    accessibility_parity,
+    host_lock_index,
+    render_parity,
 )
 from hostshift.oracle import grade, load_suite  # noqa: E402
 from hostshift.render import (  # noqa: E402
-    HOSTS, RenderError, ReferenceSession, intended_tree, open_session,
+    HOSTS,
+    ReferenceSession,
+    RenderError,
+    intended_tree,
+    open_session,
 )
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]

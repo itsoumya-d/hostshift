@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
 
@@ -29,9 +29,9 @@ jobs:
       - name: Lint (ruff)
         run: |
           pip install ruff
-          ruff check hostshift/ tests/ scripts/build_filter_specs.py scripts/verify_filter_specs.py
+          ruff check hostshift/ tests/ scripts/
 
-      - name: Run full suite (165 assertions incl. emitted-source golden tests)
+      - name: Run full suite (198 assertions incl. emitted-source golden tests + e2e pipeline check)
         run: bash scripts/run_tests.sh
 
       - name: Verify filter specs are solvable end-to-end
