@@ -1,0 +1,162 @@
+{
+  "version": "0.2",
+  "title": "Transactions",
+  "entry": "ledger",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "type": "All",
+        "minAmount": 0
+      }
+    }
+  },
+  "collections": {
+    "transactions": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "id": "T001",
+          "type": "Debit",
+          "amount": 120
+        },
+        {
+          "id": "T002",
+          "type": "Credit",
+          "amount": 40
+        },
+        {
+          "id": "T003",
+          "type": "Debit",
+          "amount": 60
+        },
+        {
+          "id": "T004",
+          "type": "Credit",
+          "amount": 250
+        },
+        {
+          "id": "T005",
+          "type": "Debit",
+          "amount": 300
+        },
+        {
+          "id": "T006",
+          "type": "Debit",
+          "amount": 90
+        },
+        {
+          "id": "T007",
+          "type": "Credit",
+          "amount": 130
+        },
+        {
+          "id": "T008",
+          "type": "Debit",
+          "amount": 175
+        },
+        {
+          "id": "T009",
+          "type": "Credit",
+          "amount": 80
+        },
+        {
+          "id": "T010",
+          "type": "Debit",
+          "amount": 210
+        },
+        {
+          "id": "T011",
+          "type": "Credit",
+          "amount": 500
+        },
+        {
+          "id": "T012",
+          "type": "Debit",
+          "amount": 45
+        },
+        {
+          "id": "T013",
+          "type": "Credit",
+          "amount": 95
+        },
+        {
+          "id": "T014",
+          "type": "Credit",
+          "amount": 150
+        },
+        {
+          "id": "T015",
+          "type": "Credit",
+          "amount": 60
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "ledger",
+      "title": "Transactions",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Transactions"
+        },
+        {
+          "kind": "select",
+          "id": "typeFilter",
+          "label": "Type",
+          "bind": "filter.type"
+        },
+        {
+          "kind": "field",
+          "id": "minAmount",
+          "label": "Minimum amount",
+          "bind": "filter.minAmount"
+        },
+        {
+          "kind": "list",
+          "id": "txnList",
+          "of": "transactions",
+          "rowLabel": "id",
+          "filterWhen": {
+            "op": "and",
+            "clauses": [
+              {
+                "op": "or",
+                "clauses": [
+                  {
+                    "op": "eq",
+                    "left": "$row.type",
+                    "right": "$state.filter.type"
+                  },
+                  {
+                    "op": "eq",
+                    "left": "$state.filter.type",
+                    "right": "All"
+                  }
+                ]
+              },
+              {
+                "op": "gte",
+                "left": "$row.amount",
+                "right": "$state.filter.minAmount"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

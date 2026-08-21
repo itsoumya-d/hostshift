@@ -1,0 +1,114 @@
+{
+  "version": "0.2",
+  "title": "Library",
+  "entry": "shelf",
+  "state": {
+    "sort": {
+      "type": "object",
+      "default": {
+        "field": "",
+        "direction": "asc"
+      }
+    }
+  },
+  "collections": {
+    "books": {
+      "fields": {
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "year": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "title": "Anchor",
+          "author": "R. Hale",
+          "year": 2011
+        },
+        {
+          "title": "Bridget",
+          "author": "M. Osei",
+          "year": 1998
+        },
+        {
+          "title": "Cypress",
+          "author": "T. Nara",
+          "year": 2020
+        },
+        {
+          "title": "Driftwood",
+          "author": "A. Kaur",
+          "year": 2005
+        },
+        {
+          "title": "Ember",
+          "author": "L. Moreau",
+          "year": 2015
+        },
+        {
+          "title": "Fathom",
+          "author": "J. Cole",
+          "year": 1987
+        },
+        {
+          "title": "Gale",
+          "author": "P. Novak",
+          "year": 2001
+        },
+        {
+          "title": "Harbor",
+          "author": "S. Ito",
+          "year": 1993
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "shelf",
+      "title": "Books",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Library"
+        },
+        {
+          "kind": "button",
+          "id": "sortByTitle",
+          "label": "Sort by title",
+          "action": [
+            {
+              "op": "set",
+              "target": "sort.field",
+              "value": "title"
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "toggleDesc",
+          "label": "Descending",
+          "action": [
+            {
+              "op": "set",
+              "target": "sort.direction",
+              "value": "desc"
+            }
+          ]
+        },
+        {
+          "kind": "list",
+          "id": "bookList",
+          "of": "books",
+          "rowLabel": "title"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "version": "0.2",
+  "title": "Employee directory",
+  "entry": "directory",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "department": "All"
+      }
+    },
+    "sort": {
+      "type": "object",
+      "default": {
+        "field": "",
+        "direction": "asc"
+      }
+    }
+  },
+  "collections": {
+    "employees": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Ava Chen",
+          "department": "Engineering",
+          "startDate": "2021-03-15"
+        },
+        {
+          "name": "Ben Ode",
+          "department": "Sales",
+          "startDate": "2020-07-01"
+        },
+        {
+          "name": "Carla Diaz",
+          "department": "Engineering",
+          "startDate": "2019-11-04"
+        },
+        {
+          "name": "Dan Wu",
+          "department": "Marketing",
+          "startDate": "2022-01-20"
+        },
+        {
+          "name": "Eli Roy",
+          "department": "Engineering",
+          "startDate": "2018-05-30"
+        },
+        {
+          "name": "Fay Kim",
+          "department": "Sales",
+          "startDate": "2023-02-14"
+        },
+        {
+          "name": "Gus Ali",
+          "department": "Sales",
+          "startDate": "2020-09-09"
+        },
+        {
+          "name": "Hana Lee",
+          "department": "Finance",
+          "startDate": "2021-12-01"
+        },
+        {
+          "name": "Ivan Petrov",
+          "department": "Marketing",
+          "startDate": "2019-06-18"
+        },
+        {
+          "name": "June Park",
+          "department": "Finance",
+          "startDate": "2022-08-08"
+        },
+        {
+          "name": "Kai Tan",
+          "department": "Sales",
+          "startDate": "2018-10-25"
+        },
+        {
+          "name": "Lena Braun",
+          "department": "Engineering",
+          "startDate": "2023-04-02"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "directory",
+      "title": "Employees",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Employee directory"
+        },
+        {
+          "kind": "select",
+          "id": "deptFilter",
+          "label": "Department",
+          "bind": "filter.department"
+        },
+        {
+          "kind": "select",
+          "id": "sortField",
+          "label": "Sort by",
+          "bind": "sort.field"
+        },
+        {
+          "kind": "select",
+          "id": "sortDir",
+          "label": "Direction",
+          "bind": "sort.direction"
+        },
+        {
+          "kind": "list",
+          "id": "employeeList",
+          "of": "employees",
+          "rowLabel": "name",
+          "rowAction": {
+            "op": "submit",
+            "target": "picked"
+          },
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row.department",
+                "right": "$state.filter.department"
+              },
+              {
+                "op": "eq",
+                "left": "$state.filter.department",
+                "right": "All"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "version": "0.2",
+  "title": "Order tracker",
+  "entry": "orders",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "status": "All"
+      }
+    }
+  },
+  "collections": {
+    "orders": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "ORD-1001",
+          "status": "Pending"
+        },
+        {
+          "id": "ORD-1002",
+          "status": "Shipped"
+        },
+        {
+          "id": "ORD-1003",
+          "status": "Cancelled"
+        },
+        {
+          "id": "ORD-1004",
+          "status": "Pending"
+        },
+        {
+          "id": "ORD-1005",
+          "status": "Shipped"
+        },
+        {
+          "id": "ORD-1006",
+          "status": "Shipped"
+        },
+        {
+          "id": "ORD-1007",
+          "status": "Pending"
+        },
+        {
+          "id": "ORD-1008",
+          "status": "Cancelled"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "orders",
+      "title": "Orders",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Orders"
+        },
+        {
+          "kind": "select",
+          "id": "statusFilter",
+          "label": "Status",
+          "bind": "filter.status"
+        },
+        {
+          "kind": "list",
+          "id": "orderList",
+          "of": "orders",
+          "rowLabel": "id",
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row.status",
+                "right": "$state.filter.status"
+              },
+              {
+                "op": "eq",
+                "left": "$state.filter.status",
+                "right": "All"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

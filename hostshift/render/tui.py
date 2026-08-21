@@ -45,6 +45,8 @@ def assign(obj, path, value):
 def resolve(state, path):
     if not path:
         return None
+    if path.startswith("$state."):
+        path = path[len("$state."):]
     if path.endswith(".length"):
         b = resolve(state, path[:-7])
         return len(b) if hasattr(b, "__len__") else None
@@ -69,17 +71,24 @@ def loose_eq(a, b):
     return a == b
 
 
-def evaluate(pred, state):
+def evaluate(pred, state, row=None):
     if not pred:
         return True
     op = pred.get("op")
     if op == "and":
-        return all(evaluate(c, state) for c in pred.get("clauses", []))
+        return all(evaluate(c, state, row) for c in pred.get("clauses", []))
     if op == "or":
-        return any(evaluate(c, state) for c in pred.get("clauses", []))
+        return any(evaluate(c, state, row) for c in pred.get("clauses", []))
     if op == "not":
-        return not evaluate(pred.get("clauses", [None])[0], state)
-    left, right = resolve(state, pred.get("left")), pred.get("right")
+        return not evaluate(pred.get("clauses", [None])[0], state, row)
+    left_path = pred.get("left")
+    if row is not None and isinstance(left_path, str) and left_path.startswith("$row."):
+        left = row.get(left_path[len("$row."):])
+    else:
+        left = resolve(state, left_path)
+    right = pred.get("right")
+    if isinstance(right, str) and right.startswith("$state."):
+        right = resolve(state, right[len("$state."):])
     if op == "truthy":
         return bool(left)
     if op == "falsy":
@@ -156,6 +165,9 @@ class GeneratedApp(App):
             yield Button(label, id=nid, disabled=not enabled)
         elif kind == "list":
             rows = self.state["collections"].get(n.get("of"), [])
+            fw = n.get("filterWhen")
+            if fw is not None:
+                rows = [r for r in rows if evaluate(fw, self.state, row=r)]
             yield ListView(*[ListItem(Label(str(r.get("title") or r.get("name") or "")))
                              for r in rows], id=nid)
         else:

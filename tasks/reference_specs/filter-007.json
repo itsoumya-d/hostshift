@@ -1,0 +1,118 @@
+{
+  "version": "0.2",
+  "title": "Device inventory",
+  "entry": "inventory",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "manufacturer": "All"
+      }
+    }
+  },
+  "collections": {
+    "devices": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "DVT-1",
+          "manufacturer": "Acme"
+        },
+        {
+          "id": "DVT-2",
+          "manufacturer": "Bolt"
+        },
+        {
+          "id": "DVT-3",
+          "manufacturer": "Acme"
+        },
+        {
+          "id": "DVT-4",
+          "manufacturer": "Cirrus"
+        },
+        {
+          "id": "DVT-5",
+          "manufacturer": "Bolt"
+        },
+        {
+          "id": "DVT-6",
+          "manufacturer": "Cirrus"
+        },
+        {
+          "id": "DVT-7",
+          "manufacturer": "Acme"
+        },
+        {
+          "id": "DVT-8",
+          "manufacturer": "Bolt"
+        },
+        {
+          "id": "DVT-9",
+          "manufacturer": "Cirrus"
+        },
+        {
+          "id": "DVT-10",
+          "manufacturer": "Acme"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "inventory",
+      "title": "Devices",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Device inventory"
+        },
+        {
+          "kind": "select",
+          "id": "makerFilter",
+          "label": "Manufacturer",
+          "bind": "filter.manufacturer"
+        },
+        {
+          "kind": "banner",
+          "id": "emptyNote",
+          "tone": "empty",
+          "label": "No devices match this filter",
+          "visibleWhen": {
+            "op": "eq",
+            "left": "filter.manufacturer",
+            "right": "Nonesuch"
+          }
+        },
+        {
+          "kind": "list",
+          "id": "deviceList",
+          "of": "devices",
+          "rowLabel": "id",
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row.manufacturer",
+                "right": "$state.filter.manufacturer"
+              },
+              {
+                "op": "eq",
+                "left": "$state.filter.manufacturer",
+                "right": "All"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

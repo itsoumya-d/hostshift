@@ -21,6 +21,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
@@ -115,6 +116,18 @@ class Session(Protocol):
         enablement, visible row counts) -- read from the accessibility tree, not
         from pixels, so the comparison stays host-fair."""
 
+    def actions(self) -> list[dict]:
+        """Interactable elements, as the operator sees them.
+
+        Each entry: {id, kind, name, enabled, value, options}. Identical across
+        hosts by contract (render/base.py); keeping the operator's view
+        host-independent is what makes an interaction-parity gap attributable
+        to the interface rather than to the operator.
+        """
+
+    def invoke(self, node_id: str, value: object | None = None) -> None:
+        """Activate a control, optionally supplying a value."""
+
     def close(self) -> None: ...
 
 
@@ -168,11 +181,15 @@ class ComputerUseOperator:
         return self._client
 
     def _next_action(self, session: Session, goal: str, step: int) -> dict | None:
-        """Ask the model for the next action given a screenshot + a11y tree.
+        """Ask the model for the next action given state + UI facts.
 
-        Implemented against the provider's computer-use tool. Kept as a single
+        Implemented against the provider's JSON-mode API. Kept as a single
         seam so the whole experiment can be re-run against a different operator
         by substituting this method.
+
+        Transient provider errors are retried with backoff; exhaustion raises,
+        because silently converting an API outage into {"op": "done"} would
+        record a fabricated task termination instead of a measurement failure.
         """
         from google.genai import types
 
@@ -194,17 +211,24 @@ class ComputerUseOperator:
             "2. If the goal is achieved: {\"op\": \"done\"}"
         )
 
-        try:
-            response = client.models.generate_content(
-                model=self.model,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                ),
-            )
-            return json.loads(response.text)
-        except Exception:
-            return {"op": "done"}
+        last_exc: Exception | None = None
+        for attempt in range(4):
+            if attempt:
+                time.sleep(2 ** attempt)
+            try:
+                response = client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                    ),
+                )
+                return json.loads(response.text)
+            except Exception as exc:  # noqa: BLE001 - provider SDK raises broadly
+                last_exc = exc
+        raise RuntimeError(
+            f"operator API failed after retries: {last_exc}"
+        ) from last_exc
 
     def _apply(self, session: Session, action: dict) -> None:
         if action.get("op") == "invoke" and "id" in action:
@@ -224,41 +248,51 @@ class AccessibilityTreeOperator:
 
     name = "a11y-scripted"
 
+    # Canonical action kinds from the Session contract (render/base.py), in
+    # the order the scripted policy prefers them: fill inputs, set choices and
+    # toggles, tap list rows, then press buttons.
+    _POLICY_ORDER = ("input", "choice", "boolean", "listItem", "action")
+
     def run(self, session: Session, goal: str, max_steps: int) -> int:
         steps = 0
+        used: set[str] = set()
         while steps < max_steps:
-            actions = session.actions()
-            if not actions:
+            pending = [
+                a for a in session.actions()
+                if a.get("enabled", True) and a.get("id") not in used
+            ]
+            if not pending:
                 break
-                
-            action_taken = False
-            
-            # Scripted policy: fill fields, toggle toggles, click buttons in order
-            for kind_group in [["text_field", "textfield", "input", "field"], ["toggle", "checkbox", "switch"], ["button", "action"]]:
-                for act in actions:
-                    kind = str(act.get("kind", "")).lower()
-                    if kind in kind_group:
-                        if kind in ["text_field", "textfield", "input", "field"] and not act.get("value"):
-                            session.invoke(act["id"], "scripted input")
-                            action_taken = True
-                            break
-                        elif kind in ["toggle", "checkbox", "switch"] and not act.get("value"):
-                            session.invoke(act["id"], True)
-                            action_taken = True
-                            break
-                        elif kind in ["button", "action"]:
-                            session.invoke(act["id"], None)
-                            action_taken = True
-                            break
-                if action_taken:
-                    break
-                    
-            if not action_taken:
+
+            plan = next(
+                (
+                    a for kind in self._POLICY_ORDER
+                    for a in pending if str(a.get("kind", "")).lower() == kind
+                ),
+                None,
+            )
+            if plan is None:
                 break
-                
+
+            kind = str(plan.get("kind", "")).lower()
+            if kind == "input":
+                session.invoke(plan["id"], self._fill_value(plan))
+            elif kind in ("choice", "boolean"):
+                options = plan.get("options") or []
+                value = options[0] if options else not bool(plan.get("value"))
+                session.invoke(plan["id"], value)
+            else:
+                session.invoke(plan["id"], None)
+
+            used.add(plan["id"])
             steps += 1
-            
         return steps
+
+    @staticmethod
+    def _fill_value(action: dict) -> str:
+        """A deterministic placeholder derived from the control's name."""
+        name = str(action.get("name") or "value").strip().lower()
+        return re.sub(r"[^a-z0-9]+", "-", name).strip("-") or "value"
 
 
 # ---------------------------------------------------------------------------
@@ -287,7 +321,7 @@ def repair(
             return current
         current = regenerate(current, diagnostic)
         current.repair_rounds = round_no
-    current.valid, _ = validate(current)[0], None
+    current.valid, _ = validate(current)
     return current
 
 

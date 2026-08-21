@@ -1,0 +1,129 @@
+{
+  "version": "0.2",
+  "title": "Staff roster",
+  "entry": "roster",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "department": "All"
+      }
+    },
+    "sort": {
+      "type": "object",
+      "default": {
+        "field": null
+      }
+    }
+  },
+  "collections": {
+    "staff": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Ada",
+          "department": "Support"
+        },
+        {
+          "name": "Bo",
+          "department": "Eng"
+        },
+        {
+          "name": "Cy",
+          "department": "Support"
+        },
+        {
+          "name": "Dee",
+          "department": "Eng"
+        },
+        {
+          "name": "Elmo",
+          "department": "Design"
+        },
+        {
+          "name": "Fern",
+          "department": "Support"
+        },
+        {
+          "name": "Gil",
+          "department": "Eng"
+        },
+        {
+          "name": "Hal",
+          "department": "Design"
+        },
+        {
+          "name": "Ivy",
+          "department": "Support"
+        },
+        {
+          "name": "Jo",
+          "department": "Eng"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "roster",
+      "title": "Staff",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Staff roster"
+        },
+        {
+          "kind": "select",
+          "id": "deptFilter",
+          "label": "Department",
+          "bind": "filter.department"
+        },
+        {
+          "kind": "button",
+          "id": "clearAll",
+          "label": "Clear all filters",
+          "action": [
+            {
+              "op": "set",
+              "target": "filter.department",
+              "value": "All"
+            },
+            {
+              "op": "clear",
+              "target": "sort.field"
+            }
+          ]
+        },
+        {
+          "kind": "list",
+          "id": "staffList",
+          "of": "staff",
+          "rowLabel": "name",
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row.department",
+                "right": "$state.filter.department"
+              },
+              {
+                "op": "eq",
+                "left": "$state.filter.department",
+                "right": "All"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -160,6 +160,9 @@ LIST_SCRIPTS = {
 
 
 def _compare(label: str, spec_name: str = "form-001", scripts=None) -> None:
+    if not NODE:
+        import unittest
+        raise unittest.SkipTest("node is not available")
     script = (scripts or SCRIPTS)[label]
     js, py = _js_trace(script, spec_name), _py_trace(script, spec_name)
     assert len(js) == len(py), f"{label}: trace lengths differ"
@@ -206,20 +209,21 @@ def test_agreement_row_navigation_round_trip():
 
 if __name__ == "__main__":
     import traceback
-
-    if not NODE:
-        print("SKIP  node not available; cross-implementation agreement unverified")
-        sys.exit(0)
+    import unittest
 
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
-    failed = 0
+    failed = skipped = 0
     for fn in fns:
         try:
             fn()
             print(f"  PASS  {fn.__name__}")
+        except unittest.SkipTest as exc:
+            skipped += 1
+            print(f"  SKIP  {fn.__name__}  ({exc})")
         except Exception:
             failed += 1
             print(f"  FAIL  {fn.__name__}")
             traceback.print_exc()
-    print(f"\n{len(fns) - failed}/{len(fns)} passed")
+    ran = len(fns) - failed - skipped
+    print(f"\n{ran}/{len(fns)} passed, {skipped} skipped")
     sys.exit(1 if failed else 0)

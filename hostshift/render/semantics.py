@@ -65,9 +65,15 @@ def _assign(state: dict, path: str, value: Any) -> None:
 
 def resolve(state: dict, path: str | None) -> Any:
     """Read a dotted path. Missing paths read as None rather than raising --
-    a predicate over an unset field is a normal condition, not a bug."""
+    a predicate over an unset field is a normal condition, not a bug.
+
+    A leading ``$state.`` is accepted and stripped, so predicates can be
+    written the same way action templates are ($state.filter.department).
+    """
     if not path:
         return None
+    if path.startswith("$state."):
+        path = path[len("$state."):]
     if path.endswith(".length"):
         base = resolve(state, path[: -len(".length")])
         return len(base) if isinstance(base, (list, str, dict)) else None
@@ -87,25 +93,38 @@ def resolve(state: dict, path: str | None) -> Any:
 # ---------------------------------------------------------------------------
 
 
-def evaluate(pred: dict | None, state: dict) -> bool:
+def evaluate(pred: dict | None, state: dict, row: dict | None = None) -> bool:
     """Evaluate a predicate. A missing predicate is vacuously true, which is
-    what `visibleWhen`/`enabledWhen` being absent should mean."""
+    what `visibleWhen`/`enabledWhen` being absent should mean.
+
+    When `row` is given (list `filterWhen` evaluation), a `$row.field` left
+    operand reads from that row instead of the state tree.
+    """
     if pred is None:
         return True
     op = pred.get("op")
 
     if op in ("and", "or"):
         clauses = pred.get("clauses") or []
-        results = [evaluate(c, state) for c in clauses]
+        results = [evaluate(c, state, row) for c in clauses]
         return all(results) if op == "and" else any(results)
     if op == "not":
         clauses = pred.get("clauses") or []
         if len(clauses) != 1:
             raise SpecError("`not` takes exactly one clause")
-        return not evaluate(clauses[0], state)
+        return not evaluate(clauses[0], state, row)
 
-    left = resolve(state, pred.get("left"))
+    left_path = pred.get("left")
+    if row is not None and isinstance(left_path, str) and left_path.startswith("$row."):
+        left = row.get(left_path[len("$row."):])
+    else:
+        left = resolve(state, left_path)
     right = pred.get("right")
+    # The right operand may reference state ($state.path) -- e.g. a search box
+    # bound to `query` compared against $row.name, or a numeric threshold held
+    # in state. Literals pass through untouched.
+    if isinstance(right, str) and right.startswith("$state."):
+        right = resolve(state, right[len("$state."):])
 
     if op == "truthy":
         return bool(left)
@@ -348,7 +367,15 @@ def project(spec: dict, state: dict) -> ProjectedNode:
             row_label=node.get("rowLabel"),
         )
         if kind == "list" and node.get("of"):
-            pn.rows = list((state.get("collections") or {}).get(node["of"], []))
+            rows = list((state.get("collections") or {}).get(node["of"], []))
+            # filterWhen narrows what the list *shows* without touching the
+            # underlying collection -- the declarative way to express a
+            # filtered table. Rows failing the predicate are not rendered,
+            # so visible_row_count sees the filtered count.
+            fw = node.get("filterWhen")
+            if fw is not None:
+                rows = [r for r in rows if evaluate(fw, state, row=r)]
+            pn.rows = rows
         for c in node.get("children") or []:
             got = conv(c)
             if got is not None:
@@ -485,6 +512,12 @@ def validate_spec(spec: dict) -> list[str]:
             # Rows a user can tap must be nameable, or the host has nothing to
             # announce and the operator has nothing to select by.
             problems.append(f"{screen_id}: list {nid or '<anon>'} has rowAction but no rowLabel")
+        if "filterWhen" in n:
+            if kind != "list":
+                problems.append(f"{screen_id}: filterWhen on a {kind}, which has no rows")
+            elif not isinstance(n["filterWhen"], dict) or "op" not in n["filterWhen"]:
+                problems.append(
+                    f"{screen_id}: list {nid or '<anon>'} filterWhen must be a predicate")
         for c in n.get("children") or []:
             walk(c, screen_id)
 

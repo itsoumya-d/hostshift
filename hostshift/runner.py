@@ -306,12 +306,13 @@ def cmd_demo(args) -> int:
     before a single API credit is spent. The planted effect -- schema output
     degrading less on native hosts -- is the hypothesis, NOT a result. Nothing
     here is evidence of anything.
+
+    Writes to its own store (default runs/demo/), so it can never clobber a
+    real experiment log in runs/runs.jsonl.
     """
     rng = random.Random(args.seed)
     tasks = load_suite(args.suite)
-    store = Store(args.runs)
-    if Path(store.runlog).exists():
-        Path(store.runlog).unlink()
+    store = Store(args.out)
 
     profile = {
         # host: (A-freeform, B-naive, B-schema)
@@ -354,7 +355,7 @@ def cmd_demo(args) -> int:
     print(f"wrote {len(runs)} synthetic runs to {store.runlog}\n")
     _emit_tables(runs)
     print()
-    print("!! SYNTHETIC DATA -- pipeline check only. Delete runs/ before real runs.")
+    print("!! SYNTHETIC DATA -- pipeline check only. This is not a result.")
     return 0
 
 
@@ -391,6 +392,8 @@ def main(argv=None) -> int:
     d = sub.add_parser("demo")
     d.add_argument("--repeats", type=int, default=2)
     d.add_argument("--seed", type=int, default=7)
+    d.add_argument("--out", default="runs/demo",
+                   help="separate store for synthetic runs (never the real log)")
     d.set_defaults(fn=cmd_demo)
 
     args = ap.parse_args(argv)

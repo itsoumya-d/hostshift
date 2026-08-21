@@ -222,6 +222,10 @@
         "rowLabel": {
           "type": "string",
           "description": "For list nodes: which field of a row supplies its visible and accessible name. Required when rowAction is present, because a row a user can activate must be nameable or assistive technology has nothing to announce."
+        },
+        "filterWhen": {
+          "$ref": "#/$defs/predicate",
+          "description": "For list nodes: a per-row predicate narrowing what the list shows. A $row.field left operand reads from the row; other paths read from state. Filtering changes only what is rendered -- the underlying collection is untouched, so visible_row_count reports the filtered count."
         }
       }
     },

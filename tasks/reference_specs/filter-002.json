@@ -1,0 +1,87 @@
+{
+  "version": "0.2",
+  "title": "Country finder",
+  "entry": "search",
+  "state": {
+    "query": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "collections": {
+    "countries": {
+      "fields": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "name": "Argentina"
+        },
+        {
+          "name": "Brazil"
+        },
+        {
+          "name": "Canada"
+        },
+        {
+          "name": "Denmark"
+        },
+        {
+          "name": "Egypt"
+        },
+        {
+          "name": "France"
+        },
+        {
+          "name": "Germany"
+        },
+        {
+          "name": "Hungary"
+        },
+        {
+          "name": "India"
+        },
+        {
+          "name": "Japan"
+        },
+        {
+          "name": "Kenya"
+        },
+        {
+          "name": "Portugal"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "search",
+      "title": "Countries",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Countries"
+        },
+        {
+          "kind": "field",
+          "id": "searchBox",
+          "label": "Search",
+          "bind": "query"
+        },
+        {
+          "kind": "list",
+          "id": "countryList",
+          "of": "countries",
+          "filterWhen": {
+            "op": "matches",
+            "left": "$row.name",
+            "right": "$state.query"
+          }
+        }
+      ]
+    }
+  ]
+}

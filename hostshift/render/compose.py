@@ -91,21 +91,23 @@ class SpecState {{
 
     fun resolve(path: String?): Any? {{
         if (path == null) return null
-        if (path.endsWith(".length")) {{
-            val base = resolve(path.substring(0, path.length - 7))
+        var p = path
+        if (p.startsWith("\\$state.")) p = p.substring(7)
+        if (p.endsWith(".length")) {{
+            val base = resolve(p.substring(0, p.length - 7))
             return when (base) {{
                 is Collection<*> -> base.size
                 is String -> base.length
                 else -> null
             }}
         }}
-        val parts = path.split(".")
+        val parts = p.split(".")
         var cur: Any? = values[parts[0]] ?: collections[parts[0]] ?: values
         for (i in (if (cur === values || cur === collections) 0 else 1) until parts.size) {{
-            val p = parts[i]
+            val seg = parts[i]
             cur = when (cur) {{
-                is Map<*, *> -> cur[p]
-                is JSONObject -> cur.opt(p)
+                is Map<*, *> -> cur[seg]
+                is JSONObject -> cur.opt(seg)
                 else -> null
             }}
             if (cur == null) break
@@ -251,7 +253,9 @@ fun SpecNode(n: JSONObject, state: SpecState, parentPath: String = "") {{
 
         "list" -> {{
             val of = n.optString("of")
-            val rows = state.collections[of] ?: mutableListOf()
+            val fw = n.opt("filterWhen")
+            val allRows = state.collections[of] ?: mutableListOf()
+            val rows = if (fw != null) allRows.filter {{ Predicates.evaluate(fw, state, it) }} else allRows
             val rowAction = n.opt("rowAction")
             val rowLabel = n.optString("rowLabel", "")
             record("collection", a11y.ifEmpty {{ label }}, false, enabled)
@@ -301,14 +305,14 @@ object Predicates {{
         return a == b
     }}
 
-    fun evaluate(p: Any?, s: SpecState): Boolean {{
+    fun evaluate(p: Any?, s: SpecState, row: Map<String, Any?>? = null): Boolean {{
         if (p == null || p !is JSONObject) return true
         val op = p.optString("op")
 
         if (op == "and" || op == "or") {{
             val clauses = p.optJSONArray("clauses") ?: return true
             for (i in 0 until clauses.length()) {{
-                val res = evaluate(clauses.optJSONObject(i), s)
+                val res = evaluate(clauses.optJSONObject(i), s, row)
                 if (op == "and" && !res) return false
                 if (op == "or" && res) return true
             }}
@@ -316,11 +320,14 @@ object Predicates {{
         }}
         if (op == "not") {{
             val clauses = p.optJSONArray("clauses")
-            return if (clauses != null && clauses.length() > 0) !evaluate(clauses.optJSONObject(0), s) else true
+            return if (clauses != null && clauses.length() > 0) !evaluate(clauses.optJSONObject(0), s, row) else true
         }}
 
-        val left = s.resolve(p.optString("left"))
-        val right = if (p.has("right")) p.get("right") else null
+        val leftPath = p.optString("left")
+        val left = if (row != null && leftPath.startsWith("\\$row.")) row[leftPath.substring(5)]
+                   else s.resolve(leftPath)
+        var right = if (p.has("right")) p.get("right") else null
+        if (right is String && right.startsWith("\\$state.")) right = s.resolve(right.substring(7))
 
         return when (op) {{
             "truthy" -> left != null && left != false && left != 0 && left != ""
@@ -757,7 +764,11 @@ object Instrumentation {{
             val of = n.optString("of", "")
             if (p.optString("kind") == "list" && of.isNotEmpty()) {{
                 val arr = JSONArray()
-                state.collections[of]?.forEach {{ arr.put(JSONObject(it)) }}
+                val fw = n.opt("filterWhen")
+                val rows = state.collections[of].orEmpty()
+                for (r in rows) {{
+                    if (fw == null || Predicates.evaluate(fw, state, r)) arr.put(JSONObject(r))
+                }}
                 p.put("rows", arr)
                 p.put("of", of)
             }}

@@ -1,0 +1,180 @@
+{
+  "version": "0.2",
+  "title": "Tasks",
+  "entry": "board",
+  "state": {
+    "page": {
+      "type": "number",
+      "default": 1
+    },
+    "filter": {
+      "type": "object",
+      "default": {
+        "status": "All"
+      }
+    }
+  },
+  "collections": {
+    "records": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "_page": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "TSK-001",
+          "_page": 1,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-002",
+          "_page": 1,
+          "status": "Done"
+        },
+        {
+          "id": "TSK-003",
+          "_page": 1,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-004",
+          "_page": 2,
+          "status": "Done"
+        },
+        {
+          "id": "TSK-005",
+          "_page": 2,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-006",
+          "_page": 2,
+          "status": "Done"
+        },
+        {
+          "id": "TSK-007",
+          "_page": 2,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-008",
+          "_page": 3,
+          "status": "Done"
+        },
+        {
+          "id": "TSK-009",
+          "_page": 3,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-010",
+          "_page": 3,
+          "status": "Done"
+        },
+        {
+          "id": "TSK-011",
+          "_page": 3,
+          "status": "Active"
+        },
+        {
+          "id": "TSK-012",
+          "_page": 4,
+          "status": "Done"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "board",
+      "title": "Task board",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Tasks"
+        },
+        {
+          "kind": "select",
+          "id": "statusFilter",
+          "label": "Status",
+          "bind": "filter.status",
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "nextPage",
+          "label": "Next page",
+          "guardWhen": {
+            "op": "lt",
+            "left": "page",
+            "right": 3
+          },
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "lastPage",
+          "label": "Page 3",
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "kind": "list",
+          "id": "taskList",
+          "of": "records",
+          "rowLabel": "id",
+          "filterWhen": {
+            "op": "and",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row._page",
+                "right": "$state.page"
+              },
+              {
+                "op": "or",
+                "clauses": [
+                  {
+                    "op": "eq",
+                    "left": "$row.status",
+                    "right": "$state.filter.status"
+                  },
+                  {
+                    "op": "eq",
+                    "left": "$state.filter.status",
+                    "right": "All"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

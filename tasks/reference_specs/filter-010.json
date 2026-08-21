@@ -1,0 +1,100 @@
+{
+  "version": "0.2",
+  "title": "Workshop items",
+  "entry": "items",
+  "state": {
+    "hideInactive": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "collections": {
+    "items": {
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "seed": [
+        {
+          "name": "Anvil",
+          "active": true
+        },
+        {
+          "name": "Barrel",
+          "active": false
+        },
+        {
+          "name": "Chisel",
+          "active": true
+        },
+        {
+          "name": "Dowel",
+          "active": true
+        },
+        {
+          "name": "Emery",
+          "active": false
+        },
+        {
+          "name": "File",
+          "active": true
+        },
+        {
+          "name": "Gauge",
+          "active": false
+        },
+        {
+          "name": "Hammer",
+          "active": true
+        },
+        {
+          "name": "Ingot",
+          "active": true
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "items",
+      "title": "Items",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Workshop items"
+        },
+        {
+          "kind": "toggle",
+          "id": "hideToggle",
+          "label": "Hide inactive",
+          "bind": "hideInactive"
+        },
+        {
+          "kind": "list",
+          "id": "itemList",
+          "of": "items",
+          "rowLabel": "name",
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "falsy",
+                "left": "$state.hideInactive"
+              },
+              {
+                "op": "eq",
+                "left": "$row.active",
+                "right": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

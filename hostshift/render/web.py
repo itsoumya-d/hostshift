@@ -39,6 +39,7 @@ RUNTIME_JS = r"""
 
   function resolve(state, path) {
     if (!path) return null;
+    if (path.indexOf("$state.") === 0) path = path.slice(7);
     if (path.endsWith(".length")) {
       const b = resolve(state, path.slice(0, -7));
       return b == null ? null : (b.length !== undefined ? b.length : null);
@@ -59,14 +60,18 @@ RUNTIME_JS = r"""
     return a === b;
   }
 
-  function evaluate(pred, state) {
+  function evaluate(pred, state, row) {
     if (!pred) return true;
     const op = pred.op;
-    if (op === "and") return (pred.clauses || []).every((c) => evaluate(c, state));
-    if (op === "or") return (pred.clauses || []).some((c) => evaluate(c, state));
-    if (op === "not") return !evaluate((pred.clauses || [])[0], state);
-    const left = resolve(state, pred.left);
-    const right = pred.right;
+    if (op === "and") return (pred.clauses || []).every((c) => evaluate(c, state, row));
+    if (op === "or") return (pred.clauses || []).some((c) => evaluate(c, state, row));
+    if (op === "not") return !evaluate((pred.clauses || [])[0], state, row);
+    const leftPath = pred.left;
+    const left = (row && typeof leftPath === "string" && leftPath.indexOf("$row.") === 0)
+      ? row[leftPath.slice(5)]
+      : resolve(state, leftPath);
+    let right = pred.right;
+    if (typeof right === "string" && right.indexOf("$state.") === 0) right = resolve(state, right.slice(7));
     switch (op) {
       case "truthy": return !!left;
       case "falsy": return !left;
@@ -182,7 +187,9 @@ RUNTIME_JS = r"""
         bind: n.bind || null,
         value: n.bind ? resolve(state, n.bind) : null,
         options: declared.options || [],
-        rows: n.kind === "list" && n.of ? (state.collections[n.of] || []) : [],
+        rows: n.kind === "list" && n.of
+          ? (state.collections[n.of] || []).filter((r) => n.filterWhen ? evaluate(n.filterWhen, state, r) : true)
+          : [],
         of: n.of || null, action: n.action || null,
         rowAction: n.rowAction || null, rowLabel: n.rowLabel || null, children: [],
       };

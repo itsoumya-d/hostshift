@@ -59,9 +59,10 @@ final class SpecState: ObservableObject {{
     }}
 
     func resolve(_ path: String?) -> Any? {{
-        guard let path else {{ return nil }}
-        if let direct = values[path] {{ return direct }}
-        return collections[path]
+        guard var p = path, !p.isEmpty else {{ return nil }}
+        if p.hasPrefix("$state.") {{ p = String(p.dropFirst(7)) }}
+        if let direct = values[p] {{ return direct }}
+        return collections[p]
     }}
 
     func set(_ path: String, _ v: Any?) {{ values[path] = v }}
@@ -131,7 +132,9 @@ struct SpecView: View {{
             .accessibilityLabel(a11y)
         case "list":
             let of = n["of"] as? String ?? ""
-            let rows = state.collections[of] ?? []
+            let allRows = state.collections[of] ?? []
+            let fw = n["filterWhen"]
+            let rows = fw != nil ? allRows.filter {{ Predicate.evaluate(fw, state, row: $0) }} : allRows
             let rowAction = n["rowAction"]
             let rowLabel = n["rowLabel"] as? String ?? ""
             VStack(alignment: .leading, spacing: 4) {{
@@ -163,13 +166,20 @@ struct SpecView: View {{
 // separate implementation on purpose: divergence between per-platform runtimes
 // is what this benchmark measures.
 enum Predicate {{
-    static func evaluate(_ p: Any?, _ s: SpecState) -> Bool {{
+    static func evaluate(_ p: Any?, _ s: SpecState, row: [String: Any]? = nil) -> Bool {{
         guard let p = p as? [String: Any], let op = p["op"] as? String else {{ return true }}
-        if op == "and" {{ return (p["clauses"] as? [[String: Any]] ?? []).allSatisfy {{ evaluate($0, s) }} }}
-        if op == "or" {{ return (p["clauses"] as? [[String: Any]] ?? []).contains {{ evaluate($0, s) }} }}
-        if op == "not" {{ return !evaluate((p["clauses"] as? [[String: Any]] ?? []).first, s) }}
-        let left = s.resolve(p["left"] as? String)
-        let right = p["right"]
+        if op == "and" {{ return (p["clauses"] as? [[String: Any]] ?? []).allSatisfy {{ evaluate($0, s, row: row) }} }}
+        if op == "or" {{ return (p["clauses"] as? [[String: Any]] ?? []).contains {{ evaluate($0, s, row: row) }} }}
+        if op == "not" {{ return !evaluate((p["clauses"] as? [[String: Any]] ?? []).first, s, row: row) }}
+        let leftPath = p["left"] as? String
+        let left: Any?
+        if let row = row, let lp = leftPath, lp.hasPrefix("$row.") {{
+            left = row[String(lp.dropFirst(5))]
+        }} else {{
+            left = s.resolve(leftPath)
+        }}
+        var right = p["right"]
+        if let rStr = right as? String, rStr.hasPrefix("$state.") {{ right = s.resolve(String(rStr.dropFirst(7))) }}
         switch op {{
         case "truthy": return isTruthy(left)
         case "falsy": return !isTruthy(left)
@@ -368,7 +378,11 @@ enum Instrumentation {{
                 "action": node["action"] as Any,
                 "rawNode": node
             ]
-            if kind == "list", let of = node["of"] as? String {{ pn["rows"] = state.collections[of] ?? [] }}
+            if kind == "list", let of = node["of"] as? String {{
+                let allRows = state.collections[of] ?? []
+                let fw = node["filterWhen"]
+                pn["rows"] = fw != nil ? allRows.filter {{ Predicate.evaluate(fw, state, row: $0) }} : allRows
+            }}
             var kids = [[String: Any]]()
             if let children = node["children"] as? [[String: Any]] {{
                 for k in children {{ if let c = conv(k) {{ kids.append(c) }} }}

@@ -1,0 +1,181 @@
+{
+  "version": "0.2",
+  "title": "Records",
+  "entry": "table",
+  "state": {
+    "page": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "collections": {
+    "records": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "_page": {
+          "type": "number"
+        }
+      },
+      "seed": [
+        {
+          "id": "REC-000",
+          "_page": 1
+        },
+        {
+          "id": "REC-001",
+          "_page": 1
+        },
+        {
+          "id": "REC-002",
+          "_page": 1
+        },
+        {
+          "id": "REC-003",
+          "_page": 1
+        },
+        {
+          "id": "REC-004",
+          "_page": 1
+        },
+        {
+          "id": "REC-005",
+          "_page": 1
+        },
+        {
+          "id": "REC-006",
+          "_page": 1
+        },
+        {
+          "id": "REC-007",
+          "_page": 1
+        },
+        {
+          "id": "REC-008",
+          "_page": 2
+        },
+        {
+          "id": "REC-009",
+          "_page": 2
+        },
+        {
+          "id": "REC-010",
+          "_page": 2
+        },
+        {
+          "id": "REC-011",
+          "_page": 2
+        },
+        {
+          "id": "REC-012",
+          "_page": 2
+        },
+        {
+          "id": "REC-013",
+          "_page": 2
+        },
+        {
+          "id": "REC-014",
+          "_page": 2
+        },
+        {
+          "id": "REC-015",
+          "_page": 2
+        },
+        {
+          "id": "REC-016",
+          "_page": 3
+        },
+        {
+          "id": "REC-017",
+          "_page": 3
+        },
+        {
+          "id": "REC-018",
+          "_page": 3
+        },
+        {
+          "id": "REC-019",
+          "_page": 3
+        },
+        {
+          "id": "REC-020",
+          "_page": 3
+        },
+        {
+          "id": "REC-021",
+          "_page": 3
+        },
+        {
+          "id": "REC-022",
+          "_page": 3
+        },
+        {
+          "id": "REC-023",
+          "_page": 3
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "table",
+      "title": "Records",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Records"
+        },
+        {
+          "kind": "button",
+          "id": "page1",
+          "label": "Page 1",
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "page2",
+          "label": "Page 2",
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "id": "page3",
+          "label": "Page 3",
+          "action": [
+            {
+              "op": "set",
+              "target": "page",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "kind": "list",
+          "id": "recordList",
+          "of": "records",
+          "rowLabel": "id",
+          "filterWhen": {
+            "op": "eq",
+            "left": "$row._page",
+            "right": "$state.page"
+          }
+        }
+      ]
+    }
+  ]
+}

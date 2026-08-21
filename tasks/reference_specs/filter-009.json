@@ -1,0 +1,129 @@
+{
+  "version": "0.2",
+  "title": "Invoices",
+  "entry": "table",
+  "state": {
+    "filter": {
+      "type": "object",
+      "default": {
+        "status": "All"
+      }
+    }
+  },
+  "collections": {
+    "invoices": {
+      "fields": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "seed": [
+        {
+          "id": "INV-501",
+          "status": "Overdue"
+        },
+        {
+          "id": "INV-502",
+          "status": "Paid"
+        },
+        {
+          "id": "INV-503",
+          "status": "Sent"
+        },
+        {
+          "id": "INV-504",
+          "status": "Overdue"
+        },
+        {
+          "id": "INV-505",
+          "status": "Paid"
+        },
+        {
+          "id": "INV-506",
+          "status": "Sent"
+        },
+        {
+          "id": "INV-507",
+          "status": "Overdue"
+        },
+        {
+          "id": "INV-508",
+          "status": "Paid"
+        },
+        {
+          "id": "INV-509",
+          "status": "Sent"
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "id": "table",
+      "title": "Invoices",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "title",
+          "label": "Invoices"
+        },
+        {
+          "kind": "select",
+          "id": "statusFilter",
+          "label": "Status",
+          "bind": "filter.status"
+        },
+        {
+          "kind": "list",
+          "id": "invoiceList",
+          "of": "invoices",
+          "rowLabel": "id",
+          "rowAction": {
+            "op": "navigate",
+            "target": "detail"
+          },
+          "filterWhen": {
+            "op": "or",
+            "clauses": [
+              {
+                "op": "eq",
+                "left": "$row.status",
+                "right": "$state.filter.status"
+              },
+              {
+                "op": "eq",
+                "left": "$state.filter.status",
+                "right": "All"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Invoice detail",
+      "children": [
+        {
+          "kind": "heading",
+          "id": "detailTitle",
+          "label": "Invoice"
+        },
+        {
+          "kind": "button",
+          "id": "back",
+          "label": "Back",
+          "action": [
+            {
+              "op": "navigate",
+              "target": "table"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

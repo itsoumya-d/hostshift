@@ -195,7 +195,7 @@ def main():
 
     print_header("7. Verdict")
     print(f"Total unit tests: {u_pass}/{u_total} passed")
-    print(f"Total reference specs parsed: 100/100")
+    print(f"Total reference specs parsed: {s_pass}/{s_total}")
     print(f"Core operator evaluations: {s_pass}/{s_total} passed")
     print(f"Paper cross-validation: {'PASS' if paper_ok else 'FAIL'}")
     print(f"Bibliography validation: {'PASS' if bib_ok else 'FAIL'}")
