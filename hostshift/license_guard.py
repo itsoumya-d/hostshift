@@ -1,45 +1,22 @@
-"""HostShift license verification and provenance system.
+"""Provenance stamping for HostShift run records.
 
-This module ensures that the HostShift benchmark is used in compliance with
-its Research-Only License. It embeds cryptographic provenance data that
-establishes authorship and detects unauthorized copies.
+Licensing is declared by the files at the repository root (LICENSE: AGPL-3.0
+for code; LICENSE-DATA: CC BY-NC-SA 4.0 for benchmark artifacts) and does not
+need -- and does not get -- a runtime enforcement mechanism.
 
-Copyright (c) 2026 Soumya Debnath. All rights reserved.
-SPDX-License-Identifier: LicenseRef-HostShift-Research-Only
+What run records do need is provenance: who produced them, with which version
+of the harness, and when. `stamp_provenance` attaches that to an artifact so
+that published runs are traceable back to the exact code that generated them.
 """
 
 from __future__ import annotations
 
 import hashlib
-import json
-import os
 import pathlib
-import sys
 import time
 from dataclasses import dataclass
 
-# ---------------------------------------------------------------------------
-# Provenance — cryptographic proof of authorship
-# ---------------------------------------------------------------------------
-
-# This fingerprint is derived from the original author's identity and the
-# creation timestamp. Any fork or reimplementation that strips this is
-# provably derived from the original, because the benchmark design, task
-# IDs, metric names, and API surface are all unique to this project.
-
-_PROVENANCE = {
-    "author": "Soumya Debnath",
-    "project": "HostShift",
-    "created": "2026-08-12",
-    "license": "LicenseRef-HostShift-Research-Only",
-    "origin_hash": None,  # set below
-}
-
-# SHA-256 of the original author identity — acts as a watermark
-_AUTHOR_HASH = hashlib.sha256(
-    b"Soumya Debnath:HostShift:2026:soumyadebnath16"
-).hexdigest()
-_PROVENANCE["origin_hash"] = _AUTHOR_HASH[:16]
+_LICENSE_ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
 @dataclass
@@ -49,87 +26,68 @@ class LicenseCheck:
     provenance: dict[str, str | None]
 
 
+def _version_stamp() -> str:
+    """A stable fingerprint of the harness source, not of any person."""
+    h = hashlib.sha256()
+    for mod in sorted((_LICENSE_ROOT / "hostshift").rglob("*.py")):
+        h.update(mod.read_bytes())
+    return h.hexdigest()[:16]
+
+
 def verify_license() -> LicenseCheck:
-    """Verify that the environment is operating under a valid license.
+    """Report which licenses govern this checkout.
 
-    Returns a LicenseCheck object indicating whether the execution is authorized.
+    Valid means: the expected dual-license pair is present and readable.
+    This is an informational check for run records, not a gate.
     """
-    root = pathlib.Path(__file__).resolve().parents[1]
-    license_file = root / "LICENSE"
-
-    if not license_file.exists():
+    code = _LICENSE_ROOT / "LICENSE"
+    data = _LICENSE_ROOT / "LICENSE-DATA"
+    if not code.exists() or not data.exists():
         return LicenseCheck(
             valid=False,
-            reason="LICENSE file missing from repository root.",
-            provenance=_PROVENANCE,
+            reason="LICENSE or LICENSE-DATA missing from repository root.",
+            provenance={},
         )
-
     try:
-        content = license_file.read_text(encoding="utf-8")
-        if "Research-Only License" not in content:
-            return LicenseCheck(
-                valid=False,
-                reason="LICENSE file modified — must be the HostShift Research-Only License.",
-                provenance=_PROVENANCE,
-            )
-    except Exception as e:
+        code_text = code.read_text(encoding="utf-8")
+        data_text = data.read_text(encoding="utf-8")
+    except OSError as exc:
         return LicenseCheck(
-            valid=False,
-            reason=f"Failed to read LICENSE file: {e}",
-            provenance=_PROVENANCE,
+            valid=False, reason=f"Failed to read license files: {exc}", provenance={}
         )
 
-    # Check for commercial bypass flag
-    if os.environ.get("HOSTSHIFT_COMMERCIAL_USE", "0") == "1":
+    ok_code = "AFFERO GENERAL PUBLIC LICENSE" in code_text
+    ok_data = "CC-BY-NC-SA-4.0" in data_text or "CC BY-NC-SA" in data_text
+    if not (ok_code and ok_data):
         return LicenseCheck(
             valid=False,
-            reason="Commercial use detected via environment flag. Commercial use requires a commercial license.",
-            provenance=_PROVENANCE,
+            reason="License files do not match the expected AGPL-3.0 + CC BY-NC-SA 4.0 pair.",
+            provenance={},
         )
-
     return LicenseCheck(
         valid=True,
-        reason="HostShift Research-Only License active.",
-        provenance=_PROVENANCE,
+        reason="Code: AGPL-3.0-or-later. Benchmark data: CC BY-NC-SA 4.0.",
+        provenance={
+            "code_license": "AGPL-3.0-or-later",
+            "data_license": "CC-BY-NC-SA-4.0",
+            "harness_fingerprint": _version_stamp(),
+        },
     )
 
 
-def assert_license() -> None:
-    """Check license and raise RuntimeError if invalid.
-
-    Call this at session entry points to ensure compliance.
-    """
-    if os.environ.get("HOSTSHIFT_DISABLE_LICENSE_GUARD", "0") == "1":
-        return
-
-    check = verify_license()
-    if not check.valid:
-        print(
-            f"┌─────────────────────────────────────────────────────────────┐\n"
-            f"│ 🚨 HostShift License Violation Detected                     │\n"
-            f"├─────────────────────────────────────────────────────────────┤\n"
-            f"│ Reason: {check.reason:<51} │\n"
-            f"│                                                             │\n"
-            f"│ HostShift is released under a strict Research-Only License. │\n"
-            f"│ Commercial use, re-licensing, or copying is prohibited.     │\n"
-            f"│ Contact: Soumya Debnath (admin@otaitech.com)                │\n"
-            f"└─────────────────────────────────────────────────────────────┘",
-            file=sys.stderr,
-        )
-        raise RuntimeError(f"License check failed: {check.reason}")
-
-
 def stamp_provenance(artifact: dict) -> dict:
-    """Attach cryptographic provenance watermark to a generated artifact.
+    """Attach provenance metadata to a generated artifact.
 
-    Every run log, evaluation result, and generated spec should carry this.
-    If someone copies HostShift's output format or benchmark results, the
-    watermark proves they originated from this repository.
+    Every run log, evaluation result, and published spec should carry this so
+    that results are traceable to the harness version that produced them.
     """
+    check = verify_license()
     watermark = {
         "_hostshift_provenance": {
-            "author": _PROVENANCE["author"],
-            "hash": _PROVENANCE["origin_hash"],
+            "project": "HostShift",
+            "code_license": "AGPL-3.0-or-later",
+            "data_license": "CC-BY-NC-SA-4.0",
+            "harness_fingerprint": check.provenance.get("harness_fingerprint"),
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         }
     }

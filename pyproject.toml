@@ -1,13 +1,13 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "hostshift"
 version = "0.1.0"
 description = "Cross-platform UI portability benchmark for LLM-generated interfaces"
 readme = "README.md"
-license = {text = "LicenseRef-HostShift-Research-Only"}
+license = "AGPL-3.0-or-later"
 requires-python = ">=3.11"
 authors = [
     {name = "Soumya Debnath", email = "admin@otaitech.com"},
@@ -21,9 +21,8 @@ keywords = [
     "accessibility",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

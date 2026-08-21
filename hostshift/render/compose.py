@@ -12,6 +12,14 @@ scale in LLM-generated UI.
 This renderer sets the label explicitly. The host profile records that Compose
 does not derive names implicitly, so a condition-A generation that omits it will
 show up as an accessibility-parity gap rather than passing silently.
+
+The instrumentation contract (render/bridge.py) requires /tree to report the
+*realized* hierarchy, never a re-serialization of the spec. The generated app
+therefore keeps a RenderedTree registry that composables populate as they run:
+a node exists in /tree output only if its composable actually composed, and its
+name/enabled properties are read back from what was applied to the widget --
+so a runtime that failed to build something, or built it unnamed, shows up as
+a parity gap instead of passing silently.
 """
 
 from __future__ import annotations
@@ -36,6 +44,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
+import org.json.JSONArray
 import org.json.JSONObject
 
 private const val SPEC_JSON = """{spec_json}"""
@@ -44,30 +53,38 @@ val SPEC: JSONObject = JSONObject(SPEC_JSON)
 
 // Runtime state. Mirrors hostshift/render/semantics.py as an independent
 // implementation; the divergence between platform runtimes is the measurement.
-class SpecState {{{{
+class SpecState {{
     val values = mutableStateMapOf<String, Any?>()
     val collections = mutableStateMapOf<String, MutableList<MutableMap<String, Any?>>>()
     var route by mutableStateOf(SPEC.optString("entry"))
 
-    init {{{{ reset() }}}}
+    init {{ reset() }}
 
-    fun reset() {{{{
-        values.clear(); collections.clear()
-        SPEC.optJSONObject("state")?.let {{{{ decls ->
-            decls.keys().forEach {{{{ k ->
+    fun reset() {{
+        values.clear()
+        collections.clear()
+        SPEC.optJSONObject("state")?.let {{ decls ->
+            decls.keys().forEach {{ k ->
                 val d = decls.getJSONObject(k)
-                values[k] = if (d.has("default")) d.get("default") else when (d.optString("type")) {{{{
-                    "string" -> ""; "number" -> 0; "boolean" -> false; else -> null
-                }}}}
-            }}}}
-        }}}}
                 values[k] = if (d.has("default")) d.get("default") else when (d.optString("type")) {{
                     "string" -> ""; "number" -> 0; "boolean" -> false; else -> null
                 }}
             }}
         }}
         SPEC.optJSONObject("collections")?.let {{ colls ->
-            colls.keys().forEach {{ k -> collections[k] = mutableListOf() }}
+            colls.keys().forEach {{ k ->
+                val seed = colls.getJSONObject(k).optJSONArray("seed")
+                val rows = mutableListOf<MutableMap<String, Any?>>()
+                if (seed != null) {{
+                    for (i in 0 until seed.length()) {{
+                        val r = seed.getJSONObject(i)
+                        val m = mutableMapOf<String, Any?>()
+                        r.keys().forEach {{ mk -> m[mk] = r.get(mk) }}
+                        rows.add(m)
+                    }}
+                }}
+                collections[k] = rows
+            }}
         }}
         route = SPEC.optString("entry")
     }}
@@ -79,8 +96,6 @@ class SpecState {{{{
             return when (base) {{
                 is Collection<*> -> base.size
                 is String -> base.length
-                is JSONArray -> base.length()
-                is JSONObject -> base.length()
                 else -> null
             }}
         }}
@@ -99,61 +114,157 @@ class SpecState {{{{
     }}
 }}
 
-@Composable
-fun SpecNodes(nodes: List<JSONObject>, state: SpecState) {{
-    Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {{ nodes.forEach {{ SpecNode(it, state) }} }}
+// What composition actually built. Entries are written by composables as they
+// run and read back by /tree, so membership proves realization: a control the
+// runtime failed to build cannot appear in the reported tree.
+object RenderedTree {{
+    class Entry(val kind: String, val name: String?, val focusable: Boolean, val enabled: Boolean)
+
+    val entries = LinkedHashMap<String, Entry>()
+
+    fun record(path: String, kind: String, name: String?, focusable: Boolean, enabled: Boolean) {{
+        entries[path] = Entry(kind, name, focusable, enabled)
+    }}
 }}
 
 @Composable
-fun SpecNode(n: JSONObject, state: SpecState) {{
+fun ScreenRoot(state: SpecState) {{
+    // Clearing keyed on route: runs during composition, before children of the
+    // new screen record themselves, so stale entries from the previous screen
+    // cannot survive navigation.
+    remember(state.route) {{ RenderedTree.entries.clear(); true }}
+    val screens = SPEC.optJSONArray("screens") ?: return
+    var screen = screens.optJSONObject(0)
+    for (i in 0 until screens.length()) {{
+        val s = screens.getJSONObject(i)
+        if (s.optString("id") == state.route) {{ screen = s; break }}
+    }}
+    val kids = screen?.optJSONArray("children")
+    val list = (0 until (kids?.length() ?: 0)).map {{ kids!!.getJSONObject(it) }}
+    SpecNodes(list, state)
+}}
+
+@Composable
+fun SpecNodes(nodes: List<JSONObject>, state: SpecState, path: String = "") {{
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {{ nodes.forEach {{ SpecNode(it, state, path) }} }}
+}}
+
+@Composable
+fun SpecNode(n: JSONObject, state: SpecState, parentPath: String = "") {{
     val kind = n.optString("kind", "stack")
     val id = n.optString("id", "")
     val label = n.optString("label", "")
     val a11y = n.optString("a11yLabel", label)
     val enabled = Predicates.evaluate(n.opt("enabledWhen"), state)
     val tag = Modifier.testTag(id)
+    val path = if (id.isNotEmpty()) parentPath + "/" + id else parentPath
+
+    fun record(realKind: String, realName: String?, focusable: Boolean, isEnabled: Boolean) {{
+        RenderedTree.record(path, realKind, realName, focusable, isEnabled)
+    }}
 
     when (kind) {{
-        "heading", "text" -> Text(label, modifier = tag)
+        "heading", "text" -> {{
+            record("text", label, false, enabled)
+            Text(label, modifier = tag)
+        }}
 
-        "banner" -> Text(
-            label,
-            color = if (n.optString("tone") == "error") MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = tag.semantics {{ contentDescription = a11y }}
-        )
+        "banner" -> {{
+            record("status", a11y.ifEmpty {{ label }}, false, enabled)
+            Text(
+                label,
+                color = if (n.optString("tone") == "error") MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = tag.semantics {{ contentDescription = a11y }}
+            )
+        }}
 
         // `label =` is what gives this control an accessible name on Android.
         // A separate Text composable would not associate.
-        "field" -> OutlinedTextField(
-            value = (state.resolve(n.optString("bind")) as? String) ?: "",
-            onValueChange = {{ state.values[n.optString("bind")] = it }},
-            label = {{ Text(label) }},
-            enabled = enabled,
-            modifier = tag.semantics {{ contentDescription = a11y }}
-        )
-
-        "toggle" -> Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {{
-            Switch(
-                checked = (state.resolve(n.optString("bind")) as? Boolean) ?: false,
-                onCheckedChange = {{ state.values[n.optString("bind")] = it }},
+        "field" -> {{
+            record("input", a11y.ifEmpty {{ label }}, true, enabled)
+            OutlinedTextField(
+                value = (state.resolve(n.optString("bind")) as? String) ?: "",
+                onValueChange = {{ state.values[n.optString("bind")] = it }},
+                label = {{ Text(label) }},
                 enabled = enabled,
                 modifier = tag.semantics {{ contentDescription = a11y }}
             )
-            Spacer(Modifier.width(8.dp)); Text(label)
         }}
 
-        "button" -> Button(
-            onClick = {{ Actions.apply(n.opt("action"), state) }},
-            enabled = enabled,
-            modifier = tag
-        ) {{ Text(label) }}
+        "toggle" -> {{
+            record("boolean", a11y.ifEmpty {{ label }}, true, enabled)
+            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {{
+                Switch(
+                    checked = (state.resolve(n.optString("bind")) as? Boolean) ?: false,
+                    onCheckedChange = {{ state.values[n.optString("bind")] = it }},
+                    enabled = enabled,
+                    modifier = tag.semantics {{ contentDescription = a11y }}
+                )
+                Spacer(Modifier.width(8.dp)); Text(label)
+            }}
+        }}
+
+        "select" -> {{
+            record("choice", a11y.ifEmpty {{ label }}, true, enabled)
+            Column(modifier = tag) {{
+                Text(label)
+                val bind = n.optString("bind")
+                val decl = SPEC.optJSONObject("state")?.optJSONObject(bind)
+                val opts = decl?.optJSONArray("options") ?: JSONArray()
+                for (i in 0 until opts.length()) {{
+                    val opt = opts.getString(i)
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {{
+                        RadioButton(
+                            selected = state.resolve(bind) == opt,
+                            onClick = {{ state.values[bind] = opt }},
+                            enabled = enabled
+                        )
+                        Text(opt)
+                    }}
+                }}
+            }}
+        }}
+
+        "image" -> {{
+            record("media", a11y.ifEmpty {{ label }}, false, enabled)
+            Box(
+                modifier = tag
+                    .semantics {{ contentDescription = a11y }}
+                    .fillMaxWidth()
+                    .height(120.dp),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {{ Text(label) }}
+        }}
+
+        "button" -> {{
+            record("action", a11y.ifEmpty {{ label }}, true, enabled)
+            Button(
+                onClick = {{ Actions.apply(n.opt("action"), state) }},
+                enabled = enabled,
+                modifier = tag
+            ) {{ Text(label) }}
+        }}
 
         "list" -> {{
-            val rows = state.collections[n.optString("of")] ?: mutableListOf()
+            val of = n.optString("of")
+            val rows = state.collections[of] ?: mutableListOf()
+            val rowAction = n.opt("rowAction")
+            val rowLabel = n.optString("rowLabel", "")
+            record("collection", a11y.ifEmpty {{ label }}, false, enabled)
+            for (i in rows.indices) {{
+                val r = rows[i]
+                val name = (rowLabel.ifEmpty {{ null }}?.let {{ r[it] }}
+                    ?: r["title"] ?: r["name"] ?: r["label"] ?: "") as Any
+                RenderedTree.record(
+                    path + "#" + i, "item",
+                    (name as? String)?.takeIf {{ it.isNotEmpty() }} ?: name.toString(),
+                    rowAction != null, enabled
+                )
+            }}
             Column(modifier = tag) {{
                 rows.forEach {{ r ->
                     ListItem(headlineContent = {{
@@ -163,11 +274,21 @@ fun SpecNode(n: JSONObject, state: SpecState) {{
             }}
         }}
 
-        "divider" -> HorizontalDivider(modifier = tag)
+        "divider" -> {{
+            record("separator", null, false, enabled)
+            HorizontalDivider(modifier = tag)
+        }}
 
-        else -> Column(modifier = tag) {{
-            val kids = n.optJSONArray("children") ?: return@Column
-            (0 until kids.length()).forEach {{ i -> SpecNode(kids.getJSONObject(i), state) }}
+        else -> {{
+            record("container", null, false, enabled)
+            Column(modifier = tag) {{
+                val kids = n.optJSONArray("children")
+                if (kids != null) {{
+                    for (i in 0 until kids.length()) {{
+                        SpecNode(kids.getJSONObject(i), state, path)
+                    }}
+                }}
+            }}
         }}
     }}
 }}
@@ -183,7 +304,7 @@ object Predicates {{
     fun evaluate(p: Any?, s: SpecState): Boolean {{
         if (p == null || p !is JSONObject) return true
         val op = p.optString("op")
-        
+
         if (op == "and" || op == "or") {{
             val clauses = p.optJSONArray("clauses") ?: return true
             for (i in 0 until clauses.length()) {{
@@ -252,9 +373,9 @@ object Predicates {{
 object Actions {{
     fun expand(value: Any?, state: SpecState, row: Map<String, Any?>?, payload: Any?): Any? {{
         if (value is String) {{
-            if (value == "$payload") return payload
-            if (value.startsWith("$state.")) return state.resolve(value.substring(7))
-            if (value.startsWith("$row.")) return row?.get(value.substring(5))
+            if (value == "\\$payload") return payload
+            if (value.startsWith("\\$state.")) return state.resolve(value.substring(7))
+            if (value.startsWith("\\$row.")) return row?.get(value.substring(5))
         }}
         if (value is JSONArray) {{
             val arr = JSONArray()
@@ -369,7 +490,7 @@ object Instrumentation {{
                     val requestLine = reader.readLine() ?: continue
                     val parts = requestLine.split(" ")
                     if (parts.size < 2) {{ client.close(); continue }}
-                    
+
                     val path = parts[1]
                     var contentLength = 0
                     while (true) {{
@@ -379,7 +500,7 @@ object Instrumentation {{
                             contentLength = line.substringAfter(":").trim().toIntOrNull() ?: 0
                         }}
                     }}
-                    
+
                     var body = ""
                     if (contentLength > 0) {{
                         val chars = CharArray(contentLength)
@@ -394,7 +515,10 @@ object Instrumentation {{
                         }} catch (e: Exception) {{
                             responseJson = JSONObject().put("error", e.message).toString()
                         }}
-                        val response = "HTTP/1.1 200 OK\\r\\nContent-Type: application/json\\r\\nConnection: close\\r\\n\\r\\n$responseJson"
+                        val payloadBytes = responseJson.toByteArray()
+                        val response = "HTTP/1.1 200 OK\\r\\nContent-Type: application/json\\r\\n" +
+                            "Content-Length: " + payloadBytes.size + "\\r\\nConnection: close\\r\\n\\r\\n" +
+                            responseJson
                         client.outputStream.write(response.toByteArray())
                         client.close()
                     }}
@@ -424,16 +548,16 @@ object Instrumentation {{
                 val proj = project(state)
                 val nodes = mutableListOf<JSONObject>()
                 walk(proj, nodes)
-                
+
                 val facts = JSONObject()
                 facts.put("error_visible", nodes.any {{ it.optString("kind") == "banner" && it.optString("tone") == "error" }})
                 facts.put("empty_state_visible", nodes.any {{ it.optString("kind") == "banner" && it.optString("tone") == "empty" }})
-                
+
                 val enabled = JSONObject()
                 val fieldValues = JSONObject()
                 val options = JSONObject()
                 val visibleRows = JSONObject()
-                
+
                 nodes.forEach {{ n ->
                     val id = n.optString("id", "")
                     if (id.isNotEmpty()) {{
@@ -455,40 +579,7 @@ object Instrumentation {{
                 facts.put("visible_rows", visibleRows)
                 facts.toString()
             }}
-            "/tree" -> {{
-                val proj = project(state)
-                fun toTree(n: JSONObject): JSONObject {{
-                    val kind = n.optString("kind")
-                    val canonicalKind = when (kind) {{
-                        "text", "heading" -> "text"
-                        "field" -> "input"
-                        "select" -> "choice"
-                        "toggle" -> "boolean"
-                        "button" -> "action"
-                        "list" -> "collection"
-                        "listItem" -> "item"
-                        "divider" -> "separator"
-                        "banner" -> "status"
-                        else -> "container"
-                    }}
-                    val treeNode = JSONObject()
-                    treeNode.put("kind", canonicalKind)
-                    treeNode.put("name", n.optString("a11y").takeIf {{ it.isNotEmpty() }} ?: n.optString("label").takeIf {{ it.isNotEmpty() }} ?: JSONObject.NULL)
-                    treeNode.put("node_id", n.optString("id").takeIf {{ it.isNotEmpty() }} ?: JSONObject.NULL)
-                    treeNode.put("focusable", n.optBoolean("focusable"))
-                    
-                    val children = JSONArray()
-                    val kids = n.optJSONArray("children")
-                    if (kids != null) {{
-                        for (i in 0 until kids.length()) {{
-                            children.put(toTree(kids.getJSONObject(i)))
-                        }}
-                    }}
-                    treeNode.put("children", children)
-                    return treeNode
-                }}
-                toTree(proj).toString()
-            }}
+            "/tree" -> realizedTree(state).toString()
             "/actions" -> {{
                 val proj = project(state)
                 val nodes = mutableListOf<JSONObject>()
@@ -499,7 +590,7 @@ object Instrumentation {{
                         val act = JSONObject()
                         act.put("id", n.optString("id"))
                         act.put("kind", n.optString("kind"))
-                        act.put("name", n.optString("a11y").takeIf {{ it.isNotEmpty() }} ?: n.optString("label"))
+                        act.put("name", n.optString("a11y").takeIf {{ it.isNotEmpty() }} ?: n.optString("label").takeIf {{ it.isNotEmpty() }} ?: JSONObject.NULL)
                         act.put("enabled", n.optBoolean("enabled"))
                         act.put("value", n.opt("value") ?: JSONObject.NULL)
                         act.put("options", n.optJSONArray("options") ?: JSONArray())
@@ -528,17 +619,18 @@ object Instrumentation {{
                 val json = JSONObject(body)
                 val id = json.optString("id")
                 val value = if (json.has("value")) json.get("value") else null
-                
+
                 val proj = project(state)
                 val nodes = mutableListOf<JSONObject>()
                 walk(proj, nodes)
-                
+
                 if (id.contains("#")) {{
-                    val (listId, idxStr) = id.split("#")
+                    val idx = id.split("#")[1].toInt()
+                    val listId = id.split("#")[0]
                     val lst = nodes.find {{ it.optString("id") == listId && it.optString("kind") == "list" }}
                     if (lst != null && lst.has("rowAction") && lst.optBoolean("enabled")) {{
                         val rowMap = mutableMapOf<String, Any?>()
-                        val r = lst.optJSONArray("rows")?.optJSONObject(idxStr.toInt())
+                        val r = lst.optJSONArray("rows")?.optJSONObject(idx)
                         r?.keys()?.forEach {{ k -> rowMap[k] = r.get(k) }}
                         Actions.apply(lst.opt("rowAction"), state, value, rowMap)
                     }}
@@ -550,7 +642,8 @@ object Instrumentation {{
                         if ((kind == "field" || kind == "select") && bind.isNotEmpty()) {{
                             state.values[bind] = value
                         }} else if (kind == "toggle" && bind.isNotEmpty()) {{
-                            state.values[bind] = if (value == null) !(node.optBoolean("value")) else value as Boolean
+                            val cur = node.opt("value") as? Boolean ?: false
+                            state.values[bind] = if (value == null || value == JSONObject.NULL) !cur else value as Boolean
                         }}
                         Actions.apply(node.opt("action"), state, value, null)
                     }}
@@ -565,6 +658,73 @@ object Instrumentation {{
         }}
     }}
 
+    // The realized tree. The screen layout supplies the skeleton, but a node
+    // appears only if its composable recorded itself in RenderedTree, and its
+    // kind/name/enabled are read back from that record -- so an unbuilt or
+    // unnamed control surfaces as a parity gap instead of passing silently.
+    private fun realizedTree(state: SpecState): JSONObject {{
+        fun conv(path: String, n: JSONObject): JSONObject {{
+            val id = n.optString("id", "")
+            val p = if (id.isNotEmpty()) path + "/" + id else path
+            val entry = RenderedTree.entries[p]
+
+            val o = JSONObject()
+            o.put("kind", entry?.kind ?: "container")
+            o.put("name", entry?.name ?: JSONObject.NULL)
+            o.put("node_id", id.takeIf {{ it.isNotEmpty() }} ?: JSONObject.NULL)
+            o.put("focusable", entry?.focusable ?: false)
+            o.put("enabled", entry?.enabled ?: false)
+
+            val children = JSONArray()
+            if (entry != null) {{
+                if (entry.kind == "collection") {{
+                    var i = 0
+                    while (RenderedTree.entries.containsKey(p + "#" + i)) {{
+                        val rowEntry = RenderedTree.entries[p + "#" + i]!!
+                        val item = JSONObject()
+                        item.put("kind", "item")
+                        item.put("name", rowEntry.name ?: JSONObject.NULL)
+                        item.put("node_id", id + "#" + i)
+                        item.put("focusable", rowEntry.focusable)
+                        item.put("enabled", rowEntry.enabled)
+                        item.put("children", JSONArray())
+                        children.put(item)
+                        i += 1
+                    }}
+                }}
+                val kids = n.optJSONArray("children")
+                if (kids != null) {{
+                    for (i in 0 until kids.length()) {{
+                        children.put(conv(p, kids.getJSONObject(i)))
+                    }}
+                }}
+            }}
+            o.put("children", children)
+            return o
+        }}
+
+        val screens = SPEC.optJSONArray("screens") ?: JSONArray()
+        var screen = screens.optJSONObject(0)
+        for (i in 0 until screens.length()) {{
+            val s = screens.getJSONObject(i)
+            if (s.optString("id") == state.route) {{ screen = s; break }}
+        }}
+        val root = JSONObject()
+        root.put("kind", "container")
+        root.put("name", screen?.optString("title", SPEC.optString("title")) ?: JSONObject.NULL)
+        root.put("node_id", screen?.optString("id") ?: JSONObject.NULL)
+        root.put("focusable", false)
+        root.put("enabled", true)
+        val children = JSONArray()
+        screen?.optJSONArray("children")?.let {{ c ->
+            for (i in 0 until c.length()) {{
+                children.put(conv("", c.getJSONObject(i)))
+            }}
+        }}
+        root.put("children", children)
+        return root
+    }}
+
     private fun project(state: SpecState): JSONObject {{
         val screens = SPEC.optJSONArray("screens") ?: JSONArray()
         var screen = screens.optJSONObject(0)
@@ -575,12 +735,12 @@ object Instrumentation {{
             }}
         }}
         if (screen == null) return JSONObject()
-        
+
         fun conv(n: JSONObject): JSONObject? {{
             if (!Predicates.evaluate(n.opt("visibleWhen"), state)) return null
             val bind = n.optString("bind", "")
             val declared = SPEC.optJSONObject("state")?.optJSONObject(bind)
-            
+
             val p = JSONObject()
             p.put("kind", n.optString("kind", "stack"))
             p.put("id", n.optString("id", ""))
@@ -593,7 +753,7 @@ object Instrumentation {{
             p.put("bind", bind)
             p.put("value", if (bind.isNotEmpty()) state.resolve(bind) else JSONObject.NULL)
             p.put("options", declared?.optJSONArray("options") ?: JSONArray())
-            
+
             val of = n.optString("of", "")
             if (p.optString("kind") == "list" && of.isNotEmpty()) {{
                 val arr = JSONArray()
@@ -604,7 +764,7 @@ object Instrumentation {{
             if (n.has("action")) p.put("action", n.opt("action"))
             if (n.has("rowAction")) p.put("rowAction", n.opt("rowAction"))
             if (n.has("rowLabel")) p.put("rowLabel", n.optString("rowLabel"))
-            
+
             val kids = JSONArray()
             n.optJSONArray("children")?.let {{ c ->
                 for (i in 0 until c.length()) {{
@@ -614,7 +774,7 @@ object Instrumentation {{
             p.put("children", kids)
             return p
         }}
-        
+
         val root = JSONObject()
         root.put("kind", "screen")
         root.put("id", screen.optString("id"))
@@ -648,23 +808,13 @@ class MainActivity : ComponentActivity() {{
         super.onCreate(savedInstanceState)
         val state = SpecState()
         Instrumentation.start(state)
-        setContent {{{{
-            MaterialTheme {{{{
-                val screens = SPEC.optJSONArray("screens")!!
-                val entry = SPEC.optString("entry")
-                var screen = screens.getJSONObject(0)
-                for (i in 0 until screens.length()) {{{{
-                    if (screens.getJSONObject(i).optString("id") == entry) {{{{
-                        screen = screens.getJSONObject(i)
-                    }}}}
-                }}}}
-                val kids = screen.optJSONArray("children")
-                val list = (0 until (kids?.length() ?: 0)).map {{{{ kids!!.getJSONObject(it) }}}}
-                SpecNodes(list, state)
-            }}}}
-        }}}}
-    }}}}
-}}}}
+        setContent {{
+            MaterialTheme {{
+                ScreenRoot(state)
+            }}
+        }}
+    }}
+}}
 '''
 
 

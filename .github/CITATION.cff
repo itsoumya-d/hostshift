@@ -6,7 +6,7 @@ authors:
     given-names: Soumya
 type: software
 license: AGPL-3.0-or-later
-repository-code: "https://github.com/soumyadebnath/hostshift"
+repository-code: "https://github.com/itsoumya-d/hostshift"
 date-released: "2026-08-12"
 keywords:
   - benchmark

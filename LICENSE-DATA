@@ -1,24 +1,43 @@
-HostShift Benchmark Data License
-================================
-Copyright (c) 2026 Soumya Debnath. All rights reserved.
+HostShift — Benchmark Data License
+==================================
 
-The following components of this repository are covered by the same
-Research-Only License as the code (see LICENSE):
+Copyright (c) 2026 Soumya Debnath
 
-  - tasks/          (task suite, reference specs, external corpus)
-  - schema/         (UISpec schema definition)
-  - paper/          (paper source and figures)
+This license applies to the benchmark *data* artifacts in this repository:
 
-PERMITTED:
-  - Viewing for personal study
-  - Citing in academic publications
-  - Reproducing published results for peer review
+  - tasks/            (task suites, reference specifications, corpora)
+  - schema/           (UISpec JSON Schema definitions)
+  - runs/             (experiment records, when published)
+  - paper/            (paper source and bibliography)
 
-NOT PERMITTED (without written permission):
-  - Copying or redistributing the data
-  - Creating derivative datasets
-  - Reimplementing the benchmark specification
-  - Commercial use of any kind
-  - Training ML models on this data
+The *source code* is licensed separately under the GNU Affero General Public
+License v3.0 or later (see LICENSE).
 
-For commercial licensing: soumyadebnath16@gmail.com
+Benchmark data artifacts are licensed under the
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+Public License (CC BY-NC-SA 4.0).
+
+You are free to:
+
+  - Share — copy and redistribute the material in any medium or format.
+  - Adapt — remix, transform, and build upon the material.
+
+Under the following terms:
+
+  - Attribution — You must give appropriate credit, provide a link to the
+    license, and indicate if changes were made. You may do so in any
+    reasonable manner, but not in any way that suggests the licensor endorses
+    you or your use. Cite the HostShift paper (see CITATION.cff).
+  - NonCommercial — You may not use the material for commercial purposes.
+  - ShareAlike — If you remix, transform, or build upon the material, you
+    must distribute your contributions under the same license as the original.
+  - No additional restrictions — You may not apply legal terms or
+    technological measures that legally restrict others from doing anything
+    the license permits.
+
+Full legal code: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+SPDX-License-Identifier: CC-BY-NC-SA-4.0
+
+For permissions beyond the scope of this license, contact:
+Soumya Debnath — admin@otaitech.com
