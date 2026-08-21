@@ -258,6 +258,22 @@ class AccessibilityTreeOperator:
     # toggles, tap list rows, then press buttons.
     _POLICY_ORDER = ("input", "choice", "boolean", "listItem", "action")
 
+    # Sessions legitimately report either the spec vocabulary ("field",
+    # "select", "toggle", "button") or the canonical one ("input", ...):
+    # simulated sessions project spec nodes, device-backed sessions lower
+    # native controls. Normalize both so the policy sees one vocabulary.
+    _KIND_ALIASES = {
+        "field": "input",
+        "select": "choice",
+        "toggle": "boolean",
+        "button": "action",
+    }
+
+    @classmethod
+    def _canonical_kind(cls, action: dict) -> str:
+        raw = str(action.get("kind", "")).lower()
+        return cls._KIND_ALIASES.get(raw, raw)
+
     def run(self, session: Session, goal: str, max_steps: int) -> int:
         steps = 0
         used: set[str] = set()
@@ -272,14 +288,14 @@ class AccessibilityTreeOperator:
             plan = next(
                 (
                     a for kind in self._POLICY_ORDER
-                    for a in pending if str(a.get("kind", "")).lower() == kind
+                    for a in pending if self._canonical_kind(a) == kind
                 ),
                 None,
             )
             if plan is None:
                 break
 
-            kind = str(plan.get("kind", "")).lower()
+            kind = self._canonical_kind(plan)
             if kind == "input":
                 session.invoke(plan["id"], self._fill_value(plan))
             elif kind in ("choice", "boolean"):

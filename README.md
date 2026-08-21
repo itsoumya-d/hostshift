@@ -24,11 +24,17 @@ Read this before quoting any number.
 - **The offline core is real**: reference interpreter, oracle, metrics,
   statistics, coverage classifier, emitted runtimes — 198 assertions green,
   linted, CI-gated.
-- **The device-backed sessions are implemented and their emitted apps compile**:
-  the generated SwiftUI program parses under `swiftc` (checked in CI when
-  available) and the generated Kotlin is structurally validated. Driving real
-  simulators end-to-end remains manual; until that run happens, every recorded
-  result comes from simulated sessions and must be labelled as such.
+- **The device-backed sessions are implemented; the web host is now
+  device-verified**: `scripts/device_web_check.py` renders reference specs in
+  real Chromium through `WebSession`, reads the realized DOM tree, operates the
+  UI with the scripted operator, and grades through the state oracle — all six
+  sampled specs pass (`render -> observe -> operate -> grade`). It also caught
+  and fixed a real defect: the scripted operator ignored spec-vocabulary kinds,
+  silently doing nothing against every shipped renderer. The generated SwiftUI
+  program parses under `swiftc` (checked in CI when available), the generated
+  Kotlin is structurally validated, and driving simulators for those two hosts
+  remains manual; until that run happens, their recorded results come from
+  simulated sessions and must be labelled as such.
 - **The key results below are from a synthetic pipeline check**, not an
   experiment. They exist to prove the reporting path works.
 
@@ -138,6 +144,7 @@ hostshift/visual_fidelity.py    structural layout/density/consistency heuristics
 tasks/reference_specs/      hand-written specs incl. 11 solver-verified filter specs
 scripts/build_filter_specs.py   regenerate the filter fixtures
 scripts/verify_filter_specs.py  prove every filter spec is solvable end to end
+scripts/device_web_check.py     drive reference specs in real Chromium (device-backed)
 tests/test_metrics.py       20 tests — TED, parity, host-lock, statistics
 tests/test_oracle.py        13 tests — grading, plus assertions on the shipped suite
 tests/test_render.py        28 tests — semantics, sessions, host realization
@@ -333,8 +340,9 @@ coverage figure** — the report refuses to omit that warning.
 
 ## What's still to build
 
-1. **Run the device-backed sessions for real.** Web needs `pip install
-   playwright && playwright install chromium`. SwiftUI and Compose need the
+1. **Run the device-backed sessions for real.** Web is done and reproducible:
+   `pip install playwright && playwright install chromium`, then
+   `python3 scripts/device_web_check.py`. SwiftUI and Compose need the
    emitted apps launched on simulator/emulator (`adb forward tcp:8782
    tcp:8782` for Android); the instrumentation bridge is implemented on both
    ends. The Compose `/tree` endpoint reports the **realized composition**

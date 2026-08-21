@@ -153,6 +153,29 @@ def test_a11y_operator_fills_fields_then_toggles_then_buttons():
     assert steps == 3
 
 
+def test_a11y_operator_understands_spec_vocabulary():
+    """Regression: real renderers report spec kinds ('field'/'button'), the
+    policy speaks canonical kinds. Device verification caught the operator
+    silently doing nothing against every shipped session; both vocabularies
+    must drive it."""
+    sess = FakeSession([
+        [
+            {"id": "f", "kind": "field", "name": "Full name", "enabled": True,
+             "value": "", "options": []},
+            {"id": "sel", "kind": "select", "name": "Tier", "enabled": True,
+             "value": None, "options": ["free", "pro"]},
+            {"id": "tg", "kind": "toggle", "name": "Opt in", "enabled": True,
+             "value": False, "options": []},
+            {"id": "go", "kind": "button", "name": "Go", "enabled": True,
+             "value": None, "options": []},
+        ],
+    ])
+    steps = AccessibilityTreeOperator().run(sess, "goal", max_steps=10)
+    assert [i for i, _ in sess.invoked] == ["f", "sel", "tg", "go"]
+    assert sess.invoked[1][1] == "free"  # first option chosen for a select
+    assert steps == 4
+
+
 def test_a11y_operator_never_repeats_an_action():
     actions = [{"id": "go", "kind": "action", "name": "Go", "enabled": True,
                 "value": None, "options": []}]
