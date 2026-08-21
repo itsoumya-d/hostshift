@@ -27,6 +27,9 @@ Thumbs.db
 runs/
 *.jsonl.bak
 .pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
 
 # Sibling projects kept out of this repo's scope
 autopilot-fde/
