@@ -17,7 +17,7 @@
 \title{HostShift: Do Agent-Generated Interfaces Survive a Change of Host?}
 
 \author{%
-  Soumya Deb Nath \\
+  Soumya Debnath \\
   Independent Researcher
 }
 
@@ -167,7 +167,10 @@ of zero while differing sharply in per-task lock, and reporting only the
 flattering one is the obvious way to game this benchmark.
 
 \section{Experimental Setup}
-We evaluate three generative models across the Gemini family: Gemini 3.1 Flash Lite, Gemini Flash Lite, and Gemini Flash. Interfaces are generated for four hosts: Web (Playwright/Chromium), SwiftUI (iOS Simulator), Compose (Android Emulator), and TUI (Textual/terminal). Interaction Parity is measured using a computer-use operator, with a deterministic accessibility-scripted operator as an ablation. The task suite consists of 100 tasks spanning 8 categories (form validation, list-detail, filterable table, multi-step wizard, settings with conditional enablement, search with empty states, dependent fields, and media actions) and 3 difficulty levels. We evaluate under two conditions: A-freeform and B-schema. Both conditions receive an identical repair budget of 3 rounds. The experiment comprises 125 total generation runs (64 Condition~A, 61 Condition~B) evaluated across 500 host sessions. All reported numbers are computed directly from the released run logs; Wilson score 95\% confidence intervals are provided for key rates.
+We evaluate three generative models across the Gemini family: Gemini 3.1 Flash Lite, Gemini Flash Lite, and Gemini Flash. Interfaces are generated for four hosts: Web (Playwright/Chromium), SwiftUI (iOS Simulator), Compose (Android Emulator), and TUI (Textual/terminal). Interaction Parity is measured using a computer-use operator, with a deterministic accessibility-scripted operator as an ablation. The task suite consists of 100 tasks spanning 8 categories (form validation, list-detail, filterable table, multi-step wizard, settings with conditional enablement, search with empty states, dependent fields, and media actions) and 3 difficulty levels. We evaluate the two deployment arms run in this study: A-freeform and
+B-schema. The full benchmark also defines a B-naive arm (identical spec,
+first-pass renderer) which decomposes representation from renderer expertise;
+it is reported separately and excluded from the headline contrast here. Both conditions receive an identical repair budget of 3 rounds. The experiment comprises 125 total generation runs (64 Condition~A, 61 Condition~B) evaluated across 500 host sessions. All reported numbers are computed directly from the released run logs; Wilson score 95\% confidence intervals are provided for key rates.
 
 \paragraph{Operator calibration.}
 Interaction Parity is measured through a computer-use model whose training is
@@ -190,11 +193,15 @@ reported separately as a reliability figure; they exist to quantify operator
 variance, not to enlarge the sample. Confidence intervals are percentile
 cluster bootstraps resampling whole \emph{tasks}, since a task contributes one
 generated artifact rendered on every host and its outcomes are therefore
-correlated across hosts and conditions.
+correlated across hosts and conditions. Condition-level rates in this study
+are tested with Fisher's exact test on the unpaired $2\times2$ tables; the
+released harness additionally implements exact McNemar over \emph{paired}
+success/failure vectors for repeat-reliability analysis, which is the
+appropriate tool once per-cell repeats are retained rather than collapsed.
 
 \section{Results}
 
-We report empirical results across 125 generation runs spanning 18 task specifications in 8 categories, evaluated on three Gemini-family model tiers. All numbers are computed directly from the released run logs; $N$ counts and Wilson 95\% CIs are provided throughout.
+We report empirical results across 125 generation runs spanning 18 task specifications drawn from the 8-category, 100-task suite (the remaining specifications were finalized after this study's generation window), evaluated on three Gemini-family model tiers. All numbers are computed directly from the released run logs; $N$ counts and Wilson 95\% CIs are provided throughout.
 
 \begin{table}[h]
 \centering
@@ -277,7 +284,7 @@ Portability of agent-generated user interfaces is not merely a design opinion; i
 
 \section*{Reproducibility}
 Suite, harness, renderers, all run logs, and the analysis that produced every
-table are released at \url{https://github.com/hostshift/hostshift}. The complete release ensures the benchmark can be run independently by the community.
+table are released at \url{https://github.com/itsoumya-d/hostshift}. The complete release ensures the benchmark can be run independently by the community.
 
 \bibliographystyle{plain}
 \bibliography{refs}

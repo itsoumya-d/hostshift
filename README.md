@@ -1,8 +1,9 @@
 # HostShift: Measuring Cross-Platform Portability of LLM-Generated User Interfaces
 
-![License: CC BY-NC-SA 4.0 & AGPL-3.0](https://img.shields.io/badge/License-Dual-blue.svg)
+![CI](https://github.com/itsoumya-d/hostshift/actions/workflows/ci.yml/badge.svg)
+![License: AGPL-3.0 (code) / CC BY-NC-SA 4.0 (data)](https://img.shields.io/badge/License-Dual-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-198%20passing-brightgreen.svg)
 
 HostShift measures the cross-platform portability of LLM-generated user interfaces across Web, iOS (SwiftUI), Android (Compose), and Terminal (Textual).
 
@@ -16,9 +17,20 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 
 ---
 
-## Key Results
+## Status: what is real and what is not
 
-*(Note: These figures are from our synthetic demo pipeline check. Real empirical results are pending full suite execution.)*
+Read this before quoting any number.
+
+- **The offline core is real**: reference interpreter, oracle, metrics,
+  statistics, coverage classifier, emitted runtimes — 198 assertions green,
+  linted, CI-gated.
+- **The device-backed sessions are implemented and their emitted apps compile**:
+  the generated SwiftUI program parses under `swiftc` (checked in CI when
+  available) and the generated Kotlin is structurally validated. Driving real
+  simulators end-to-end remains manual; until that run happens, every recorded
+  result comes from simulated sessions and must be labelled as such.
+- **The key results below are from a synthetic pipeline check**, not an
+  experiment. They exist to prove the reporting path works.
 
 - **Scale:** Evaluated on 100 tasks across 8 categories and 4 distinct hosts.
 - **Portability:** The schema-first approach (Condition B) achieves **~50% Interaction Parity**, compared to **~25%** for the freeform baseline (Condition A).
@@ -27,12 +39,12 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 ## Quick Start
 
 ```bash
-git clone https://github.com/<username>/hostshift.git
+git clone https://github.com/itsoumya-d/hostshift.git
 cd hostshift
 pip install -e .
-bash scripts/run_tests.sh          # 126 assertions, all green
+bash scripts/run_tests.sh          # 198 assertions, all green
 python -m hostshift.runner plan     # experiment design
-python -m hostshift.runner demo     # synthetic pipeline check
+python -m hostshift.runner demo     # synthetic pipeline check (isolated store)
 python -m hostshift.runner coverage # schema coverage
 ```
 
@@ -103,54 +115,65 @@ repository.
 ## Layout
 
 ```
-schema/uispec.schema.json   host-independent UI spec (condition B)
+schema/uispec.schema.json   host-independent UI spec (condition B); v0.2 + filterWhen
 tasks/suite_v0.jsonl        12 seed tasks (kept for provenance)
 tasks/suite_v1.jsonl        100 tasks, 8 categories, difficulty-tagged — the suite
 hostshift/widgettree.py     canonical tree + Zhang-Shasha TED
 hostshift/metrics.py        RP, AP, IP, HLI, Wilson, McNemar
 hostshift/oracle.py         state-based grading + suite linter
 hostshift/harness.py        generator/renderer/operator adapters, run store
-hostshift/runner.py         lint | plan | demo | report
+hostshift/runner.py         lint | plan | demo | report | calibrate | coverage
 hostshift/render/semantics.py   reference interpreter — the definition of correct
 hostshift/render/base.py        host profiles + realization (where portability is lost)
 hostshift/render/session.py     SimulatedSession, ReferenceSession, intended_tree
 hostshift/render/web.py         -> self-contained HTML + JS runtime; Playwright session
-hostshift/render/swiftui.py     -> SwiftUI app; HTTP bridge session
-hostshift/render/compose.py     -> Jetpack Compose app; HTTP bridge session
+hostshift/render/swiftui.py     -> SwiftUI app; HTTP bridge session (swiftc-parse verified)
+hostshift/render/compose.py     -> Jetpack Compose app; realized-tree instrumentation
 hostshift/render/tui.py         -> Textual app; Pilot session
 hostshift/render/bridge.py      loopback instrumentation contract for iOS/Android
 hostshift/calibration.py    operator ceilings against hand-written native apps
-tasks/reference_specs/      hand-written specs used as fixtures (form-001, list-001)
+hostshift/license_guard.py  provenance stamping for run records
+hostshift/coverage.py       what UISpec 0.2 can and cannot express
+tasks/reference_specs/      hand-written specs incl. 11 solver-verified filter specs
+scripts/build_filter_specs.py   regenerate the filter fixtures
+scripts/verify_filter_specs.py  prove every filter spec is solvable end to end
 tests/test_metrics.py       20 tests — TED, parity, host-lock, statistics
 tests/test_oracle.py        13 tests — grading, plus assertions on the shipped suite
 tests/test_render.py        28 tests — semantics, sessions, host realization
 tests/test_listdetail.py    17 tests — row actions, sequences, templates, null check
 tests/test_crossimpl.py      6 tests — JS runtime vs Python reference agreement
+tests/test_emitted_sources.py 16 tests — golden checks on emitted Kotlin/Swift/JS/TUI
+tests/test_filter_when.py    7 tests — filterWhen semantics incl. JS agreement
 tests/test_calibration.py   14 tests — operator ceilings and normalized host-lock
 tests/test_stats.py         13 tests — repeat collapsing and cluster bootstrap
 tests/test_coverage.py      15 tests — schema-coverage classifier, both directions
-hostshift/coverage.py       what UISpec 0.2 can and cannot express
-scripts/e2e.py              full pipeline check on the reference specs
+tests/test_harness.py       14 tests — store, repair loop, both operators
+tests/test_runner_cli.py     6 tests — CLI smoke in isolated temp stores
+tests/test_license_guard.py  4 tests — provenance stamping
+tests/test_bridge.py         3 tests — bridge client vs live stub server
+tests/test_guards.py         6 tests — the anti-simulation measurement rails
 paper/main.tex              skeleton; related work already written
 paper/refs.bib              20 refs, all IDs verified 2026-08-03
+research/MOJO.md            language-choice verdict with evidence
 ```
 
 ## Use
 
 ```bash
-./scripts/run_tests.sh                 # 126 assertions + the e2e pipeline check
+./scripts/run_tests.sh                 # 198 assertions + the e2e pipeline check
 python3 scripts/e2e.py                 # spec -> session -> operator -> oracle -> metrics
+python3 scripts/verify_filter_specs.py # prove every filter spec is solvable end to end
 python3 -m hostshift.runner lint       # validate the suite
 python3 -m hostshift.runner plan       # experiment matrix + cost estimate
-python3 -m hostshift.runner demo       # synthetic end-to-end pipeline check
+python3 -m hostshift.runner demo       # synthetic end-to-end pipeline check (writes runs/demo/)
 python3 -m hostshift.runner calibrate  # operator ceilings and what they imply
 python3 -m hostshift.runner coverage   # what fraction of real requests the schema expresses
 python3 -m hostshift.runner report     # tables from runs/runs.jsonl
 ```
 
 `demo` fabricates outcomes to exercise the reporting path before spending a
-credit. **The effect it plants is the hypothesis, not a result.** Delete `runs/`
-before real runs.
+credit. It writes to its **own store** (`runs/demo/`) and can never clobber a
+real experiment log. **The effect it plants is the hypothesis, not a result.**
 
 At 100 tasks × 3 generators × 4 hosts × 3 repeats: ~1,500 generation calls,
 ~7,200 operator runs, order **$350–400** in API spend. Scope levers, in the
@@ -271,9 +294,19 @@ to the implementation rather than to whichever is convenient.
 
 ## Schema coverage
 
-The task suite was written by the person who designed the schema, so every task
-is expressible in it by construction — condition B competes on home ground. That
-bias is real and cannot be argued away; it can only be quantified.
+The task suite was written by the person who designed the schema, so every
+task is expressible in it by construction — condition B competes on home
+ground. That bias is real and cannot be argued away; it can only be quantified.
+
+Building per-category reference specs surfaced a genuine expressive gap:
+UISpec 0.2 had no way to model a **filtered table**, which made all twelve
+`filterable_table` tasks unexpressible. The schema now has `list.filterWhen`
+— a per-row predicate (`$row.field` against `$state.path`) that narrows what a
+list shows without touching the underlying collection — implemented in the
+Python reference, the web runtime, and all three native templates, with
+JS↔Python agreement pinned by tests. Eleven of the twelve filter tasks are now
+expressible and solver-verified; multi-select row selection with a computed
+count remains honestly out of scope.
 
 `python3 -m hostshift.runner coverage` classifies requests against what UISpec
 0.2 can express. Run against the suite itself it returns **100%**, which is not
@@ -295,26 +328,23 @@ coverage figure** — the report refuses to omit that warning.
 
 ## What's still to build
 
-1. **Wire the three device-backed sessions.** Web needs only `pip install
-   playwright`. SwiftUI and Compose need the instrumentation bridge implemented
-   inside the emitted apps — the endpoint contract and port forwarding are
-   specified in `render/bridge.py`, and the `Predicates`/`Actions`/`Instrumentation`
-   stubs in the emitted sources mark exactly what to fill in. The `tree`
-   endpoint must walk the platform accessibility hierarchy, **not** re-serialize
-   the spec; re-serializing would make render parity measure the generator
-   instead of the host.
-2. **`TuiSession`** — the generated Textual app already holds `self.state`; what
-   remains is the Pilot thread bridge, not the semantics.
-3. **`ComputerUseOperator._next_action` / `_apply`** — wire to the computer-use
-   API. One seam, deliberately.
-4. **`AccessibilityTreeOperator`** — deterministic, model-free, identical across
-   hosts by construction. Runs the ablations at zero API cost and separates "this
-   UI is inoperable" from "this operator couldn't operate it."
-5. **Reference specs** — `tasks/reference_specs/` has two, covering form
-   validation and list-detail. Add one per category before the full run; each
-   one has so far found a schema gap, which is cheaper to find now than on
-   Aug 13.
-6. **Task suite audit** — the 100 tasks in `suite_v1.jsonl` lint clean and are
+1. **Run the device-backed sessions for real.** Web needs `pip install
+   playwright && playwright install chromium`. SwiftUI and Compose need the
+   emitted apps launched on simulator/emulator (`adb forward tcp:8782
+   tcp:8782` for Android); the instrumentation bridge is implemented on both
+   ends. The Compose `/tree` endpoint reports the **realized composition**
+   (a registry populated by composables as they run) and SwiftUI walks the
+   UIKit accessibility hierarchy — neither re-serializes the spec, so render
+   parity measures the host.
+2. **Execute the full experiment** (~$350–400 API spend; `plan` prints scope
+   levers). Until then, simulated-session numbers must be disclosed as such.
+3. **Reference specs**: every category except multi-select row selection has a
+   hand-authored, solver-verified spec (`scripts/verify_filter_specs.py`
+   proves 11/11 filter specs satisfiable end to end). `filter-011` is
+   deliberately absent: per-row selection state with a computed selected-count
+   is genuinely inexpressible in UISpec 0.2, and the coverage classifier says
+   so rather than pretending otherwise.
+4. **Task suite audit** — the 100 tasks in `suite_v1.jsonl` lint clean and are
    92% state-based, but the lint cannot catch a criterion that encodes the
    *wrong* fact. Read all 100 against your renderers before the full run;
    budget half a day. Seed values referenced in `note` fields (list sizes,
