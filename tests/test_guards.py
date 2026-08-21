@@ -5,8 +5,8 @@ numbers and so renderer/host profile mismatches fail loudly. They are the
 harness's honesty rails; they get their own tests."""
 
 import json
-import sys
 import pathlib
+import sys
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
