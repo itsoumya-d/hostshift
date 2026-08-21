@@ -61,6 +61,23 @@ def test_report_reads_a_store(tmp=None):
         assert "TABLE 1" in out
 
 
+def test_report_accepts_runs_on_either_side_of_the_subcommand():
+    """`--runs` must work before AND after `report`; a subparser default
+    silently clobbering the global value is the classic argparse trap."""
+    with _in_tmp() as d:
+        store = pathlib.Path(d) / "runs"
+        code, _ = _run(["--runs", str(store), "demo", "--repeats", "1",
+                        "--out", str(store)])
+        assert code == 0
+        for argv in (
+            ["report", "--runs", str(store), "--boot", "150"],
+            ["--runs", str(store), "report", "--boot", "150"],
+        ):
+            code, out = _run(argv)
+            assert code == 0, (argv, out)
+            assert "TABLE 1" in out
+
+
 def test_coverage_self_check_runs():
     # Without an external corpus the command refuses to pretend it measured
     # anything: exit 1, but the home-ground self-check still prints.

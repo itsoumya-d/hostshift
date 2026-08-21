@@ -157,6 +157,7 @@ tests/test_guards.py         6 tests — the anti-simulation measurement rails
 paper/main.tex              skeleton; related work already written
 paper/refs.bib              20 refs, all IDs verified 2026-08-03
 research/MOJO.md            language-choice verdict with evidence
+experiments/ted_benchmark/  TED kernel performance study (Python oracle; Mojo port ready)
 ```
 
 ## Use
@@ -170,7 +171,9 @@ python3 -m hostshift.runner plan       # experiment matrix + cost estimate
 python3 -m hostshift.runner demo       # synthetic end-to-end pipeline check (writes runs/demo/)
 python3 -m hostshift.runner calibrate  # operator ceilings and what they imply
 python3 -m hostshift.runner coverage   # what fraction of real requests the schema expresses
-python3 -m hostshift.runner report     # tables from runs/runs.jsonl
+python3 -m hostshift.runner report --runs runs/demo --boot 4000
+                                       # tables from any store (--runs works before or
+                                       # after the subcommand); default store is runs/
 ```
 
 `demo` fabricates outcomes to exercise the reporting path before spending a

@@ -390,9 +390,18 @@ def main(argv=None) -> int:
 
     rp = sub.add_parser("report")
     rp.add_argument("--boot", type=int, default=4000)
+    # Also accepted after the subcommand: `report --runs runs/demo` is the
+    # natural spelling and the only way to report a non-default store.
+    # SUPPRESS keeps a subcommand-level omission from clobbering a value
+    # given at the top level (argparse subparser defaults would otherwise win).
+    rp.add_argument("--runs", default=argparse.SUPPRESS,
+                    help="run store to report on (default: runs/runs.jsonl)")
     rp.set_defaults(fn=cmd_report)
 
     cal = sub.add_parser("calibrate")
+    cal.add_argument("--runs", default=argparse.SUPPRESS,
+                     help="run store for the raw/normalized comparison "
+                          "(default: runs/runs.jsonl)")
     cal.set_defaults(fn=cmd_calibrate)
 
     cov = sub.add_parser("coverage")
