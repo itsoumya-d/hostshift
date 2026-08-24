@@ -1,0 +1,13 @@
+{
+  "name": "hostshift-fde",
+  "owner": {
+    "name": "Soumya Debnath"
+  },
+  "plugins": [
+    {
+      "name": "autopilot-fde",
+      "source": "./autopilot-fde",
+      "description": "Operate AutoPilot FDE from your coding agent: discover workflows from chat streams, read APS scores and simulations, deploy and approve LangGraph agents through MCP."
+    }
+  ]
+}

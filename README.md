@@ -3,7 +3,7 @@
 ![CI](https://github.com/itsoumya-d/hostshift/actions/workflows/ci.yml/badge.svg)
 ![License: AGPL-3.0 (code) / CC BY-NC-SA 4.0 (data)](https://img.shields.io/badge/License-Dual-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-198%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-211%20passing-brightgreen.svg)
 
 HostShift measures the cross-platform portability of LLM-generated user interfaces across Web, iOS (SwiftUI), Android (Compose), and Terminal (Textual).
 
@@ -22,7 +22,7 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 Read this before quoting any number.
 
 - **The offline core is real**: reference interpreter, oracle, metrics,
-  statistics, coverage classifier, emitted runtimes — 198 assertions green,
+  statistics, coverage classifier, emitted runtimes — 211 assertions green,
   linted, CI-gated.
 - **The device-backed sessions are implemented; the web host is now
   device-verified**: `scripts/device_web_check.py` renders reference specs in
@@ -47,12 +47,36 @@ Read this before quoting any number.
 ```bash
 git clone https://github.com/itsoumya-d/hostshift.git
 cd hostshift
-pip install -e .
-bash scripts/run_tests.sh          # 198 assertions, all green
-python -m hostshift.runner plan     # experiment design
-python -m hostshift.runner demo     # synthetic pipeline check (isolated store)
-python -m hostshift.runner coverage # schema coverage
+pip install -e .                    # or: pip install hostshift  (wheel ships the suite)
+hostshift --version                 # console script; `python -m hostshift` also works
+bash scripts/run_tests.sh           # 211 assertions, all green (no pytest needed)
+hostshift plan                      # experiment design + cost estimate
+hostshift demo                      # synthetic pipeline check (isolated store)
+hostshift coverage                  # schema self-check (+ --corpus for external corpora)
 ```
+
+For development: `pip install -e .[dev]` adds ruff, coverage, Playwright and
+the GenAI SDK. Every CLI command is also available as
+`python -m hostshift <cmd>`.
+
+**Customizing the benchmark for your own research** — swapping task suites,
+adding hosts, wiring generators, running experiments from the GitHub Actions
+tab — is documented in [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md).
+
+## Applied counterpart: AutoPilot FDE
+
+This repository also contains [**AutoPilot FDE**](autopilot-fde/README.md) —
+the deployment-side sibling of this benchmark: an autonomous Forward Deployed
+Engineer that mines business workflows from Slack/WhatsApp streams, scores
+automation potential via graph entropy, Monte-Carlo-simulates ROI, and emits
+human-gated LangGraph agents. It ships an MCP server (Claude Desktop / Claude
+Code / OpenAI Codex CLI), a Claude Code plugin + skill, safe risk-tiered tool
+adapters, and a training-data exporter for fine-tuning on your own streams.
+One-step setup: `bash autopilot-fde/install.sh --run`. Where HostShift
+*measures* whether generated UIs survive a change of host, AutoPilot FDE
+*deploys* agents that must live within that reality.
+
+---
 
 ## Why this exists
 
@@ -128,7 +152,7 @@ hostshift/widgettree.py     canonical tree + Zhang-Shasha TED
 hostshift/metrics.py        RP, AP, IP, HLI, Wilson, McNemar
 hostshift/oracle.py         state-based grading + suite linter
 hostshift/harness.py        generator/renderer/operator adapters, run store
-hostshift/runner.py         lint | plan | demo | report | calibrate | coverage
+hostshift/runner.py         lint | plan | demo | report [--json] | calibrate | coverage | hosts
 hostshift/render/semantics.py   reference interpreter — the definition of correct
 hostshift/render/base.py        host profiles + realization (where portability is lost)
 hostshift/render/session.py     SimulatedSession, ReferenceSession, intended_tree
@@ -141,26 +165,29 @@ hostshift/calibration.py    operator ceilings against hand-written native apps
 hostshift/license_guard.py  provenance stamping for run records
 hostshift/coverage.py       what UISpec 0.2 can and cannot express
 hostshift/visual_fidelity.py    structural layout/density/consistency heuristics
+hostshift/data/suite_v1.jsonl   wheel-shipped suite copy (sync-checked by tests)
 tasks/reference_specs/      hand-written specs incl. 11 solver-verified filter specs
 scripts/build_filter_specs.py   regenerate the filter fixtures
 scripts/verify_filter_specs.py  prove every filter spec is solvable end to end
 scripts/device_web_check.py     drive reference specs in real Chromium (device-backed)
-tests/test_metrics.py       20 tests — TED, parity, host-lock, statistics
-tests/test_oracle.py        13 tests — grading, plus assertions on the shipped suite
 tests/test_render.py        28 tests — semantics, sessions, host realization
+tests/test_metrics.py       20 tests — TED, parity, host-lock, statistics
 tests/test_listdetail.py    17 tests — row actions, sequences, templates, null check
-tests/test_crossimpl.py      6 tests — JS runtime vs Python reference agreement
 tests/test_emitted_sources.py 16 tests — golden checks on emitted Kotlin/Swift/JS/TUI
-tests/test_filter_when.py    7 tests — filterWhen semantics incl. JS agreement
+tests/test_visual_fidelity.py 16 tests — layout/density/consistency heuristics
+tests/test_harness.py       15 tests — store, repair loop, both operators
+tests/test_coverage.py      15 tests — schema-coverage classifier, both directions
 tests/test_calibration.py   14 tests — operator ceilings and normalized host-lock
 tests/test_stats.py         13 tests — repeat collapsing and cluster bootstrap
-tests/test_coverage.py      15 tests — schema-coverage classifier, both directions
-tests/test_harness.py       14 tests — store, repair loop, both operators
-tests/test_runner_cli.py     6 tests — CLI smoke in isolated temp stores
+tests/test_oracle.py        13 tests — grading, plus assertions on the shipped suite
+tests/test_runner_cli.py    10 tests — CLI smoke in isolated temp stores
+tests/test_packaging.py      7 tests — entry points, wheel data sync, extras accuracy
+tests/test_guards.py         7 tests — the anti-simulation measurement rails
+tests/test_filter_when.py    7 tests — filterWhen semantics incl. JS agreement
+tests/test_crossimpl.py      6 tests — JS runtime vs Python reference agreement
 tests/test_license_guard.py  4 tests — provenance stamping
-tests/test_visual_fidelity.py 16 tests — layout/density/consistency heuristics
 tests/test_bridge.py         3 tests — bridge client vs live stub server
-tests/test_guards.py         6 tests — the anti-simulation measurement rails
+docs/CUSTOMIZING.md          fork-and-extend guide (suites, hosts, GitHub Actions)
 paper/main.tex              skeleton; related work already written
 paper/refs.bib              20 refs, all IDs verified 2026-08-03
 research/MOJO.md            language-choice verdict with evidence
@@ -170,17 +197,17 @@ experiments/ted_benchmark/  TED kernel performance study (Python oracle; Mojo po
 ## Use
 
 ```bash
-./scripts/run_tests.sh                 # 198 assertions + the e2e pipeline check
+bash scripts/run_tests.sh              # 211 assertions + the e2e pipeline check
 python3 scripts/e2e.py                 # spec -> session -> operator -> oracle -> metrics
 python3 scripts/verify_filter_specs.py # prove every filter spec is solvable end to end
-python3 -m hostshift.runner lint       # validate the suite
-python3 -m hostshift.runner plan       # experiment matrix + cost estimate
-python3 -m hostshift.runner demo       # synthetic end-to-end pipeline check (writes runs/demo/)
-python3 -m hostshift.runner calibrate  # operator ceilings and what they imply
-python3 -m hostshift.runner coverage   # what fraction of real requests the schema expresses
-python3 -m hostshift.runner report --runs runs/demo --boot 4000
-                                       # tables from any store (--runs works before or
-                                       # after the subcommand); default store is runs/
+hostshift lint                         # validate the suite
+hostshift plan                         # experiment matrix + cost estimate
+hostshift demo                         # synthetic end-to-end pipeline check (writes runs/demo/)
+hostshift calibrate                    # operator ceilings and what they imply
+hostshift coverage                     # suite self-check; add --corpus <file.jsonl> for external corpora
+hostshift hosts                        # the declarative host-capability table
+hostshift report --runs runs/demo --boot 4000
+hostshift report --runs runs/demo --json   # same numbers, machine-readable
 ```
 
 `demo` fabricates outcomes to exercise the reporting path before spending a
@@ -278,7 +305,7 @@ so explicitly, and `report()` refuses to emit a normalized number without a
 ceiling rather than quietly borrowing one.
 
 Pinned to `eb6a3aaf` (v2.0.0). Verify it still resolves before the run:
-`python3 -m hostshift.runner calibrate`.
+`hostshift calibrate`.
 
 ## Three conditions, not two
 
@@ -320,7 +347,7 @@ JS↔Python agreement pinned by tests. Eleven of the twelve filter tasks are now
 expressible and solver-verified; multi-select row selection with a computed
 count remains honestly out of scope.
 
-`python3 -m hostshift.runner coverage` classifies requests against what UISpec
+`hostshift coverage` classifies requests against what UISpec
 0.2 can express. Run against the suite itself it returns **100%**, which is not
 a result but a measurement of the home-ground advantage, stated as a number so a
 reviewer does not have to assert it.
@@ -362,6 +389,42 @@ coverage figure** — the report refuses to omit that warning.
    *wrong* fact. Read all 100 against your renderers before the full run;
    budget half a day. Seed values referenced in `note` fields (list sizes,
    starting quantities) must match what your renderers actually seed.
+
+## Customizing & fine-tuning
+
+HostShift is designed to be forked: task suites, host profiles, renderer
+arms, operators and generators are all declarative tables or single files,
+and **docs/CUSTOMIZING.md** walks through each — including the GitHub-native
+workflow (Actions secrets, the credit-free *Experiment pipeline check*
+workflow you can run from the Actions tab, branch protection for traceable
+results).
+
+Common adjustments:
+
+```bash
+export HOSTSHIFT_SUITE=tasks/my_suite.jsonl   # run YOUR suite everywhere
+hostshift lint && hostshift plan              # validate it + price the matrix
+hostshift demo --seed 42                      # verify plumbing before spending
+```
+
+CI never needs API keys by design. The two workflows:
+
+- **ci.yml** — lint, wheel-build smoke test (the console script must work
+  installed), full assertion suite, filter-spec solvability, ≥80% coverage,
+  Python 3.11–3.14.
+- **experiment.yml** — manual `workflow_dispatch` dry run: synthetic pipeline
+  check + report artifacts, zero credits, runnable from the Actions tab on
+  any fork.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `hostshift coverage` prints only the self-check | That is its honest no-corpus behavior. Add `--corpus tasks/external_corpus.jsonl` (see its template) |
+| `RenderError ... is simulated` | You asked for paper-grade measurement but got a modelled session. Use a device-backed session or set `HOSTSHIFT_ALLOW_SIMULATED=1` for pipeline work only |
+| `open_session` says install Playwright | `pip install -e .[web] && playwright install chromium` |
+| Operator raises about `GEMINI_API_KEY` | Expected without a key: export one or use the deterministic `AccessibilityTreeOperator` |
+| Suite not found after wheel install | The wheel ships a synced copy; override with `--suite` or `HOSTSHIFT_SUITE` if you moved it |
 
 ## Schedule to 29 August
 
