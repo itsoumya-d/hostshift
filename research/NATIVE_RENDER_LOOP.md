@@ -187,3 +187,27 @@ render-check`: now runs 396 round-trip checks over the reference suite.
 
 Status after cycle 3: 217 pytest assertions green; render-check 100/100
 toolchain + 437/437 semantic & round-trip checks.
+
+---
+
+# Cycle 4 — 2026-08-24: institutionalizing the round-trip property
+
+Two loose ends from cycles 2–3 closed:
+
+1. **The hostile-spec fixture moved into CI.** The round-trip gate ran over the
+   reference specs via `render-check`, but those specs are well-formed by
+   construction — they never contained a `</script>` or a triple-quote. New
+   `tests/test_embedding_roundtrip.py` drives one deliberately adversarial spec
+   (script-closing tags, `$` everywhere, triple-quotes, backslashes, HTML
+   comments, all inside strings *and* seed data) through all four embedding
+   seams and requires exact semantic equality with the input. 4 tests, runs in
+   every `pytest` and `run_tests.sh` invocation.
+2. **The renderer rule became policy.** CONTRIBUTING.md now mandates that any
+   new host renderer ships with (a) a hostile-spec fixture in
+   `tests/test_embedding_roundtrip.py` and (b) an entry in
+   `embedding_roundtrip()`. What was a research finding is now a contribution
+   gate.
+
+Status after cycle 4: 221 pytest assertions green; render-check 100/100 +
+437/437. Open roadmap items unchanged: A2UI/MCP changelog re-scan before paper
+submission; Flutter host; streaming specs; protocol adapters.
