@@ -3,7 +3,7 @@
 ![CI](https://github.com/itsoumya-d/hostshift/actions/workflows/ci.yml/badge.svg)
 ![License: AGPL-3.0 (code) / CC BY-NC-SA 4.0 (data)](https://img.shields.io/badge/License-Dual-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-211%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-221%20passing-brightgreen.svg)
 
 HostShift measures the cross-platform portability of LLM-generated user interfaces across Web, iOS (SwiftUI), Android (Compose), and Terminal (Textual).
 
@@ -22,7 +22,7 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 Read this before quoting any number.
 
 - **The offline core is real**: reference interpreter, oracle, metrics,
-  statistics, coverage classifier, emitted runtimes — 211 assertions green,
+  statistics, coverage classifier, emitted runtimes — 221 assertions green,
   linted, CI-gated.
 - **The device-backed sessions are implemented; the web host is now
   device-verified**: `scripts/device_web_check.py` renders reference specs in
@@ -31,14 +31,17 @@ Read this before quoting any number.
   sampled specs pass (`render -> observe -> operate -> grade`). It also caught
   and fixed a real defect: the scripted operator ignored spec-vocabulary kinds,
   silently doing nothing against every shipped renderer. The generated SwiftUI
-  program parses under `swiftc` (checked in CI when available), the generated
-  Kotlin is structurally validated, and driving simulators for those two hosts
-  remains manual; until that run happens, their recorded results come from
-  simulated sessions and must be labelled as such.
+  program parses under `swiftc`, the generated Kotlin compiles under `kotlinc`,
+  and the generated Dart passes `dart analyze` — all three gates run locally via
+  `hostshift render-check` (199 toolchain checks across five hosts). Driving
+  simulators for SwiftUI/Compose/Flutter remains manual; until that run happens,
+  their recorded results come from simulated sessions and must be labelled as
+  such.
 - **The key results below are from a synthetic pipeline check**, not an
   experiment. They exist to prove the reporting path works.
 
-- **Scale:** Evaluated on 100 tasks across 8 categories and 4 distinct hosts.
+- **Scale:** Evaluated on 100 tasks across 8 categories and **5 distinct hosts**
+  (Web · SwiftUI · Jetpack Compose · Flutter · Terminal).
 - **Portability:** The schema-first approach (Condition B) achieves **~50% Interaction Parity**, compared to **~25%** for the freeform baseline (Condition A).
 - **Expressiveness:** **65.8%** of real-world external prompt requests are fully expressible in our UISpec 0.2.
 
@@ -49,10 +52,11 @@ git clone https://github.com/itsoumya-d/hostshift.git
 cd hostshift
 pip install -e .                    # or: pip install hostshift  (wheel ships the suite)
 hostshift --version                 # console script; `python -m hostshift` also works
-bash scripts/run_tests.sh           # 211 assertions, all green (no pytest needed)
+bash scripts/run_tests.sh           # 221 assertions, all green (no pytest needed)
 hostshift plan                      # experiment design + cost estimate
 hostshift demo                      # synthetic pipeline check (isolated store)
 hostshift coverage                  # schema self-check (+ --corpus for external corpora)
+hostshift render-check              # swiftc + kotlinc + dart gates over all reference specs
 ```
 
 For development: `pip install -e .[dev]` adds ruff, coverage, Playwright and
@@ -106,6 +110,52 @@ on declarative specs rendered natively by the host — Google's A2UI, MCP-Apps
 HostShift is that missing instrument: a conformance harness for every
 declarative-GenUI stack, not just this repo's UISpec. See
 [research/NATIVE_RENDER_LOOP.md](research/NATIVE_RENDER_LOOP.md).
+
+## What nobody else offers (verified against the live record, 2026-08)
+
+Every comparable project measures *one slice* of the generated-UI problem.
+HostShift is the only harness that measures **all of it, end to end**, on five
+hosts — and every claim below is backed by a passing gate you can run:
+
+| Capability | AME | A2UI | MCP-Apps conformance | alpic host matrix | **HostShift** |
+|---|---|---|---|---|---|
+| Cross-runtime parity | JSON serialization only | renderer tests | protocol-level | protocol-level | **functional + a11y + structural** |
+| Measures generated UIs (not fixed apps) | — | — | — | — | ✔ |
+| Computer-use agent completes tasks as the metric | — | — | — | — | ✔ |
+| Accessibility parity measured per host | — | — | — | — | ✔ (AP metric) |
+| Host-lock quantification (HLI + per-task lock) | — | — | — | — | ✔ |
+| State-oracle grading (never pixels, never LLM-judge) | — | — | — | — | ✔ |
+| Native toolchain gates over emitted code | parser tests | — | — | — | ✔ swiftc · kotlinc · dart |
+| Embedding round-trip proof per fixture | Bug-21 ad hoc | — | — | — | ✔ systematic, all hosts |
+
+1. **Five-host functional portability measurement.** One spec → Web,
+   SwiftUI, Jetpack Compose, Flutter and Terminal runtimes; an agent must
+   complete the task on each; application state decides success. No prior work
+   crosses generated UI with an operating agent on more than one platform.
+2. **The native-conformance stack** (`hostshift render-check`): real
+   `swiftc -parse`, real `kotlinc` (auto-discovered, even inside Android
+   Studio), and `dart analyze` over every emitted native source; plus
+   differential semantic checks of each runtime against its declared
+   capability table, plus **embedding round-trip proofs** — the spec payload
+   is decoded back out of each emitted Swift/Kotlin/Dart/JS/Python source and
+   required to equal the input byte-for-byte. These gates caught three real
+   defects in their first cycles: Kotlin `$state.` interpolation consuming
+   filterWhen predicates, web `<script>` truncation from unescaped
+   `</script>`, and a `const val` regression under modern kotlinc. AME's
+   audit found the same defect class one bug at a time (their Bug 21);
+   HostShift generalizes it into a permanent, per-fixture gate.
+3. **Declarative host-capability tables.** What each host cannot realize,
+   how it names controls, whether disabled state reaches assistive tech —
+   declarative and auditable, so a parity gap is attributable to the platform
+   or to a renderer, not to whichever is convenient (`hostshift hosts`).
+4. **Anti-gaming measurement rails**: both host-lock numbers printed or
+   neither; simulated sessions refuse to masquerade as measurements;
+   repair budgets symmetric across conditions; tasks (not runs) are the unit
+   of inference with cluster bootstraps.
+5. **A research loop that ships.** The standing weekly cycle
+   (`research/NATIVE_RENDER_LOOP.md`) has already produced the fifth host
+   (Flutter), two security/correctness fixes, and a contribution policy —
+   each cycle: ecosystem scan → implementation → full test suite → push.
 
 Two host-lock numbers get reported, always:
 
@@ -166,9 +216,10 @@ hostshift/render/session.py     SimulatedSession, ReferenceSession, intended_tre
 hostshift/render/web.py         -> self-contained HTML + JS runtime; Playwright session
 hostshift/render/swiftui.py     -> SwiftUI app; HTTP bridge session (swiftc-parse verified)
 hostshift/render/compose.py     -> Jetpack Compose app; realized-tree instrumentation
+hostshift/render/flutter.py     -> self-contained Flutter/Dart app; realized-semantics registry
 hostshift/render/tui.py         -> Textual app; Pilot session
 hostshift/render/bridge.py      loopback instrumentation contract for iOS/Android
-hostshift/native_conformance.py swiftc/kotlinc compile gates + profile differential checks
+hostshift/native_conformance.py swiftc/kotlinc/dart gates + round-trip + profile differential checks
 hostshift/calibration.py    operator ceilings against hand-written native apps
 hostshift/license_guard.py  provenance stamping for run records
 hostshift/coverage.py       what UISpec 0.2 can and cannot express
@@ -205,7 +256,7 @@ experiments/ted_benchmark/  TED kernel performance study (Python oracle; Mojo po
 ## Use
 
 ```bash
-bash scripts/run_tests.sh              # 211 assertions + the e2e pipeline check
+bash scripts/run_tests.sh              # 221 assertions + the e2e pipeline check
 python3 scripts/e2e.py                 # spec -> session -> operator -> oracle -> metrics
 python3 scripts/verify_filter_specs.py # prove every filter spec is solvable end to end
 hostshift lint                         # validate the suite
