@@ -28,7 +28,8 @@ from hostshift.render.swiftui import SwiftUIRenderer
 from hostshift.render.tui import TuiRenderer
 from hostshift.render.web import WebRenderer
 
-SPECS = sorted(pathlib.Path("tasks/reference_specs").glob("*.json"))[:6]
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+SPECS = sorted((ROOT / "tasks" / "reference_specs").glob("*.json"))[:6]
 RENDERERS = {
     "web": WebRenderer(),
     "swiftui": SwiftUIRenderer(),

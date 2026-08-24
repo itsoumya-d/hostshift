@@ -16,6 +16,8 @@ import pathlib
 import time
 from dataclasses import dataclass
 
+from . import __version__
+
 _LICENSE_ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
@@ -86,6 +88,7 @@ def stamp_provenance(artifact: dict) -> dict:
     watermark = {
         "_hostshift_provenance": {
             "project": "HostShift",
+            "harness_version": __version__,
             "code_license": "AGPL-3.0-or-later",
             "data_license": "CC-BY-NC-SA-4.0",
             "harness_fingerprint": check.provenance.get("harness_fingerprint"),

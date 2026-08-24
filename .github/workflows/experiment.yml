@@ -1,0 +1,61 @@
+name: Experiment pipeline check
+
+# Manual, zero-cost dry run of the measurement pipeline. This never spends an
+# API credit: `demo` fabricates synthetic outcomes into an isolated store so
+# the full spec -> render -> operate -> grade -> report path is exercisable
+# from the Actions tab. Real experiments still run on your machine (see
+# docs/CUSTOMIZING.md for wiring real generators and secrets).
+
+on:
+  workflow_dispatch:
+    inputs:
+      repeats:
+        description: "Synthetic repeats per cell"
+        default: "2"
+      seed:
+        description: "RNG seed"
+        default: "7"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  demo-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Lint suite
+        run: hostshift lint
+
+      - name: Plan (matrix + cost estimate)
+        run: hostshift plan
+
+      - name: Synthetic pipeline check
+        run: hostshift demo --repeats ${{ github.event.inputs.repeats }} --seed ${{ github.event.inputs.seed }}
+
+      - name: Report from the synthetic store
+        run: |
+          hostshift report --runs runs/demo --boot 500
+          hostshift report --runs runs/demo --boot 500 --json > report.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-report
+          path: |
+            runs/demo/runs.jsonl
+            report.json

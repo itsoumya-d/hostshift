@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hostshift"
-version = "0.1.0"
+version = "0.2.0"
 description = "Cross-platform UI portability benchmark for LLM-generated interfaces"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -36,11 +36,19 @@ dependencies = [
 
 [project.optional-dependencies]
 web = ["playwright>=1.40"]
-genai = ["google-generativeai>=0.5"]
+# The new google-genai SDK: harness.py imports `from google import genai`.
+# (The legacy `google-generativeai` package exposes a different module layout
+# and cannot satisfy that import.)
+genai = ["google-genai>=1.0"]
 dev = [
     "playwright>=1.40",
-    "google-generativeai>=0.5",
+    "google-genai>=1.0",
+    "ruff>=0.4",
+    "coverage[toml]>=7.4",
 ]
+
+[project.scripts]
+hostshift = "hostshift.runner:main"
 
 [project.urls]
 Homepage = "https://github.com/itsoumya-d/hostshift"
@@ -49,6 +57,9 @@ Issues = "https://github.com/itsoumya-d/hostshift/issues"
 
 [tool.setuptools.packages.find]
 include = ["hostshift*"]
+
+[tool.setuptools.package-data]
+hostshift = ["data/*.jsonl"]
 
 [tool.ruff]
 line-length = 100
@@ -68,3 +79,21 @@ ignore = [
 "hostshift/render/*" = ["E501"]  # embedded Kotlin/Swift/JS/Textual source templates
 "tests/*" = ["E501"]
 "scripts/*" = ["E501"]
+
+[tool.pytest.ini_options]
+# Scope pytest to this benchmark's own tests. The workspace also contains
+# autopilot-fde (a separate project with its own venv and dependencies);
+# without testpaths, a bare `pytest` at the root tries to collect it and dies
+# on its missing imports.
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["hostshift"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]

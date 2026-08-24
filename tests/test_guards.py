@@ -2,9 +2,18 @@
 
 These exist so that simulated sessions can never quietly produce paper
 numbers and so renderer/host profile mismatches fail loudly. They are the
-harness's honesty rails; they get their own tests."""
+harness's honesty rails; they get their own tests.
 
+Every test here manages HOSTSHIFT_ALLOW_SIMULATED explicitly (snapshot,
+unset, restore). Other suites legitimately set it at import time to exercise
+simulated sessions; these tests must stay correct regardless of who else has
+touched the environment -- a guard that depends on execution order is not a
+guard.
+"""
+
+import contextlib
 import json
+import os
 import pathlib
 import sys
 import unittest
@@ -34,42 +43,56 @@ def _spec():
     return json.loads(json.dumps(SPEC))
 
 
-def test_assert_measurable_rejects_simulated_by_default():
-    s = SimulatedComposeSession(_spec())
+@contextlib.contextmanager
+def _no_simulated_flag():
+    """Run with HOSTSHIFT_ALLOW_SIMULATED unset, restoring whatever was there."""
+    saved = os.environ.pop("HOSTSHIFT_ALLOW_SIMULATED", None)
     try:
-        assert_measurable(s)
-        raised = False
-    except RenderError:
-        raised = True
+        yield
     finally:
-        s.close()
-    assert raised
+        if saved is not None:
+            os.environ["HOSTSHIFT_ALLOW_SIMULATED"] = saved
 
 
-def test_assert_measurable_allows_simulated_with_env(monkeypatch_env=True):
-    import os
-    s = SimulatedComposeSession(_spec())
+def test_assert_measurable_rejects_simulated_by_default():
+    with _no_simulated_flag():
+        s = SimulatedComposeSession(_spec())
+        try:
+            assert_measurable(s)
+            raised = False
+        except RenderError:
+            raised = True
+        finally:
+            s.close()
+        assert raised
+
+
+def test_assert_measurable_allows_simulated_with_env():
+    os.environ["HOSTSHIFT_ALLOW_SIMULATED"] = "1"
     try:
-        os.environ["HOSTSHIFT_ALLOW_SIMULATED"] = "1"
-        assert_measurable(s)  # must not raise
+        s = SimulatedComposeSession(_spec())
+        try:
+            assert_measurable(s)  # must not raise
+        finally:
+            s.close()
     finally:
         os.environ.pop("HOSTSHIFT_ALLOW_SIMULATED", None)
-        s.close()
 
 
 def test_assert_measurable_rejects_reference_session_too():
     # ReferenceSession is the no-host control: useful for separating a wrong
     # spec from a mangled one, but it is not a host rendering, so it must not
     # produce paper numbers either.
-    s = ReferenceSession(_spec())
-    try:
-        assert_measurable(s)
-        raised = False
-    except RenderError:
-        raised = True
-    finally:
-        s.close()
-    assert raised
+    with _no_simulated_flag():
+        s = ReferenceSession(_spec())
+        try:
+            assert_measurable(s)
+            raised = False
+        except RenderError:
+            raised = True
+        finally:
+            s.close()
+        assert raised
 
 
 def test_get_renderer_unknown_host_raises():
@@ -84,18 +107,27 @@ def test_get_renderer_unknown_host_raises():
 def test_open_session_refuses_naive_renderer_on_device_host():
     # The naive renderer exists to model platform defaults; running it against
     # a real device session would conflate renderer negligence with host
-    # capability, so the facade refuses the combination.
-    try:
-        open_session("web", _spec(), renderer="naive", simulated=False,
-                     headless=True)
-        raised = False
-    except (RenderError, ValueError):
-        raised = True
-    except Exception:
-        # Playwright may be missing entirely; the refusal must still have
-        # happened before any launch attempt.
-        raised = True
-    assert raised
+    # capability, so the facade refuses the combination -- before any launch
+    # attempt, and regardless of whether Playwright is installed.
+    with _no_simulated_flag():
+        try:
+            open_session(_spec(), "web", renderer="naive", simulated=False)
+            raised = False
+        except RenderError:
+            raised = True
+        assert raised, "naive-on-device must be refused by the facade itself"
+
+
+def test_naive_refusal_names_the_reason():
+    # The refusal is about the renderer arm, not a missing dependency: the
+    # message must say so, or users debug Playwright instead of their flags.
+    with _no_simulated_flag():
+        try:
+            open_session(_spec(), "web", renderer="naive", simulated=False)
+            message = ""
+        except RenderError as exc:
+            message = str(exc)
+        assert "naive" in message
 
 
 def test_reference_session_is_marked_simulated():

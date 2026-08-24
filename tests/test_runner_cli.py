@@ -8,6 +8,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+import unittest.mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -79,12 +80,55 @@ def test_report_accepts_runs_on_either_side_of_the_subcommand():
 
 
 def test_coverage_self_check_runs():
-    # Without an external corpus the command refuses to pretend it measured
-    # anything: exit 1, but the home-ground self-check still prints.
+    # Without an external corpus the command reports the home-ground
+    # self-check and stops: it never pretends a corpus number was measured.
+    # The run itself succeeded, so the exit code is 0 -- the honesty lives in
+    # what is (and is not) printed, not in a failure code.
     code, out = _run(["coverage"])
-    assert code == 1
+    assert code == 0, out
     assert "Self-check" in out and "100/100" in out
     assert "No external corpus supplied." in out
+    assert "--corpus" in out
+
+
+def test_version_flag():
+    from hostshift import __version__
+
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), unittest.mock.patch(
+            "sys.argv", ["hostshift", "--version"]):
+        try:
+            runner.main(["--version"])
+        except SystemExit as e:
+            assert e.code == 0
+    assert __version__ in buf.getvalue()
+
+
+def test_hosts_command_prints_profile_table():
+    code, out = _run(["hosts"])
+    assert code == 0, out
+    for host in ("web", "swiftui", "compose", "tui"):
+        assert host in out
+    assert "names from label" in out
+
+
+def test_report_json_matches_text_tables():
+    with _in_tmp() as d:
+        store = pathlib.Path(d) / "runs"
+        code, _ = _run(["--runs", str(store), "demo", "--repeats", "1",
+                        "--out", str(store)])
+        assert code == 0
+        code, out = _run(["report", "--runs", str(store), "--boot", "100",
+                          "--json"])
+        assert code == 0, out
+        data = json.loads(out)
+        assert data["meta"]["runs"] > 0
+        assert data["meta"]["hosts"] == ["compose", "swiftui", "tui", "web"]
+        t1 = data["interaction_parity_and_host_lock"]
+        assert t1 and {"generator", "condition", "ip", "ip_ci95", "hli",
+                       "hli_ci95", "per_task_lock"} <= set(t1[0])
+        assert 0.0 <= t1[0]["ip"] <= 1.0
+        assert len(data["condition_contrasts_mcnemar"]) == 3
 
 
 def test_suite_lint_rejects_bad_criterion_kind():
