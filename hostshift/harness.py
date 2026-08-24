@@ -27,7 +27,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Protocol
 
-HOSTS = ("web", "swiftui", "compose", "tui")
+HOSTS = ("web", "swiftui", "compose", "flutter", "tui")
 
 CONDITION_A = "A-freeform"      # model emits framework code directly, per host
 CONDITION_B_NAIVE = "B-naive"   # one UISpec; first-pass runtime, platform defaults only

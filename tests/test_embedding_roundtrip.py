@@ -48,7 +48,7 @@ def test_hostile_spec_roundtrips_through_every_host():
     bad = [f for f in findings if not f.ok]
     assert not bad, [(f.host, f.check, f.note) for f in bad]
     hosts = {f.host for f in findings}
-    assert hosts == {"swiftui", "compose", "web", "tui"}
+    assert hosts == {"swiftui", "compose", "web", "tui", "flutter"}
 
 
 def test_web_payload_has_no_raw_script_close():

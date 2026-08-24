@@ -98,9 +98,9 @@ def test_differential_checks_pass_on_current_templates():
     bad = [f for f in findings if not f.ok]
     assert not bad, [f"{f.host}/{f.check} missing {f.missing_markers}" for f in bad]
     # Compose must be checked for explicit labels (host does not derive them);
-    # SwiftUI has no such marker because its profile derives names.
+    # SwiftUI and Flutter have no such marker because their profiles derive names.
     hosts = {f.host for f in findings}
-    assert hosts == {"swiftui", "compose"}
+    assert hosts == {"swiftui", "compose", "flutter"}
 
 
 def test_web_escapes_script_closing_tags():

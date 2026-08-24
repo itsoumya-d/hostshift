@@ -99,6 +99,17 @@ COMPOSE = HostProfile(
     preserves_ids=True,
 )
 
+FLUTTER = HostProfile(
+    host="flutter",
+    realizes=dict(_FULL),
+    # Flutter's TextField names itself from its InputDecoration.labelText --
+    # the framework associates the label with the SemanticsNode, so like web
+    # (and unlike raw Compose) the host derives the accessible name.
+    derives_name_from_label=True,
+    exposes_enabled_state=True,
+    preserves_ids=True,
+)
+
 TUI = HostProfile(
     host="tui",
     realizes={
@@ -113,7 +124,8 @@ TUI = HostProfile(
     preserves_ids=True,
 )
 
-PROFILES: dict[str, HostProfile] = {p.host: p for p in (WEB, SWIFTUI, COMPOSE, TUI)}
+PROFILES: dict[str, HostProfile] = {
+    p.host: p for p in (WEB, SWIFTUI, COMPOSE, FLUTTER, TUI)}
 
 
 # ---------------------------------------------------------------------------

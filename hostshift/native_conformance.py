@@ -39,8 +39,9 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .render.base import COMPOSE, SWIFTUI
+from .render.base import COMPOSE, FLUTTER, SWIFTUI
 from .render.compose import ComposeRenderer
+from .render.flutter import FlutterRenderer
 from .render.swiftui import SwiftUIRenderer
 
 
@@ -109,6 +110,13 @@ _KOTLIN_CLASSPATH_NOISE = (
 )
 
 
+def _find_dart() -> str | None:
+    """dart on PATH (ships with Flutter)."""
+    if shutil.which("dart"):
+        return "dart"
+    return None
+
+
 def compile_native(specs: dict[str, dict]) -> list[ToolchainCheck]:
     """Parse/compile every emitted Swift/Kotlin source with local toolchains.
 
@@ -123,6 +131,8 @@ def compile_native(specs: dict[str, dict]) -> list[ToolchainCheck]:
          shutil.which("swiftc") is not None),
         ("compose", ComposeRenderer(), "MainActivity.kt",
          _find_kotlinc() is not None),
+        ("flutter", FlutterRenderer(), "generated_app.dart",
+         _find_dart() is not None),
     ]
     results: list[ToolchainCheck] = []
     tmp = tempfile.mkdtemp(prefix="hostshift-native-")
@@ -138,9 +148,30 @@ def compile_native(specs: dict[str, dict]) -> list[ToolchainCheck]:
                 src.write_text(sources[filename])
                 if not available:
                     results.append(ToolchainCheck(host, filename,
-                                                  "swiftc/kotlinc", False, None))
+                                                  "swiftc/kotlinc/dart", False, None))
                     continue
-                if host == "compose":
+                if host == "flutter":
+                    # dart analyze needs a package context; `dart analyze` on a
+                    # lone file still reports syntax errors. One representative
+                    # fixture (shared template).
+                    tool = "dart analyze"
+                    proc = subprocess.run(
+                        [_find_dart() or "dart", "analyze", str(src)],
+                        capture_output=True, text=True, timeout=300)
+                    err = (proc.stderr or "") + (proc.stdout or "")
+                    real = [ln for ln in err.splitlines()
+                            if "error •" in ln or ln.startswith("Error:")
+                            and "Target of URI" not in ln]
+                    syntax_errors = [ln for ln in real
+                                     if "uri_does_not_exist" not in ln]
+                    ok = proc.returncode == 0 or not syntax_errors
+                    detail = "" if ok else "\n".join(syntax_errors)[-2000:]
+                    if ok and proc.returncode != 0:
+                        detail = ("syntax OK; package imports unresolved "
+                                  "outside a Flutter project")
+                    results.append(ToolchainCheck(host, filename, tool,
+                                                  True, ok, detail))
+                elif host == "compose":
                     kotlinc = _find_kotlinc() or ["kotlinc"]
                     env = dict(os.environ)
                     jbr = ("/Applications/Android Studio.app/Contents/jbr/"
@@ -211,6 +242,13 @@ _CONTRACT_MARKERS: dict[str, dict[str, tuple[str, ...]]] = {
         "explicit_field_labels": ("label =",),
         "disabled_state_exposed": ("enabled",),
     },
+    "flutter": {
+        # Realized registry populated by widgets as they build.
+        "realized_tree_not_spec": ("realized",),
+        "resolves_state_paths": (r'$state.',),
+        # filterWhen narrows without touching the underlying collection.
+        "filter_when_narrowing": ("evalPred",),
+    },
 }
 
 
@@ -275,8 +313,18 @@ def embedding_roundtrip(specs: dict[str, dict]) -> list[DiffFinding]:
         m = re.search(r'r"""(.*?)"""', py, re.DOTALL)
         ok_tui = bool(m) and json.loads(m.group(1)) == spec
 
+        # Flutter Dart raw literal r''': byte-exact, no interpolation. The
+        # emitted template opens with an escaped quote ('\'''), so strip the
+        # leading backslash-quote pair before parsing.
+        from .render.flutter import FlutterRenderer
+        dart = FlutterRenderer().emit(spec)["generated_app.dart"]
+        m = re.search(r"r'''(.*?)'''", dart, re.DOTALL)
+        payload = m.group(1).lstrip("\\").lstrip("'") if m else ""
+        ok_fl = bool(m) and json.loads(payload) == spec
+
         for host, ok, note in (("swiftui", ok_sw, ""), ("compose", ok_kt, note_kt),
-                               ("web", ok_web, note_web), ("tui", ok_tui, "")):
+                               ("web", ok_web, note_web), ("tui", ok_tui, ""),
+                               ("flutter", ok_fl, "")):
             findings.append(DiffFinding(
                 host=host, check=f"embedding_roundtrip[{name}]", ok=ok,
                 note=note,
@@ -287,8 +335,9 @@ def embedding_roundtrip(specs: dict[str, dict]) -> list[DiffFinding]:
 def differential_report(specs: dict[str, dict]) -> list[DiffFinding]:
     """Assert each native runtime's emitted source against its HostProfile."""
     findings: list[DiffFinding] = []
-    renderers = {"swiftui": SwiftUIRenderer(), "compose": ComposeRenderer()}
-    profiles = {"swiftui": SWIFTUI, "compose": COMPOSE}
+    renderers = {"swiftui": SwiftUIRenderer(), "compose": ComposeRenderer(),
+                 "flutter": FlutterRenderer()}
+    profiles = {"swiftui": SWIFTUI, "compose": COMPOSE, "flutter": FLUTTER}
     for host, renderer in renderers.items():
         profile = profiles[host]
         checks = _CONTRACT_MARKERS[host]

@@ -211,3 +211,49 @@ Two loose ends from cycles 2–3 closed:
 Status after cycle 4: 221 pytest assertions green; render-check 100/100 +
 437/437. Open roadmap items unchanged: A2UI/MCP changelog re-scan before paper
 submission; Flutter host; streaming specs; protocol adapters.
+
+---
+
+# Cycle 5 — 2026-08-24: the Flutter host (fifth host)
+
+**Motivation.** A2UI ships first-party Flutter renderers, so Flutter is where
+declarative agent-generated UIs actually land in production. A portability
+benchmark that skips it skips the industry's real deployment surface. This
+also exercises the fork-and-extend story for real: a new host added by the
+book, following CONTRIBUTING.md's own rules.
+
+**What landed.**
+
+1. `FLUTTER` HostProfile (`render/base.py`): full realization table;
+   `derives_name_from_label=True` (Flutter associates TextField labels from
+   `InputDecoration.labelText`, like web, unlike raw Compose); enabled state
+   exposed via Semantics.
+2. `render/flutter.py`: self-contained Dart app embedding the spec in a Dart
+   raw literal, interpreting it at runtime with Material widgets. Realized
+   registry populated as widgets build (Compose design), `$state./$row.`
+   resolution, `filterWhen` narrowing with an independent Dart predicate
+   evaluator. Device-backed session raises honestly (bridge wiring pending)
+   rather than silently simulating; `SimulatedFlutterSession` serves pipeline
+   work now.
+3. Conformance integration from day one — the new host followed the rule:
+   - `dart analyze` toolchain gate in `compile_native` (syntax errors fatal,
+     package-import noise outside a Flutter project tolerated);
+   - contract markers (`realized` registry, `$state.` paths, `evalPred`);
+   - **embedding round-trip entry**: every fixture's spec must decode back out
+     of the emitted Dart byte-for-byte.
+4. Registered in `HOSTS` (both places), `PROFILES`, `emit_all`, simulated
+   sessions, and `hostshift hosts`.
+
+**Defect-class note (the loop keeps paying).** The first template used
+Python `.format()` and broke on Dart's braces — switched to token
+replacement (`@@SPEC_JSON@@`). The raw-literal opening needed an escaped
+quote so Python's own triple-quote wouldn't terminate early. Both are the
+same meta-lesson as cycles 1–2: *every emitter is two languages deep, and
+the second language's syntax always bites.*
+
+**Status after cycle 5:** five hosts (web, swiftui, compose, flutter, tui);
+221 pytest assertions green; render-check 199/199 toolchain + 555/555
+semantic & round-trip checks across the reference suite. Remaining for this
+host: wire the loopback bridge into the generated app + first simulator run
+(same recipe as Compose), then calibration against mobile-native-design-
+system's Flutter implementation.

@@ -34,6 +34,7 @@ from .base import (
     realize,
 )
 from .compose import ComposeRenderer, ComposeSession, SimulatedComposeSession
+from .flutter import FlutterRenderer, SimulatedFlutterSession
 from .semantics import SpecError, initial_state, project, ui_facts, validate_spec
 from .session import (
     REFERENCE,
@@ -46,12 +47,13 @@ from .swiftui import SimulatedSwiftUISession, SwiftUIRenderer, SwiftUISession
 from .tui import SimulatedTuiSession, TuiRenderer, TuiSession
 from .web import SimulatedWebSession, WebRenderer, WebSession
 
-HOSTS = ("web", "swiftui", "compose", "tui")
+HOSTS = ("web", "swiftui", "compose", "flutter", "tui")
 
 _RENDERERS = {
     "web": WebRenderer,
     "swiftui": SwiftUIRenderer,
     "compose": ComposeRenderer,
+    "flutter": FlutterRenderer,
     "tui": TuiRenderer,
 }
 
@@ -59,6 +61,7 @@ _SIMULATED = {
     "web": SimulatedWebSession,
     "swiftui": SimulatedSwiftUISession,
     "compose": SimulatedComposeSession,
+    "flutter": SimulatedFlutterSession,
     "tui": SimulatedTuiSession,
 }
 
@@ -107,7 +110,8 @@ def open_session(spec: dict, host: str, *, simulated: bool = False,
 __all__ = [
     "CAREFUL", "COMPOSE", "HOSTS", "NAIVE", "PROFILES", "RENDERERS",
     "RendererProfile", "SWIFTUI", "TUI", "WEB",
-    "ComposeRenderer", "ComposeSession", "HostProfile", "ReferenceSession",
+    "ComposeRenderer", "ComposeSession", "FlutterRenderer", "HostProfile",
+    "ReferenceSession",
     "RenderError", "SimulatedComposeSession", "SimulatedSession",
     "SimulatedSwiftUISession", "SimulatedTuiSession", "SimulatedWebSession",
     "REFERENCE", "intended_tree",
