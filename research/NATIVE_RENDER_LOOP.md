@@ -114,10 +114,38 @@ the benchmark**, and any generated code can be measured by it:
 
 ## 6. Verification checklist for the next cycle
 
-- [ ] Re-run `hostshift render-check --specs tasks/reference_specs` after any
-      template change.
-- [ ] Audit remaining escaping seams (web.py JS, tui.py Python format).
+- [x] ~~Audit remaining escaping seams (web.py JS, tui.py Python format)~~ — done, cycle 2 below.
 - [ ] Check `vpbydesign/ame` activity again before submission (nearest
       competitor per README novelty notes).
 - [ ] Re-scan A2UI / MCP-Apps changelogs for portability-metric work (if any
       appears, cite and differentiate immediately).
+
+---
+
+# Cycle 2 — 2026-08-24: escaping-seam audit
+
+**Second real defect found.** The web renderer interpolated the spec JSON into
+the emitted page's `<script>` block unescaped. Any spec whose text contains a
+literal `</script>` — trivially producible by an LLM generator asked for, say,
+an HTML-formatting help panel — terminated the script element mid-JSON:
+truncating the spec (render parity would score the loss as a host gap) and
+forming an XSS vector. Fix: escape `</` → `<\/` (valid JS string syntax) and
+`<!--` → `<\!\--`; round-trip verified through JSON parsing; pinned by
+`test_web_escapes_script_closing_tags`.
+
+The TUI seam was audited and is **safe**: the spec rides in an `r"""…"""`
+raw string, `json.dumps` quotes backslashes so no `"""` sequence can form from
+spec content, and Python's parser reads it back byte-exact. Verified against
+hostile inputs (embedded triple-quotes, quotes, backslashes);
+pinned by `test_tui_raw_string_survives_hostile_spec`.
+
+**Generalized finding — escaping seams are systematic, not incidental.** A
+template-based emitter has one seam per embedding language: Swift raw literals
+(safe), Kotlin triple-quote interpolation (fixed cycle 1), HTML script blocks
+(fixed this cycle), Python raw strings (safe). Any future host template must be
+added to this audit list at birth. Proposed rule for CONTRIBUTING: *every new
+renderer lands with (a) a hostile-spec fixture exercising its worst-case
+embedding and (b) a compile-or-parse gate in `native_conformance.py`.*
+
+Status after cycle 2: 217 assertions green, render-check 100/100 + 41/41,
+both fixes pushed.

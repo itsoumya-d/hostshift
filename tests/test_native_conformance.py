@@ -103,6 +103,41 @@ def test_differential_checks_pass_on_current_templates():
     assert hosts == {"swiftui", "compose"}
 
 
+def test_web_escapes_script_closing_tags():
+    """A `</script>` inside spec content must not terminate the embedded
+    <script> block (spec truncation + XSS vector). Found by the cycle-2
+    escaping-seam audit."""
+    from hostshift.render.web import WebRenderer
+
+    hostile = {"version": "0.2", "title": "t", "entry": "m",
+               "screens": [{"id": "m", "children": [
+                   {"kind": "text", "text": "</script><script>alert(1)</script>"},
+               ]}]}
+    html = WebRenderer().emit(hostile)["index.html"]
+    start = html.find("window.__HOSTSHIFT_SPEC__")
+    end = html.find("</script>", start)
+    block = html[start:end]
+    assert block.rstrip().endswith("};"), "SPEC script block truncated early"
+    assert "</scr" + "ipt>" not in block, "unescaped </script> inside payload"
+
+
+def test_tui_raw_string_survives_hostile_spec():
+    """The TUI embeds the spec in an r\"\"\" literal; json.dumps quoting must
+    keep it parseable even with quotes, backslashes and triple quotes."""
+    from hostshift.render.tui import TuiRenderer
+
+    hostile = {"version": "0.2", "title": 'q " \\ x', "entry": "m",
+               "screens": [{"id": "m", "children": [
+                   {"kind": "text", "text": 'say """ hi'},
+               ]}]}
+    src = TuiRenderer().emit(hostile)["app.py"]
+    compile(src, "app.py", "exec")
+    payload = src.split('r"""', 1)[1].split('"""', 1)[0]
+    import json as _json
+    parsed = _json.loads(payload)
+    assert parsed["title"] == 'q " \\ x'
+
+
 if __name__ == "__main__":
     import traceback
 

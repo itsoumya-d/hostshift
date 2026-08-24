@@ -438,12 +438,26 @@ PAGE = """<!DOCTYPE html>
 class WebRenderer:
     host = "web"
 
+    @staticmethod
+    def _js_safe_spec_json(spec: dict) -> str:
+        """Spec JSON safe to embed inside an HTML <script> block.
+
+        A literal ``</script>`` anywhere in the payload -- including inside a
+        quoted JSON string -- terminates the script element early in every
+        browser, truncating the spec and enabling script injection. Escaping
+        the slash (``<\\/``) is valid JavaScript string syntax and neutralizes
+        the sequence; ``<!--`` gets the same treatment for legacy parsers.
+        """
+        return (json.dumps(spec, separators=(",", ":"))
+                .replace("</", "<\\/")
+                .replace("<!--", "<\\!\\--"))
+
     def emit(self, spec: dict) -> dict[str, str]:
         title = spec.get("title") or "HostShift"
         return {
             "index.html": PAGE.format(
                 title=_esc(title),
-                spec=json.dumps(spec, separators=(",", ":")),
+                spec=self._js_safe_spec_json(spec),
                 runtime=RUNTIME_JS,
             )
         }
