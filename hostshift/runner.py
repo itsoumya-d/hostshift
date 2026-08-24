@@ -1,19 +1,24 @@
 """Experiment driver and reporting.
 
-`python -m hostshift.runner plan`    -- show the experiment matrix and its cost
-`python -m hostshift.runner lint`    -- validate the task suite
-`python -m hostshift.runner report`  -- roll up runs.jsonl into paper tables
-`python -m hostshift.runner demo`    -- synthetic end-to-end check of the pipeline
+`hostshift plan`                      -- show the experiment matrix and its cost
+`python -m hostshift lint`            -- validate the task suite
+`hostshift report --runs runs/demo`   -- roll up runs.jsonl into paper tables
+`hostshift demo`                      -- synthetic end-to-end check of the pipeline
+
+(The same commands work as `python -m hostshift.runner <cmd>`.)
 """
 
 from __future__ import annotations
 
 import argparse
+import json as _json
+import os
 import random
 import statistics
 import sys
 from pathlib import Path
 
+from . import __version__
 from .calibration import CalibrationStore, corpus_provenance
 from .calibration import report as calibration_summary
 from .harness import (
@@ -36,7 +41,24 @@ from .metrics import (
 )
 from .oracle import load_suite, validate_suite
 
-SUITE = str(Path(__file__).resolve().parents[1] / "tasks" / "suite_v1.jsonl")
+
+def _default_suite() -> str:
+    """Resolve the task suite without assuming a repository checkout.
+
+    Order: $HOSTSHIFT_SUITE, then the repo checkout layout, then the copy
+    shipped inside installed wheels (kept in sync by tests/test_packaging.py).
+    """
+    env = os.environ.get("HOSTSHIFT_SUITE")
+    if env:
+        return env
+    here = Path(__file__).resolve().parent
+    checkout = here.parents[1] / "tasks" / "suite_v1.jsonl"
+    if checkout.exists():
+        return str(checkout)
+    return str(here / "data" / "suite_v1.jsonl")
+
+
+SUITE = _default_suite()
 
 
 def cmd_lint(args) -> int:
@@ -93,12 +115,22 @@ def cmd_report(args) -> int:
     if not runs:
         print("no runs recorded yet; run the experiment or try `demo`")
         return 1
-    _emit_tables(runs, boot=getattr(args, "boot", 4000))
+    data = _compute_tables(runs, boot=getattr(args, "boot", 4000))
+    if getattr(args, "json", False):
+        print(_json.dumps(data, indent=2))
+    else:
+        _emit_tables(data)
     return 0
 
 
-def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
+def _compute_tables(runs: list[RunRecord], boot: int = 4000) -> dict:
+    """Roll run records up into the five paper tables.
+
+    Pure computation, no printing: `report` renders it for humans and
+    `report --json` serializes it for scripts, notebooks, and CI artifacts.
+    """
     generators = sorted({r.generator for r in runs})
+    hosts = sorted({r.host for r in runs})
 
     # Scope the cell to one generator and one condition. Keying only by
     # (task, host) would pool every generator and both conditions into one
@@ -106,6 +138,102 @@ def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
     rel = repeat_reliability(
         [TaskOutcome(f"{r.task_id}|{r.generator}|{r.condition}", r.host, r.success)
          for r in runs])
+
+    cells: dict[tuple[str, str], list[RunRecord]] = {}
+    for r in runs:
+        cells.setdefault((r.generator, r.condition), []).append(r)
+
+    table1 = []
+    for gen in generators:
+        for cond in CONDITIONS:
+            rows = cells.get((gen, cond), [])
+            if not rows:
+                continue
+            outcomes = collapse_repeats(
+                [TaskOutcome(r.task_id, r.host, r.success) for r in rows])
+            ip = sum(1 for o in outcomes if o.success) / len(outcomes)
+            lo, hi = bootstrap_ip(outcomes, n_resamples=boot)
+            lock = host_lock_index(outcomes)
+            hlo, hhi = bootstrap_hli(outcomes, n_resamples=boot)
+            table1.append({
+                "generator": gen, "condition": cond,
+                "ip": round(ip, 6), "ip_ci95": [round(lo, 4), round(hi, 4)],
+                "hli": round(lock.hli, 6),
+                "hli_ci95": [round(hlo, 4), round(hhi, 4)],
+                "per_task_lock": round(lock.per_task_lock, 6),
+            })
+
+    table2 = []
+    for gen in generators:
+        for cond in CONDITIONS:
+            rows = cells.get((gen, cond), [])
+            if not rows:
+                continue
+            per_host = {}
+            for h in hosts:
+                hr = [r for r in rows if r.host == h]
+                per_host[h] = round(
+                    sum(1 for r in hr if r.success) / len(hr) if hr else 0.0, 6)
+            table2.append({"generator": gen, "condition": cond, "ip_by_host": per_host})
+
+    table3 = []
+    for h in hosts:
+        hr = [r for r in runs if r.host == h]
+        rp = [r.render_parity for r in hr if r.render_parity is not None]
+        ap = [r.a11y_parity for r in hr if r.a11y_parity is not None]
+        table3.append({
+            "host": h,
+            "mean_render_parity": round(statistics.mean(rp), 6) if rp else None,
+            "mean_a11y_parity": round(statistics.mean(ap), 6) if ap else None,
+            "n_runs": len(hr),
+        })
+
+    index: dict[tuple, dict[str, bool]] = {}
+    for r in collapse_repeats_by_condition(runs):
+        index.setdefault((r.task_id, r.host, r.generator), {})[r.condition] = r.success
+
+    contrasts = [
+        ("representation alone", CONDITION_A, CONDITION_B_NAIVE),
+        ("renderer expertise", CONDITION_B_NAIVE, CONDITION_B),
+        ("end to end", CONDITION_A, CONDITION_B),
+    ]
+    table4 = []
+    for label, lhs, rhs in contrasts:
+        pairs = [(v[lhs], v[rhs]) for v in index.values() if lhs in v and rhs in v]
+        if not pairs:
+            table4.append({"contrast": label, "n": 0})
+            continue
+        res = mcnemar(pairs)
+        verdict = ("later arm helps" if res["c"] > res["b"] else
+                   "later arm hurts" if res["b"] > res["c"] else "no difference")
+        table4.append({
+            "contrast": label, "n": len(pairs), "gained": res["c"], "lost": res["b"],
+            "p_value": res["p_value"], "verdict": verdict,
+        })
+
+    summary = calibration_summary(
+        collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]))
+
+    return {
+        "meta": {
+            "runs": len(runs), "generators": generators, "hosts": hosts,
+            "bootstrap_resamples": boot,
+            "repeat_reliability": rel,
+            "note": "Repeats collapsed by majority vote before inference; "
+                    "intervals are cluster bootstraps resampling whole tasks.",
+        },
+        "interaction_parity_and_host_lock": table1,
+        "per_host_interaction_parity": table2,
+        "structural_and_accessibility_parity": table3,
+        "condition_contrasts_mcnemar": table4,
+        "operator_calibration": summary,
+    }
+
+
+def _emit_tables(data: dict) -> None:
+    rel = data["meta"]["repeat_reliability"]
+    cells1 = data["interaction_parity_and_host_lock"]
+
     print("=" * 78)
     print("TABLE 1  Interaction Parity and Host-Lock, by condition")
     print("=" * 78)
@@ -120,43 +248,25 @@ def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
               f"{'HLI':>7}{'HLI CI':>16}{'lock':>7}")
     print(header)
     print("-" * 78)
-
-    cells: dict[tuple[str, str], list[RunRecord]] = {}
-    for r in runs:
-        cells.setdefault((r.generator, r.condition), []).append(r)
-
-    for gen in generators:
-        for cond in CONDITIONS:
-            rows = cells.get((gen, cond), [])
-            if not rows:
-                continue
-            outcomes = collapse_repeats(
-                [TaskOutcome(r.task_id, r.host, r.success) for r in rows])
-            ip = sum(1 for o in outcomes if o.success) / len(outcomes)
-            lo, hi = bootstrap_ip(outcomes, n_resamples=boot)
-            lock = host_lock_index(outcomes)
-            hlo, hhi = bootstrap_hli(outcomes, n_resamples=boot)
-            print(f"{gen:<20}{cond:<12}{ip:>7.3f}{f'[{lo:.2f},{hi:.2f}]':>16}"
-                  f"{lock.hli:>7.3f}{f'[{hlo:.2f},{hhi:.2f}]':>16}"
-                  f"{lock.per_task_lock:>7.3f}")
+    for row in cells1:
+        lo, hi = row["ip_ci95"]
+        hlo, hhi = row["hli_ci95"]
+        print(f"{row['generator']:<20}{row['condition']:<12}{row['ip']:>7.3f}"
+              f"{f'[{lo:.2f},{hi:.2f}]':>16}{row['hli']:>7.3f}"
+              f"{f'[{hlo:.2f},{hhi:.2f}]':>16}{row['per_task_lock']:>7.3f}")
 
     print()
     print("=" * 78)
     print("TABLE 2  Per-host Interaction Parity  (the portability picture)")
     print("=" * 78)
-    hosts = sorted({r.host for r in runs})
+    hosts = data["meta"]["hosts"]
     print(f"{'generator':<22}{'cond':<12}" + "".join(f"{h:>10}" for h in hosts))
     print("-" * 78)
-    for gen in generators:
-        for cond in CONDITIONS:
-            rows = cells.get((gen, cond), [])
-            if not rows:
-                continue
-            line = f"{gen:<22}{cond:<12}"
-            for h in hosts:
-                hr = [r for r in rows if r.host == h]
-                line += f"{(sum(1 for r in hr if r.success)/len(hr) if hr else 0):>10.3f}"
-            print(line)
+    for row in data["per_host_interaction_parity"]:
+        line = f"{row['generator']:<22}{row['condition']:<12}"
+        for h in hosts:
+            line += f"{row['ip_by_host'][h]:>10.3f}"
+        print(line)
 
     print()
     print("=" * 78)
@@ -164,12 +274,11 @@ def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
     print("=" * 78)
     print(f"{'host':<12}{'mean RP':>10}{'mean AP':>10}{'n':>8}")
     print("-" * 78)
-    for h in hosts:
-        hr = [r for r in runs if r.host == h]
-        rp = [r.render_parity for r in hr if r.render_parity is not None]
-        ap = [r.a11y_parity for r in hr if r.a11y_parity is not None]
-        print(f"{h:<12}{(statistics.mean(rp) if rp else float('nan')):>10.3f}"
-              f"{(statistics.mean(ap) if ap else float('nan')):>10.3f}{len(hr):>8}")
+    for row in data["structural_and_accessibility_parity"]:
+        rp = row["mean_render_parity"]
+        ap = row["mean_a11y_parity"]
+        print(f"{row['host']:<12}{(rp if rp is not None else float('nan')):>10.3f}"
+              f"{(ap if ap is not None else float('nan')):>10.3f}{row['n_runs']:>8}")
 
     print()
     print("=" * 78)
@@ -179,37 +288,23 @@ def _emit_tables(runs: list[RunRecord], boot: int = 4000) -> None:
     print("renderer. Reporting only A vs B would credit the schema with work the")
     print("runtime did, which is the sharpest objection to this comparison.")
     print()
-    index: dict[tuple, dict[str, bool]] = {}
-    for r in collapse_repeats_by_condition(runs):
-        index.setdefault((r.task_id, r.host, r.generator), {})[r.condition] = r.success
-
-    contrasts = [
-        ("representation alone", CONDITION_A, CONDITION_B_NAIVE),
-        ("renderer expertise  ", CONDITION_B_NAIVE, CONDITION_B),
-        ("end to end          ", CONDITION_A, CONDITION_B),
-    ]
     print(f"{'contrast':<22}{'n':>7}{'gained':>8}{'lost':>7}{'p':>12}   verdict")
     print("-" * 78)
-    for label, lhs, rhs in contrasts:
-        pairs = [(v[lhs], v[rhs]) for v in index.values() if lhs in v and rhs in v]
-        if not pairs:
-            print(f"{label:<22}{'--':>7}   (condition absent from this run)")
+    for row in data["condition_contrasts_mcnemar"]:
+        if row.get("n", 0) == 0 or "p_value" not in row:
+            print(f"{row['contrast']:<22}{'--':>7}   (condition absent from this run)")
             continue
-        res = mcnemar(pairs)
-        verdict = ("later arm helps" if res["c"] > res["b"] else
-                   "later arm hurts" if res["b"] > res["c"] else "no difference")
-        print(f"{label:<22}{len(pairs):>7}{res['c']:>8}{res['b']:>7}"
-              f"{res['p_value']:>12.1e}   {verdict}")
+        print(f"{row['contrast']:<22}{row['n']:>7}{row['gained']:>8}{row['lost']:>7}"
+              f"{row['p_value']:>12.1e}   {row['verdict']}")
 
     print()
     print("=" * 78)
     print("TABLE 5  Operator calibration")
     print("=" * 78)
-    summary = calibration_summary(
-        collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]))
+    summary = data["operator_calibration"]
     if summary.get("normalized_hli") is None:
         print("  " + summary["status"])
-        print("  Run `python -m hostshift.runner calibrate` first.")
+        print("  Run `hostshift calibrate` first.")
     else:
         print(f"  operator ceilings   {summary['ceilings']}")
         print(f"  raw HLI             {summary['raw_hli']:.3f}")
@@ -259,10 +354,40 @@ def cmd_coverage(args) -> int:
     if not args.corpus:
         print("No external corpus supplied.")
         print("Coverage against an independently-authored corpus is the only thing")
-        print("that answers the objection. See tasks/external_corpus.template.jsonl.")
-        return 1
+        print("that answers the objection. See tasks/external_corpus.template.jsonl")
+        print("for the contract and candidate sources.")
+        print()
+        print("To measure one:")
+        print("  hostshift coverage --corpus <your-corpus.jsonl>")
+        return 0
 
     print(format_report(analyse(load_corpus(args.corpus))))
+    return 0
+
+
+def cmd_hosts(args) -> int:
+    """Print the declarative host-capability profile table.
+
+    These tables are where realization differences live, so they get a
+    first-class command: a reviewer auditing whether an observed parity gap is
+    a property of the host or a bug in one renderer starts here.
+    """
+    from .render import HOSTS as RENDER_HOSTS
+    from .render import PROFILES
+    from .render.base import _FULL
+
+    print(f"{'host':<10}{'cannot realize':<16}{'names from label':<18}"
+          f"{'disabled state':<16}{'degrades to'}")
+    print("-" * 78)
+    for h in RENDER_HOSTS:
+        p = PROFILES[h]
+        missing = ", ".join(sorted(set(_FULL) - set(p.realizes))) or "-"
+        name_src = "yes" if p.derives_name_from_label else "no"
+        disabled = "exposed" if p.exposes_enabled_state else "dimmed only"
+        print(f"{h:<10}{missing:<16}{name_src:<18}{disabled:<16}{p.degrade_to}")
+    print()
+    print("Source of truth: hostshift/render/base.py. A parity gap explained by a")
+    print("row above is a host property; anything else indicts the renderer.")
     return 0
 
 
@@ -308,6 +433,49 @@ def cmd_calibrate(args) -> int:
         if summary.get("warning"):
             print(f"WARNING  {summary['warning']}")
     return 0
+
+
+def cmd_render_check(args) -> int:
+    """Compile-gate emitted Swift/Kotlin with local toolchains + differential
+    semantic checks against each host profile. Exit 0 only if everything that
+    ran passed; skips are reported but never counted as passes."""
+    from .native_conformance import (
+        compile_native,
+        differential_report,
+        summary,
+    )
+
+    specs: dict[str, dict] = {}
+    p = Path(args.specs)
+    texts: list[str] = []
+    if p.is_dir():
+        texts = sorted(x.read_text() for x in p.glob("*.json"))
+    else:
+        texts = [p.read_text()]
+    for text in texts:
+        stripped = text.strip()
+        if not stripped:
+            continue
+        # Pretty-printed single-spec JSON files are the common case; JSONL
+        # suites also work. Try whole-file first, then per-line.
+        try:
+            rec = _json.loads(stripped)
+            specs[str(rec.get("id", len(specs)))] = rec.get("spec", rec)
+            continue
+        except _json.JSONDecodeError:
+            pass
+        for line in stripped.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            rec = _json.loads(line)
+            specs[str(rec.get("id", len(specs)))] = rec.get("spec", rec)
+
+    checks = compile_native(specs)
+    findings = differential_report(specs)
+    print(summary(checks, findings))
+    failed = any(c.ok is False for c in checks) or any(not f.ok for f in findings)
+    return 1 if failed else 0
 
 
 def cmd_demo(args) -> int:
@@ -364,14 +532,18 @@ def cmd_demo(args) -> int:
 
     runs = store.all_runs()
     print(f"wrote {len(runs)} synthetic runs to {store.runlog}\n")
-    _emit_tables(runs)
+    _emit_tables(_compute_tables(runs))
     print()
     print("!! SYNTHETIC DATA -- pipeline check only. This is not a result.")
     return 0
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="hostshift")
+    ap = argparse.ArgumentParser(
+        prog="hostshift",
+        description="Cross-platform portability benchmark for LLM-generated UIs.",
+    )
+    ap.add_argument("--version", action="version", version=f"hostshift {__version__}")
     ap.add_argument("--suite", default=SUITE)
     ap.add_argument("--runs", default="runs")
     ap.add_argument("--calibration", default="runs/calibration")
@@ -396,6 +568,9 @@ def main(argv=None) -> int:
     # given at the top level (argparse subparser defaults would otherwise win).
     rp.add_argument("--runs", default=argparse.SUPPRESS,
                     help="run store to report on (default: runs/runs.jsonl)")
+    rp.add_argument("--json", action="store_true",
+                    help="emit machine-readable JSON instead of text tables "
+                         "(same numbers; for scripts, notebooks, and CI)")
     rp.set_defaults(fn=cmd_report)
 
     cal = sub.add_parser("calibrate")
@@ -415,6 +590,18 @@ def main(argv=None) -> int:
     d.add_argument("--out", default="runs/demo",
                    help="separate store for synthetic runs (never the real log)")
     d.set_defaults(fn=cmd_demo)
+
+    h = sub.add_parser("hosts")
+    h.set_defaults(fn=cmd_hosts)
+
+    rc = sub.add_parser(
+        "render-check",
+        help="compile-gate emitted Swift/Kotlin + differential semantic checks",
+    )
+    rc.add_argument("--specs",
+                    default="tasks/reference_specs/filter-001.json",
+                    help="JSONL of UISpec fixtures (or a single JSON file)")
+    rc.set_defaults(fn=cmd_render_check)
 
     args = ap.parse_args(argv)
     return args.fn(args)

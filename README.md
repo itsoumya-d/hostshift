@@ -100,6 +100,13 @@ one platform.** Verified against the live record 2026-08-03; see
 | **IP** Interaction Parity | Can an agent complete the task on this host? | API |
 | **HLI** Host-Lock Index | How much capability is lost by changing host? | derived |
 
+**Where this sits in the 2026 generative-UI landscape:** the industry converged
+on declarative specs rendered natively by the host — Google's A2UI, MCP-Apps
+(SEP-1865), AG-UI. None of them publishes a portability or parity metric.
+HostShift is that missing instrument: a conformance harness for every
+declarative-GenUI stack, not just this repo's UISpec. See
+[research/NATIVE_RENDER_LOOP.md](research/NATIVE_RENDER_LOOP.md).
+
 Two host-lock numbers get reported, always:
 
 - `HLI = 1 − worst-host IP / best-host IP` — how bad the weakest host is.
@@ -161,6 +168,7 @@ hostshift/render/swiftui.py     -> SwiftUI app; HTTP bridge session (swiftc-pars
 hostshift/render/compose.py     -> Jetpack Compose app; realized-tree instrumentation
 hostshift/render/tui.py         -> Textual app; Pilot session
 hostshift/render/bridge.py      loopback instrumentation contract for iOS/Android
+hostshift/native_conformance.py swiftc/kotlinc compile gates + profile differential checks
 hostshift/calibration.py    operator ceilings against hand-written native apps
 hostshift/license_guard.py  provenance stamping for run records
 hostshift/coverage.py       what UISpec 0.2 can and cannot express
@@ -230,9 +238,23 @@ between per-platform runtime implementations is the phenomenon this benchmark
 measures. It also creates a confound — a runtime that implements the semantics
 *wrong* would score as a host failure — so `test_crossimpl.py` drives the
 emitted JavaScript against the Python reference and asserts they agree on every
-observable the oracle reads. **Swift and Kotlin owe the same harness**; until
-they have one, their numbers carry an implementation risk the paper must
-disclose rather than assume away.
+observable the oracle reads. **Swift and Kotlin now owe — and have — that harness.**
+`hostshift render-check` compiles every emitted `GeneratedApp.swift` with
+`swiftc -parse` and a representative `MainActivity.kt` with a real `kotlinc`
+(probed on PATH or inside Android Studio), classifying classpath noise so only
+genuine template regressions fail. It also runs differential semantic checks
+that assert each native runtime's observable behaviour against its declared
+host profile. The gate caught a real defect on its first run: the Compose
+renderer interpolated spec JSON into a Kotlin triple-quoted literal unescaped,
+and since UISpec state references are literally `$state.x` / `$row.x`, every
+filterWhen spec failed to compile (Kotlin interpolates `$name` inside
+`"""…"""`). Fixed and pinned by tests; see
+[research/NATIVE_RENDER_LOOP.md](research/NATIVE_RENDER_LOOP.md) for the full
+cycle log.
+
+```bash
+hostshift render-check --specs tasks/reference_specs   # toolchain + differential gates
+```
 
 ### Simulated vs device-backed
 

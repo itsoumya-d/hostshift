@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import org.json.JSONArray
 import org.json.JSONObject
 
-private const val SPEC_JSON = """{spec_json}"""
+private val SPEC_JSON = """{spec_json}"""
 
 val SPEC: JSONObject = JSONObject(SPEC_JSON)
 
@@ -834,9 +834,14 @@ class ComposeRenderer:
     profile = COMPOSE
 
     def emit(self, spec: dict) -> dict[str, str]:
+        # Kotlin interpolates `$name` inside triple-quoted literals, and UISpec
+        # 0.2 state references ARE `$state.x` / `$row.x` strings. Without
+        # escaping, every filterWhen spec fails to compile (or worse, silently
+        # mangles its own predicate). Escape dollars in the interpolated value.
+        spec_json = json.dumps(spec, indent=2).replace("$", "\\$")
         return {
             "MainActivity.kt": APP_KT.format(
-                spec_json=json.dumps(spec, indent=2),
+                spec_json=spec_json,
                 port=DEFAULT_PORTS["compose"],
             )
         }
