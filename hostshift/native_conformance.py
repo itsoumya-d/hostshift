@@ -223,6 +223,67 @@ class DiffFinding:
     missing_markers: list[str] = field(default_factory=list)
 
 
+def embedding_roundtrip(specs: dict[str, dict]) -> list[DiffFinding]:
+    """Parse the spec payload back out of every emitted source and compare.
+
+    The defect class behind cycles 1–2: a template embeds the spec inside a
+    string literal of another language, and an unescaped metacharacter mangles
+    it. The strongest check is not "did we escape" but "does the embedded
+    payload decode to exactly the spec the generator produced" — for every
+    host, on every fixture. Inspired by AME's cross-runtime serialization
+    audit (their Bug 21 was the same class: one runtime silently rewriting
+    values another preserved).
+    """
+    findings: list[DiffFinding] = []
+    for name, spec in sorted(specs.items()):
+        # Swift raw literal (#\"\"\" ... \"\"\"): byte-exact, no escaping.
+        sw = SwiftUIRenderer().emit(spec)["GeneratedApp.swift"]
+        m = re.search(r'#"""(.*?)"""#', sw, re.DOTALL)
+        ok_sw = bool(m) and json.loads(m.group(1)) == spec
+
+        # Kotlin triple-quoted literal with \$ escapes (cycle-1 fix).
+        kt = ComposeRenderer().emit(spec)["MainActivity.kt"]
+        m = re.search(r'SPEC_JSON = """(.*?)"""', kt, re.DOTALL)
+        if not m:
+            ok_kt, note_kt = False, "SPEC_JSON literal not found"
+        else:
+            try:
+                ok_kt = json.loads(m.group(1).replace("\\$", "$")) == spec
+                note_kt = ""
+            except json.JSONDecodeError as exc:
+                ok_kt, note_kt = False, f"kotlin payload unparsable: {exc}"
+
+        # Web <script> JSON with <\/ and <\!\-- escapes (cycle-2 fix).
+        from .render.web import WebRenderer
+        html = WebRenderer().emit(spec)["index.html"]
+        m = re.search(r'window\.__HOSTSHIFT_SPEC__ = (.*?);\s*</script>',
+                      html, re.DOTALL)
+        if not m:
+            ok_web, note_web = False, "SPEC assignment not found"
+        else:
+            try:
+                raw = (m.group(1).replace("<\\/", "</")
+                       .replace("<\\!\\--", "<!--"))
+                ok_web = json.loads(raw) == spec
+                note_web = ""
+            except json.JSONDecodeError as exc:
+                ok_web, note_web = False, f"web payload unparsable: {exc}"
+
+        # TUI r-string literal: byte-exact via json.dumps quoting.
+        from .render.tui import TuiRenderer
+        py = TuiRenderer().emit(spec)["app.py"]
+        m = re.search(r'r"""(.*?)"""', py, re.DOTALL)
+        ok_tui = bool(m) and json.loads(m.group(1)) == spec
+
+        for host, ok, note in (("swiftui", ok_sw, ""), ("compose", ok_kt, note_kt),
+                               ("web", ok_web, note_web), ("tui", ok_tui, "")):
+            findings.append(DiffFinding(
+                host=host, check=f"embedding_roundtrip[{name}]", ok=ok,
+                note=note,
+            ))
+    return findings
+
+
 def differential_report(specs: dict[str, dict]) -> list[DiffFinding]:
     """Assert each native runtime's emitted source against its HostProfile."""
     findings: list[DiffFinding] = []

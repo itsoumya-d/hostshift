@@ -149,3 +149,41 @@ embedding and (b) a compile-or-parse gate in `native_conformance.py`.*
 
 Status after cycle 2: 217 assertions green, render-check 100/100 + 41/41,
 both fixes pushed.
+
+---
+
+# Cycle 3 — 2026-08-24: competitor scan + embedding round-trip gate
+
+## Ecosystem findings
+
+- **AME (vpbydesign/ame) — the "watch" competitor — moved.** v1.2
+  (2026-04-18): 57-case cross-runtime conformance suite with multi-runtime
+  parity checking across Kotlin/Swift/Flutter parsers, a formal defect
+  lifecycle, and 17 audited bug fixes. Their **Bug 21 is our defect class
+  exactly**: Swift's JSONEncoder silently stripped `.0` from whole-number
+  Doubles while Kotlin preserved it — one runtime quietly rewriting values
+  another kept. Validates the loop's premise that embedding/serialization
+  seams are where these systems rot.
+- **But the novelty claim still holds.** AME's parity is *JSON serialization*
+  only — no functional task-completion equivalence, no accessibility parity,
+  no host-lock metric, no operating agent. MCP-Apps gained a WPT-style host
+  conformance platform (`alpic-ai/mcp-app-conformance`, live ChatGPT/Claude/
+  Cursor/Le Chat matrix) — but it tests hosts against the SEP-1865 protocol,
+  not generated-UI portability. A2UI+MCP-Apps published interop patterns
+  (June 2026 Google blog: A2UI-over-MCP, MCP-Apps-in-A2UI) with zero
+  portability measurement. **Cite all three in related work; differentiate on
+  functional/state-oracle measurement.**
+
+## Implementation
+
+New gate in `native_conformance.py`: `embedding_roundtrip()` — for every
+fixture, parse the spec payload back out of each emitted source (Swift raw
+literal, Kotlin `\$`-escaped triple-quote, web `<\/`-escaped script JSON, TUI
+r-string) and require it to equal the input spec exactly. This checks the
+*property that matters* ("the app sees the spec the generator wrote") rather
+than any particular escaping trick — so the next seam bug of this class fails
+loudly regardless of which language embeds it. Wired into `hostshift
+render-check`: now runs 396 round-trip checks over the reference suite.
+
+Status after cycle 3: 217 pytest assertions green; render-check 100/100
+toolchain + 437/437 semantic & round-trip checks.

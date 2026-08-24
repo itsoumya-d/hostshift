@@ -442,6 +442,7 @@ def cmd_render_check(args) -> int:
     from .native_conformance import (
         compile_native,
         differential_report,
+        embedding_roundtrip,
         summary,
     )
 
@@ -472,7 +473,7 @@ def cmd_render_check(args) -> int:
             specs[str(rec.get("id", len(specs)))] = rec.get("spec", rec)
 
     checks = compile_native(specs)
-    findings = differential_report(specs)
+    findings = differential_report(specs) + embedding_roundtrip(specs)
     print(summary(checks, findings))
     failed = any(c.ok is False for c in checks) or any(not f.ok for f in findings)
     return 1 if failed else 0
