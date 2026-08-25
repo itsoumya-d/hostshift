@@ -103,6 +103,20 @@ def test_differential_checks_pass_on_current_templates():
     assert hosts == {"swiftui", "compose", "flutter"}
 
 
+def test_profile_coherence_passes_on_all_profiles():
+    """Every HostProfile capability table must be internally consistent:
+    realization targets are canonical categories, and degrade_to is itself
+    realized (no recursive degradation). Added cycle 6."""
+    from hostshift.native_conformance import profile_coherence
+
+    findings = profile_coherence()
+    bad = [f for f in findings if not f.ok]
+    assert not bad, [(f.host, f.check, f.note, f.missing_markers) for f in bad]
+    # All five registered hosts are covered.
+    assert {f.host for f in findings} == {"web", "swiftui", "compose",
+                                          "flutter", "tui"}
+
+
 def test_web_escapes_script_closing_tags():
     """A `</script>` inside spec content must not terminate the embedded
     <script> block (spec truncation + XSS vector). Found by the cycle-2

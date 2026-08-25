@@ -158,12 +158,20 @@ def compile_native(specs: dict[str, dict]) -> list[ToolchainCheck]:
                     proc = subprocess.run(
                         [_find_dart() or "dart", "analyze", str(src)],
                         capture_output=True, text=True, timeout=300)
+                    # Classify: classpath noise tolerated, syntax errors fatal.
+                    # dart analyze emits "error • <message> • uri" lines plus
+                    # plain "Error: ..." lines; package-import noise
+                    # (uri_does_not_exist / Target of URI) is tolerated outside
+                    # a Flutter project. Note the explicit parentheses — `and`
+                    # binds tighter than `or`, and the unparenthesized version
+                    # let a "Target of URI" line through via the first branch.
                     err = (proc.stderr or "") + (proc.stdout or "")
-                    real = [ln for ln in err.splitlines()
-                            if "error •" in ln or ln.startswith("Error:")
-                            and "Target of URI" not in ln]
-                    syntax_errors = [ln for ln in real
-                                     if "uri_does_not_exist" not in ln]
+                    syntax_errors = [
+                        ln for ln in err.splitlines()
+                        if (("error •" in ln or ln.startswith("Error:")
+                             and "Target of URI" not in ln)
+                            and "uri_does_not_exist" not in ln)
+                    ]
                     ok = proc.returncode == 0 or not syntax_errors
                     detail = "" if ok else "\n".join(syntax_errors)[-2000:]
                     if ok and proc.returncode != 0:
@@ -362,6 +370,40 @@ def differential_report(specs: dict[str, dict]) -> list[DiffFinding]:
                 host=host, check=f"degrades_{kind}",
                 ok=True, note="declared degrade path present in profile",
             ))
+    return findings
+
+
+def profile_coherence() -> list[DiffFinding]:
+    """Assert every HostProfile's capability table is internally consistent.
+
+    A silent fallback (`realizes.get(kind, degrade_to)`) means a typo in a
+    kind name or a canonical target that is itself unrealized would never
+    surface — the host would just quietly degrade more than it declared.
+    These checks pin three properties per profile:
+
+    1. every `realizes` value is a canonical realization category;
+    2. `degrade_to` is itself realized as-is (a degrade that degrades again
+       would recurse);
+    3. no `realizes` entry maps a kind to something other than itself unless
+       that mapping was deliberate (canonical categories are the only legal
+       non-identity targets).
+    """
+    from .render.base import PROFILES
+
+    _CANON = {"container", "text", "input", "choice", "boolean", "action",
+              "collection", "item", "media", "separator", "tablist",
+              "overlay", "status"}
+    findings: list[DiffFinding] = []
+    for name, p in sorted(PROFILES.items()):
+        bad_targets = [f"{k}->{v}" for k, v in p.realizes.items()
+                       if v not in _CANON]
+        findings.append(DiffFinding(
+            host=name, check="realizes_targets_canonical", ok=not bad_targets,
+            missing_markers=bad_targets))
+        findings.append(DiffFinding(
+            host=name, check="degrade_target_realized",
+            ok=p.realizes.get(p.degrade_to) == p.degrade_to,
+            note=f"degrade_to={p.degrade_to}"))
     return findings
 
 

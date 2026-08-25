@@ -257,3 +257,57 @@ semantic & round-trip checks across the reference suite. Remaining for this
 host: wire the loopback bridge into the generated app + first simulator run
 (same recipe as Compose), then calibration against mobile-native-design-
 system's Flutter implementation.
+
+---
+
+# Cycle 6 — 2026-08-25: ecosystem re-scan + profile-coherence gate
+
+## Ecosystem findings
+
+- **MCP 2026-07-28 spec shipped** (July 2026): stateless core (no initialize
+  handshake / Mcp-Session-Id), and a formal extensions framework (SEP-2133)
+  under which **MCP-Apps (SEP-1865) is now an official, independently
+  versioned extension** alongside MCP Tasks. Still zero portability or
+  functional-parity measurement anywhere in that stack — the conformance
+  platform (`alpic-ai/mcp-app-conformance`) tests hosts against the protocol,
+  not generated UIs across hosts. Differentiation claim unchanged.
+- **A2UI v0.9 released April 17 2026** (Google Developers Blog; InfoQ covered
+  it July 3 as "portable, framework-agnostic generative UI"). The word
+  "portable" is doing marketing work: still no published parity/portability
+  metric across its own four renderers. CopilotKit's AG-UI added "generative
+  UI over A2UI" transport support. Agentic AI Foundation (OpenAI/Anthropic/
+  Block under Linux Foundation) is now governing adjacent standards — worth
+  watching for a conformance charter.
+- **AME (vpbydesign/ame): no movement beyond v1.2** (April 2026). Their README
+  explicitly scopes cross-runtime parity to *JSON serialization* ("individual
+  runtime implementations may add internal property-based or fuzz testing as
+  their own quality concern") — a direct quote-level confirmation that no
+  competitor publishes a functional portability metric. Novelty holds.
+- One search backend failed during the scan (keyless Exa error on the first
+  A2UI query); results were obtained via parallel backends. No fabricated
+  findings relied on the failed query.
+
+## Implementation
+
+1. **New `profile_coherence()` gate** in `native_conformance.py`, wired into
+   `render-check`. HostProfile capability tables degrade silently
+   (`realizes.get(kind, degrade_to)`), so a typo'd kind name or a canonical
+   target that is itself unrealized would never surface as an error — the host
+   would just quietly degrade more than declared and pollute parity numbers.
+   The gate asserts per profile: every realization target is a canonical
+   category, and `degrade_to` is realized as-is (no recursive degradation).
+   Covers all five profiles including web/tui which had no differential checks
+   before (+10 checks → 565 total).
+2. **Fixed an operator-precedence bug in the dart-analyze noise filter**
+   (cycle-5 code): `"error •" in ln or ln.startswith("Error:") and cond` let a
+   "Target of URI" line through via the first branch because `and` binds
+   tighter than `or`. Parenthesized; also documented why.
+
+Meta-note: both changes are the same species as cycles 1–2's findings —
+silent-fallback seams. Profiles that can't fail loudly and filters with
+precedence holes fail *quietly*, which for a measurement harness is the worst
+failure mode: the number stays plausible.
+
+**Status after cycle 6:** 222 pytest assertions green (+1); render-check
+199/199 toolchain + 565/565 semantic, round-trip & coherence checks.
+
