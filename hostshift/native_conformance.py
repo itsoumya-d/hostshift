@@ -39,10 +39,12 @@ import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .render.base import COMPOSE, FLUTTER, SWIFTUI
+from .render.base import COMPOSE, FLUTTER, SWIFTUI, TUI, WEB
 from .render.compose import ComposeRenderer
 from .render.flutter import FlutterRenderer
 from .render.swiftui import SwiftUIRenderer
+from .render.tui import TuiRenderer
+from .render.web import WebRenderer
 
 
 # ---------------------------------------------------------------------------
@@ -257,6 +259,28 @@ _CONTRACT_MARKERS: dict[str, dict[str, tuple[str, ...]]] = {
         # filterWhen narrows without touching the underlying collection.
         "filter_when_narrowing": ("evalPred",),
     },
+    # Cycle 7: web and TUI were previously unchecked here (only the three
+    # native hosts had contract markers). Markers below are behavioural code
+    # from each template, same discipline as above.
+    "web": {
+        # The canonical tree reads the live DOM (accName walks attributes),
+        # not the embedded spec.
+        "realized_tree_not_spec": ("getAttribute",),
+        # Route-driven navigation observes screen changes.
+        "route_navigation": ("SPEC.entry",),
+        # Accessible names are explicit aria-labels or <label for> pairs.
+        "explicit_field_labels": ('"aria-label"',),
+        "disabled_state_exposed": ("disabled: dis",),
+        # filterWhen narrows the rendered rows only.
+        "filter_when_narrowing": ("evaluate(n.filterWhen",),
+    },
+    "tui": {
+        # The terminal runtime keeps its own state model mirroring $state.
+        "resolves_state_paths": ('self.state["collections"]',),
+        "disabled_state_exposed": ("disabled=not enabled",),
+        # filterWhen narrows without mutating the seeded collection.
+        "filter_when_narrowing": ("evaluate(fw",),
+    },
 }
 
 
@@ -344,8 +368,10 @@ def differential_report(specs: dict[str, dict]) -> list[DiffFinding]:
     """Assert each native runtime's emitted source against its HostProfile."""
     findings: list[DiffFinding] = []
     renderers = {"swiftui": SwiftUIRenderer(), "compose": ComposeRenderer(),
-                 "flutter": FlutterRenderer()}
-    profiles = {"swiftui": SWIFTUI, "compose": COMPOSE, "flutter": FLUTTER}
+                 "flutter": FlutterRenderer(),
+                 "web": WebRenderer(), "tui": TuiRenderer()}
+    profiles = {"swiftui": SWIFTUI, "compose": COMPOSE, "flutter": FLUTTER,
+                "web": WEB, "tui": TUI}
     for host, renderer in renderers.items():
         profile = profiles[host]
         checks = _CONTRACT_MARKERS[host]

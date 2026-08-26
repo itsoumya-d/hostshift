@@ -311,3 +311,61 @@ failure mode: the number stays plausible.
 **Status after cycle 6:** 222 pytest assertions green (+1); render-check
 199/199 toolchain + 565/565 semantic, round-trip & coherence checks.
 
+
+---
+
+# Cycle 7 — 2026-08-26
+
+## Ecosystem scan
+
+- AME (vpbydesign/ame) shipped v1.3 and v1.4 release notes plus a real
+  `conformance/` directory: 57 canonical `.ame`-to-JSON cases with a
+  multi-runtime parity matrix (`conformance/check-parity.sh`, one PASS/FAIL
+  column per runtime port), a three-tier test discipline (unit / conformance /
+  audit-regression via `verify-bugs.sh`), a defect lifecycle spec, and new
+  specification docs (`streaming.md`, `data-binding.md`, `tier-zero.md`
+  zero-token tool-driven rendering, `integration.md`). This is the competitor
+  moving fastest toward our territory — BUT their README states cross-runtime
+  parity is "at the JSON serialization level" and that per-runtime behavioural
+  testing "is not an AME standard requirement". Still no functional
+  portability metric: no accessibility-tree comparison, no realization-
+  fidelity oracle, no host-gap quantification. Their token-count benchmarks
+  (vs A2UI v0.9) measure cost, not fidelity. HostShift's HLI/RP/AP/IP remains
+  the missing instrument. Watch item upgraded: AME now has machinery (a
+  conformance harness) that could be pointed at functional parity later.
+- MCP-Apps (SEP-1865): ratified 2026-01-26, folded into the extensions
+  framework in the 2026-07-28 MCP revision; external URLs / remote DOM /
+  native widgets explicitly deferred. No portability measurement anywhere in
+  the ecosystem coverage (mcp.directory, OpenUI state-of-GenUI report).
+- Jetpack Compose August '26 release (BOM 2026.08.00): Mesh Gradients, Grid
+  named areas, Credential Manager; Compose UI 1.11.4 stable. Nothing affecting
+  our emitted template surface (we use core layout/input primitives), but the
+  compose-compiler body-transform strategy change confirms kotlinc-parse-with-
+  classified-noise remains the right CI-level gate.
+- Two search backends failed during the scan (keyless Exa and Firecrawl
+  errors on two queries); results obtained via remaining backend. Noted
+  honestly; no findings rely on the failed queries.
+
+## Implementation
+
+Closed the last unchecked-host gap in `differential_report`. Until now only
+the three native runtimes had contract-marker checks; web and TUI were covered
+only by profile coherence (cycle 6). Added behavioural markers for both:
+
+- web: live-DOM tree reading (`getAttribute`), route navigation
+  (`SPEC.entry`), explicit aria-labels, disabled-state plumbing
+  (`disabled: dis`), filterWhen narrowing (`evaluate(n.filterWhen`).
+- tui: own state model (`self.state["collections"]`), disabled-state exposure
+  (`disabled=not enabled`), filterWhen narrowing (`evaluate(fw`).
+
+39 checks added (565 to 604 total). Test updated to assert all five hosts are
+now differentially checked.
+
+Status after cycle 7: 222 pytest assertions green; render-check exits 0 with
+199/199 toolchain plus 604/604 semantic, round-trip and coherence checks.
+
+## Next-cycle checklist
+
+- Monitor AME v1.5+ for any functional (non-serialization) parity claims.
+- Consider an A2UI-to-UISpec adapter arm now that the A2UI renderer count is
+  stable across four frameworks.

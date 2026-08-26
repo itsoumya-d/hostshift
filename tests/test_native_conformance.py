@@ -99,8 +99,9 @@ def test_differential_checks_pass_on_current_templates():
     assert not bad, [f"{f.host}/{f.check} missing {f.missing_markers}" for f in bad]
     # Compose must be checked for explicit labels (host does not derive them);
     # SwiftUI and Flutter have no such marker because their profiles derive names.
+    # Cycle 7: web and tui now have contract markers too (all five hosts).
     hosts = {f.host for f in findings}
-    assert hosts == {"swiftui", "compose", "flutter"}
+    assert hosts == {"swiftui", "compose", "flutter", "web", "tui"}
 
 
 def test_profile_coherence_passes_on_all_profiles():
