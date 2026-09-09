@@ -27,7 +27,6 @@ Kotlin required (cycle-1 defect class).
 from __future__ import annotations
 
 import json
-import re
 
 from .base import FLUTTER
 from .session import SimulatedSession
