@@ -342,7 +342,9 @@ class TuiSession:
             if cls == "ListView":
                 for i, child in enumerate(w.children):
                     label_w = next(iter(child.children), None)
-                    raw_label = getattr(label_w, "renderable", "") if label_w else ""
+                    raw_label = (getattr(label_w, "label", None)
+                                 or getattr(label_w, "renderable", None)
+                                 or getattr(label_w, "content", "")) if label_w else ""
                     out.append({
                         "id": f"{nid}#{i}",
                         "kind": "listItem",
@@ -367,10 +369,10 @@ class TuiSession:
 
             items = list(lst.children)
             if 0 <= idx < len(items):
-                item = items[idx]
-                if not getattr(item, "id", None):
-                    item.id = f"{list_id}_item_{idx}"
-                await self._pilot.click(f"#{item.id}")
+                # Click the widget object, not a `#id` selector: ids assigned
+                # after mount are not indexed by Textual's DOM query, so the
+                # selector form raises NoMatches for every row.
+                await self._pilot.click(items[idx])
         else:
             try:
                 w = self._app.query_one(f"#{node_id}")
@@ -434,7 +436,9 @@ def widget_from_textual(node) -> Widget:
     # rendered without inline text that is nothing.
     name = None
     if kind in ("text", "action", "boolean", "item"):
-        raw = getattr(node, "label", None) or getattr(node, "renderable", None)
+        raw = (getattr(node, "label", None)
+               or getattr(node, "renderable", None)
+               or getattr(node, "content", None))
         name = str(raw).strip() or None if raw is not None else None
     if kind == "input" and not _TUI.derives_name_from_label:
         name = None

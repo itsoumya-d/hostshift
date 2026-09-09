@@ -20,7 +20,6 @@ from hostshift.native_conformance import (
 from hostshift.render.compose import ComposeRenderer
 from hostshift.render.swiftui import SwiftUIRenderer
 
-
 FILTER_SPEC = {
     "version": "0.2",
     "title": "Employee directory",

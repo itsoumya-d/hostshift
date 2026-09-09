@@ -45,6 +45,7 @@ dev = [
     "google-genai>=1.0",
     "ruff>=0.4",
     "coverage[toml]>=7.4",
+    "pytest>=8.0",
 ]
 
 [project.scripts]
