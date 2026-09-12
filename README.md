@@ -3,7 +3,7 @@
 ![CI](https://github.com/itsoumya-d/hostshift/actions/workflows/ci.yml/badge.svg)
 ![License: AGPL-3.0 (code) / CC BY-NC-SA 4.0 (data)](https://img.shields.io/badge/License-Dual-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-221%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-222%20passing-brightgreen.svg)
 
 HostShift measures the cross-platform portability of LLM-generated user interfaces across Web, iOS (SwiftUI), Android (Compose), and Terminal (Textual).
 
@@ -22,7 +22,7 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 Read this before quoting any number.
 
 - **The offline core is real**: reference interpreter, oracle, metrics,
-  statistics, coverage classifier, emitted runtimes — 221 assertions green,
+  statistics, coverage classifier, emitted runtimes — 222 assertions green,
   linted, CI-gated.
 - **The device-backed sessions are implemented; the web host is now
   device-verified**: `scripts/device_web_check.py` renders reference specs in
@@ -52,7 +52,7 @@ git clone https://github.com/itsoumya-d/hostshift.git
 cd hostshift
 pip install -e .                    # or: pip install hostshift  (wheel ships the suite)
 hostshift --version                 # console script; `python -m hostshift` also works
-bash scripts/run_tests.sh           # 221 assertions, all green (no pytest needed)
+bash scripts/run_tests.sh           # 222 assertions, all green (no pytest needed)
 hostshift plan                      # experiment design + cost estimate
 hostshift demo                      # synthetic pipeline check (isolated store)
 hostshift coverage                  # schema self-check (+ --corpus for external corpora)
@@ -70,15 +70,13 @@ tab — is documented in [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md).
 ## Applied counterpart: AutoPilot FDE
 
 This repository also contains [**AutoPilot FDE**](autopilot-fde/README.md) —
-the deployment-side sibling of this benchmark: an autonomous Forward Deployed
-Engineer that mines business workflows from Slack/WhatsApp streams, scores
-automation potential via graph entropy, Monte-Carlo-simulates ROI, and emits
-human-gated LangGraph agents. It ships an MCP server (Claude Desktop / Claude
-Code / OpenAI Codex CLI), a Claude Code plugin + skill, safe risk-tiered tool
-adapters, and a training-data exporter for fine-tuning on your own streams.
-One-step setup: `bash autopilot-fde/install.sh --run`. Where HostShift
-*measures* whether generated UIs survive a change of host, AutoPilot FDE
-*deploys* agents that must live within that reality.
+the autonomous Forward Deployed Engineer (FDE) platform. It observes enterprise
+communication streams (Slack, WhatsApp, Email), extracts business workflows without
+templates, computes a mathematically grounded **Automation Potential Score (APS)**
+using Graph Transition Entropy, autonomously synthesizes **5 Production-Grade Enterprise Archetypes**
+(Knowledge RAG with ACLs, Stateful Intake Triage, Document Intel & Arithmetic Validation, Customer Data Onboarding with DLQ, and Ops Command Center with Canary Rollbacks), and provides a **100% Legally Compliant Model Distillation Studio** to train in-VPC open-source models for perpetual cost-free deployment.
+
+It ships an MCP server (Claude Desktop / Claude Code / OpenAI Codex CLI / Cursor / Windsurf), risk-tiered tool adapters, and an interactive Next.js control center (`/archetypes` and `/distillation`). One-step setup: `bash autopilot-fde/install.sh --run`. Where HostShift *measures* whether generated UIs survive a change of host, AutoPilot FDE *deploys* agents that must live within that reality.
 
 ---
 

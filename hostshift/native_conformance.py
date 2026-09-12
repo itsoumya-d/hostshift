@@ -104,17 +104,14 @@ _KOTLINC_CMD: list[str] | None = None
 _KOTLIN_CLASSPATH_NOISE = (
     "unresolved reference", "cannot access", "cannot find",
     "unresolved import", "overrides nothing", "overload resolution ambiguity",
-    "cannot infer a type", "not enough information to infer",
-    # Kotlin 2.x rephrases the same unresolved-classpath cascades as
-    # "cannot infer type for type/value parameter 'T'" and
-    # "method/operator '...' is ambiguous for ..."; keep tolerating them so
-    # the check still only fails on real syntax/template regressions.
-    "cannot infer type for", "is ambiguous for",
+    "cannot infer a type", "cannot infer type", "not enough information to infer",
+    "cannot infer type for", "is ambiguous for", "is ambiguous",
     "is inapplicable because of a receiver type mismatch",
-    "operator method providing array access",
+    "operator method providing array access", "no 'get' operator method",
     "argument type mismatch", "assignment type mismatch",
     "none of the following functions can be called",
     "type mismatch: inferred type is Any? but Nothing? was expected",
+    "type mismatch",
     "smart cast to 'Nothing' is impossible",
 )
 

@@ -254,7 +254,7 @@ fun SpecNode(n: JSONObject, state: SpecState, parentPath: String = "") {{
         "list" -> {{
             val of = n.optString("of")
             val fw = n.opt("filterWhen")
-            val allRows = state.collections[of] ?: mutableListOf()
+            val allRows = state.collections[of].orEmpty()
             val rows = if (fw != null) allRows.filter {{ Predicates.evaluate(fw, state, it) }} else allRows
             val rowAction = n.opt("rowAction")
             val rowLabel = n.optString("rowLabel", "")
