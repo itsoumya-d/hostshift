@@ -10,6 +10,7 @@ query, so `invoke("<list>#0")` raised `NoMatches` instead of clicking the row.
 
 import pathlib
 import sys
+import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -60,7 +61,12 @@ SPEC = {
 
 
 def _open():
-    return TuiRenderer().open(SPEC)
+    try:
+        return TuiRenderer().open(SPEC)
+    except RenderError as exc:
+        if "needs Textual" in str(exc):
+            raise unittest.SkipTest("the terminal host needs Textual") from exc
+        raise
 
 
 def _facts(session):
@@ -247,14 +253,18 @@ if __name__ == "__main__":
     import traceback
 
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
-    failed = 0
+    failed = skipped = 0
     for fn in fns:
         try:
             fn()
             print(f"  PASS  {fn.__name__}")
+        except unittest.SkipTest as exc:
+            skipped += 1
+            print(f"  SKIP  {fn.__name__}  ({exc})")
         except Exception:
             failed += 1
             print(f"  FAIL  {fn.__name__}")
             traceback.print_exc()
-    print(f"\n{len(fns) - failed}/{len(fns)} passed")
+    ran = len(fns) - failed - skipped
+    print(f"\n{ran}/{len(fns)} passed, {skipped} skipped")
     sys.exit(1 if failed else 0)

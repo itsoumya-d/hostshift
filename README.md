@@ -3,7 +3,7 @@
 ![CI](https://github.com/itsoumya-d/hostshift/actions/workflows/ci.yml/badge.svg)
 ![License: AGPL-3.0 (code) / CC BY-NC-SA 4.0 (data)](https://img.shields.io/badge/License-Dual-blue.svg)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Tests](https://img.shields.io/badge/tests-222%20passing-brightgreen.svg)
+![Tests](https://img.shields.io/badge/tests-224%20passing-brightgreen.svg)
 
 HostShift measures the cross-platform portability of LLM-generated user interfaces across Web, iOS (SwiftUI), Android (Compose), and Terminal (Textual).
 
@@ -22,7 +22,7 @@ Target: NeurIPS 2026 workshop, **deadline Sat 29 August 2026, 11:59pm AoE**.
 Read this before quoting any number.
 
 - **The offline core is real**: reference interpreter, oracle, metrics,
-  statistics, coverage classifier, emitted runtimes — 222 assertions green,
+  statistics, coverage classifier, emitted runtimes — 224 assertions green,
   linted, CI-gated.
 - **The device-backed sessions are implemented; the web host is now
   device-verified**: `scripts/device_web_check.py` renders reference specs in
@@ -52,7 +52,7 @@ git clone https://github.com/itsoumya-d/hostshift.git
 cd hostshift
 pip install -e .                    # or: pip install hostshift  (wheel ships the suite)
 hostshift --version                 # console script; `python -m hostshift` also works
-bash scripts/run_tests.sh           # 222 assertions, all green (no pytest needed)
+bash scripts/run_tests.sh           # 224 assertions, all green (no pytest needed)
 hostshift plan                      # experiment design + cost estimate
 hostshift demo                      # synthetic pipeline check (isolated store)
 hostshift coverage                  # schema self-check (+ --corpus for external corpora)
