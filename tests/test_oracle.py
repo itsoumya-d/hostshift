@@ -87,6 +87,64 @@ def test_empty_criteria_is_not_a_free_pass():
 
 # ------------------------------------------------------- the shipped suite
 
+
+def _form_task_and_state():
+    # Load the actual wheel-shipped task, rather than restating its criteria.
+    shipped = pathlib.Path(__file__).resolve().parents[1] / "hostshift" / "data" / "suite_v1.jsonl"
+    task = next(t for t in load_suite(str(shipped)) if t["id"] == "form-001")
+    state = {"submitted": True, "collections": {"contacts": [{
+        "name": "Dana Reyes", "email": "dana@example.com", "message": "Please call me back",
+    }]}}
+    return task, state
+
+
+def test_form_001_complete_contact_passes():
+    task, state = _form_task_and_state()
+    assert grade(task, state)["success"] is True
+
+
+def test_form_001_wrong_message_fails():
+    task, state = _form_task_and_state()
+    state["collections"]["contacts"][0]["message"] = "Do not call me"
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_missing_message_fails():
+    task, state = _form_task_and_state()
+    del state["collections"]["contacts"][0]["message"]
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_empty_message_fails():
+    task, state = _form_task_and_state()
+    state["collections"]["contacts"][0]["message"] = ""
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_wrong_email_fails():
+    task, state = _form_task_and_state()
+    state["collections"]["contacts"][0]["email"] = "other@example.com"
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_missing_contact_fails():
+    task, state = _form_task_and_state()
+    state["collections"]["contacts"] = []
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_unsubmitted_contact_fails():
+    task, state = _form_task_and_state()
+    state["submitted"] = False
+    assert grade(task, state)["success"] is False
+
+
+def test_form_001_duplicate_contact_fails():
+    task, state = _form_task_and_state()
+    state["collections"]["contacts"] *= 2
+    assert grade(task, state)["success"] is False
+
+
 def test_shipped_suite_lints_clean():
     tasks = load_suite(str(SUITE))
     assert validate_suite(tasks) == []
