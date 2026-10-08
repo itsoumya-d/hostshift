@@ -5,6 +5,10 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict, replace
+from threading import Barrier
+from unittest.mock import patch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -51,6 +55,206 @@ def test_store_artifact_round_trip():
         store.save_artifact(a)
         loaded = store.load_artifact("t1", "B-schema", "g", None)
         assert loaded is not None and loaded.payload == "{}"
+
+
+
+def _artifact(**changes):
+    return replace(Artifact("t1", "B-schema", "g", None, "{}"), **changes)
+
+
+def test_store_identical_artifact_save_is_idempotent():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = _artifact()
+        path = store.save_artifact(a)
+        before = path.read_bytes()
+        # A separately constructed artifact with equal values is identical.
+        assert store.save_artifact(replace(a)) == path
+        assert path.read_bytes() == before
+        assert list(path.parent.iterdir()) == [path]
+
+
+def test_store_conflicting_payload_preserves_first_artifact():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = _artifact()
+        path = store.save_artifact(a)
+        before = path.read_bytes()
+        with unittest.TestCase().assertRaises(FileExistsError):
+            store.save_artifact(replace(a, payload="different output"))
+        assert path.read_bytes() == before
+        assert store.load_artifact(a.task_id, a.condition, a.generator, a.host) == a
+        assert list(path.parent.iterdir()) == [path]
+
+
+def test_store_conflicting_metadata_preserves_first_artifact():
+    changes = {"valid": True, "repair_rounds": 1, "gen_ms": 7,
+               "prompt_tokens": 10, "completion_tokens": 5, "error": "invalid"}
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = _artifact()
+        path = store.save_artifact(a)
+        before = path.read_bytes()
+        for field, value in changes.items():
+            with unittest.TestCase().assertRaises(FileExistsError):
+                store.save_artifact(replace(a, **{field: value}))
+            assert path.read_bytes() == before
+        assert list(path.parent.iterdir()) == [path]
+
+
+def test_store_cells_and_run_stores_are_independent():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(pathlib.Path(d) / "first")
+        artifacts = [_artifact(), _artifact(task_id="t2"), _artifact(condition="A-freeform"),
+                     _artifact(generator="other"), _artifact(host="web")]
+        paths = [store.save_artifact(a) for a in artifacts]
+        assert len(set(paths)) == len(artifacts)
+        for a in artifacts:
+            assert store.load_artifact(a.task_id, a.condition, a.generator, a.host) == a
+        second = Store(pathlib.Path(d) / "second")
+        changed = _artifact(payload="independent trial")
+        assert second.save_artifact(changed).name == paths[0].name
+        assert second.load_artifact("t1", "B-schema", "g", None) == changed
+        assert store.load_artifact("t1", "B-schema", "g", None) == artifacts[0]
+
+
+def test_store_loads_legacy_artifact_and_appends_runlog():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = _artifact()
+        # Write the pre-existing filename and JSON format directly.
+        path = pathlib.Path(d) / "artifacts" / f"{a.key()}.json"
+        path.write_text(json.dumps(asdict(a), sort_keys=True) + "\n")
+        assert store.load_artifact("t1", "B-schema", "g", None) == a
+        before = path.read_bytes()
+        assert store.save_artifact(a) == path
+        assert path.read_bytes() == before
+        assert store.load_artifact("missing", "B-schema", "g", None) is None
+        first = RunRecord("t1", "B-schema", "g", "web", "op", success=True)
+        legacy_line = json.dumps({**asdict(first), "ts": 1}) + "\n"
+        store.runlog.write_text(legacy_line)
+        second = replace(first, task_id="t2", success=False)
+        store.record(second)
+        assert store.runlog.read_text().startswith(legacy_line)
+        assert store.all_runs() == [first, second]
+
+
+def test_store_competing_saves_publish_one_complete_artifact():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        artifacts = [_artifact(payload="first" * 1000), _artifact(payload="second" * 1000)]
+        barrier = Barrier(2)
+        real_link = harness_mod.os.link
+        published = []
+
+        def synchronized_link(source, target):
+            # Both complete temporary files exist before either can publish.
+            assert json.loads(pathlib.Path(source).read_text()) in [asdict(a) for a in artifacts]
+            barrier.wait(timeout=10)
+            real_link(source, target)
+            published.append(json.loads(pathlib.Path(target).read_text()))
+
+        def save(a):
+            try:
+                return store.save_artifact(a)
+            except FileExistsError as exc:
+                return exc
+
+        with patch.object(harness_mod.os, "link", side_effect=synchronized_link):
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results = list(pool.map(save, artifacts))
+        assert sum(isinstance(r, pathlib.Path) for r in results) == 1
+        assert sum(isinstance(r, FileExistsError) for r in results) == 1
+        assert len(published) == 1
+        path = next(r for r in results if isinstance(r, pathlib.Path))
+        assert json.loads(path.read_text()) == published[0]
+        assert list(path.parent.iterdir()) == [path]
+        assert store.load_artifact("t1", "B-schema", "g", None) in artifacts
+
+
+
+def test_store_competing_identical_saves_are_idempotent():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = _artifact()
+        barrier = Barrier(2)
+        real_link = harness_mod.os.link
+
+        def synchronized_link(source, target):
+            barrier.wait(timeout=10)
+            real_link(source, target)
+
+        with patch.object(harness_mod.os, "link", side_effect=synchronized_link):
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                paths = list(pool.map(store.save_artifact, [a, replace(a)]))
+        assert paths[0] == paths[1]
+        assert store.load_artifact("t1", "B-schema", "g", None) == a
+        assert list(paths[0].parent.iterdir()) == [paths[0]]
+
+
+def test_store_partial_temporary_write_leaves_no_artifact_or_replacement():
+    real_temporary_file = tempfile.NamedTemporaryFile
+
+    def failing_temporary_file(*args, **kwargs):
+        temporary = real_temporary_file(*args, **kwargs)
+        real_write = temporary.write
+
+        def partial_write(value):
+            real_write(value[:5])
+            raise OSError("partial write")
+
+        temporary.write = partial_write
+        return temporary
+
+    for existing in (False, True):
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            path = store.save_artifact(_artifact()) if existing else None
+            before = path.read_bytes() if path else None
+            with patch.object(tempfile, "NamedTemporaryFile", side_effect=failing_temporary_file):
+                with unittest.TestCase().assertRaises(OSError):
+                    store.save_artifact(_artifact(payload="new output"))
+            if path:
+                assert path.read_bytes() == before
+            assert list((pathlib.Path(d) / "artifacts").iterdir()) == ([path] if path else [])
+
+
+def test_store_serialization_failure_leaves_no_artifact_or_replacement():
+    for existing in (False, True):
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            a = _artifact()
+            path = store.save_artifact(a) if existing else None
+            before = path.read_bytes() if path else None
+            with unittest.TestCase().assertRaises(TypeError):
+                store.save_artifact(replace(a, payload=object()))
+            if path:
+                assert path.read_bytes() == before
+            assert list((pathlib.Path(d) / "artifacts").iterdir()) == ([path] if path else [])
+
+
+def test_store_failed_write_leaves_no_artifact_or_replacement():
+    for existing in (False, True):
+        with tempfile.TemporaryDirectory() as d:
+            store = Store(d)
+            path = store.save_artifact(_artifact()) if existing else None
+            before = path.read_bytes() if path else None
+            # Fail after the temporary write but before it may be published.
+            with patch.object(harness_mod.os, "fsync", side_effect=OSError("disk error")):
+                with unittest.TestCase().assertRaises(OSError):
+                    store.save_artifact(_artifact(payload="new output"))
+            if path:
+                assert path.read_bytes() == before
+            assert list((pathlib.Path(d) / "artifacts").iterdir()) == ([path] if path else [])
+
+
+def test_store_failed_publication_cleans_temporary_file():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        with patch.object(harness_mod.os, "link", side_effect=OSError("link failed")):
+            with unittest.TestCase().assertRaises(OSError):
+                store.save_artifact(_artifact())
+        assert list((pathlib.Path(d) / "artifacts").iterdir()) == []
 
 
 def test_store_runlog_round_trip():

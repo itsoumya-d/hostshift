@@ -22,6 +22,7 @@ import hashlib
 import json
 import os
 import re
+import tempfile
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -352,9 +353,12 @@ def repair(
 
 
 class Store:
-    """Append-only run log. Every artifact and every run lands on disk so the
-    experiment is replayable and the released benchmark ships with its own
-    evidence."""
+    """Append-only run log and immutable artifacts keyed by experiment cell.
+
+    Saving an identical artifact is idempotent; different payload or metadata
+    for an existing cell raises FileExistsError. Use separate run stores for
+    distinct trials until an explicit multi-trial storage API is available.
+    """
 
     def __init__(self, root: str = "runs"):
         self.root = Path(root)
@@ -363,7 +367,35 @@ class Store:
 
     def save_artifact(self, a: Artifact) -> Path:
         p = self.root / "artifacts" / f"{a.key()}.json"
-        p.write_text(json.dumps(asdict(a), indent=2))
+        data = asdict(a)
+        serialized = json.dumps(data, indent=2)
+        temporary = None
+        try:
+            # Write completely before publishing. A same-directory hard link
+            # atomically creates the final name without replacing a winner.
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=p.parent,
+                prefix=f".{p.stem}.", suffix=".tmp", delete=False,
+            ) as fh:
+                temporary = Path(fh.name)
+                fh.write(serialized)
+                fh.flush()
+                os.fsync(fh.fileno())
+            try:
+                os.link(temporary, p)
+            except FileExistsError:
+                try:
+                    existing = json.loads(p.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, UnicodeError):
+                    existing = None
+                if existing != data:
+                    raise FileExistsError(
+                        f"Artifact cell already exists with different contents: {p}. "
+                        "Use a separate Store for a distinct trial."
+                    ) from None
+        finally:
+            if temporary is not None:
+                temporary.unlink()
         return p
 
     def load_artifact(self, task_id: str, condition: str, generator: str, host: str | None):
