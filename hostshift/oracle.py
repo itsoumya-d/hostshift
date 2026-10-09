@@ -70,6 +70,16 @@ _OPS = {
 }
 
 
+def _enabled_state_problem(criterion: dict) -> str | None:
+    targets = criterion.get("targets")
+    if (not isinstance(targets, list) or not targets
+            or any(not isinstance(t, str) or not t for t in targets)):
+        return "enabled_state requires `targets` to be a non-empty list of non-empty strings"
+    if criterion.get("expect") not in ("enabled", "disabled"):
+        return "enabled_state requires `expect` to be 'enabled' or 'disabled'"
+    return None
+
+
 def check(criterion: dict, state: dict, ui_facts: dict | None = None) -> CriterionResult:
     """Evaluate one criterion against a post-run state snapshot.
 
@@ -147,6 +157,9 @@ def check(criterion: dict, state: dict, ui_facts: dict | None = None) -> Criteri
         return CriterionResult(kind, bool(ui_facts.get("empty_state_visible")), "a11y-tree status")
 
     if kind == "enabled_state":
+        problem = _enabled_state_problem(criterion)
+        if problem:
+            return CriterionResult(kind, False, f"misconfigured: {problem}")
         states = ui_facts.get("enabled") or {}
         want = criterion.get("expect") == "enabled"
         targets = criterion.get("targets", [])
@@ -235,6 +248,10 @@ def validate_suite(tasks: list[dict]) -> list[str]:
                 problems.append(f"{tid}: unknown criterion kind {c.get('kind')!r}")
             if c.get("kind") == "collection_field_unchanged" and "seed_values" not in c:
                 problems.append(f"{tid}: collection_field_unchanged without `seed_values`")
+            if c.get("kind") == "enabled_state":
+                problem = _enabled_state_problem(c)
+                if problem:
+                    problems.append(f"{tid}: {problem}")
         hard = t.get("criteria", []) + t.get("negative_criteria", [])
         if len(hard) < 2 and t.get("difficulty") == "hard":
             problems.append(f"{tid}: difficulty=hard with a single criterion looks thin")
