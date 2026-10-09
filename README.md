@@ -383,6 +383,12 @@ ceiling rather than quietly borrowing one.
 Pinned to `eb6a3aaf` (v2.0.0). Verify it still resolves before the run:
 `hostshift calibrate`.
 
+To use a calibration store outside `runs/calibration`, put the global option
+before the subcommand: `hostshift --calibration path/to/ceilings report --runs path/to/runs`.
+The same selection is used by `calibrate`, `report` (text and JSON), and the
+synthetic `demo` report. An empty selected store stays explicitly uncalibrated;
+it does not borrow ceilings from the default store.
+
 ## Three conditions, not two
 
 Condition B is not merely a different *representation* — it is a representation
