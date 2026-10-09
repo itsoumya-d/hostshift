@@ -389,6 +389,15 @@ The same selection is used by `calibrate`, `report` (text and JSON), and the
 synthetic `demo` report. An empty selected store stays explicitly uncalibrated;
 it does not borrow ceilings from the default store.
 
+Zero-ceiling hosts are excluded from normalization. If no observed host remains,
+`normalized_hli` is `null`, not a measured zero, and no numeric operator
+attribution is reported. `calibrate` exits with status 1 when benchmark runs
+exist but none can be normalized; listing ceilings without benchmark runs still
+succeeds. With partial coverage, normalized HLI describes the retained subset
+and `excluded_hosts` names the omitted hosts. With recorded calibration,
+`attributable_to_operator` is `null` if no hosts remain or the raw and normalized
+host sets differ, because their difference cannot isolate an operator effect.
+
 ## Three conditions, not two
 
 Condition B is not merely a different *representation* — it is a representation

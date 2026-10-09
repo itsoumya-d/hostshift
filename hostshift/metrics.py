@@ -305,17 +305,36 @@ def calibration_report(
     ceilings: dict[str, OperatorCeiling], raw: HostLock, normalized: HostLock
 ) -> dict:
     """The table that answers 'is this the interface or your operator?'"""
-    return {
+    observed = bool(normalized.per_host_ip)
+    same_hosts = raw.per_host_ip.keys() == normalized.per_host_ip.keys()
+    out = {
         "ceilings": {h: round(c.ceiling, 4) for h, c in sorted(ceilings.items())},
         "raw_hli": round(raw.hli, 4),
-        "normalized_hli": round(normalized.hli, 4),
-        "attributable_to_operator": round(max(0.0, raw.hli - normalized.hli), 4),
+        "normalized_hli": round(normalized.hli, 4) if observed else None,
+        "attributable_to_operator": (
+            round(max(0.0, raw.hli - normalized.hli), 4) if observed and same_hosts else None
+        ),
         "per_task_lock": round(raw.per_task_lock, 4),
         "note": (
             "per-task lock counts hosts and is not rescalable by a ceiling; "
             "the raw value is carried through unchanged"
         ),
     }
+    excluded = sorted(raw.per_host_ip.keys() - normalized.per_host_ip.keys())
+    if excluded:
+        out["excluded_hosts"] = excluded
+    if not observed:
+        out["status"] = (
+            "UNCALIBRATED — no positive operator ceiling for observed hosts: "
+            f"{', '.join(excluded)}; normalized HLI and operator attribution are unavailable"
+            if raw.per_host_ip else "UNAVAILABLE — no benchmark outcomes to normalize"
+        )
+    elif not same_hosts:
+        scope = f"; normalized HLI excludes {', '.join(excluded)}" if excluded else ""
+        out["attribution_status"] = (
+            f"UNAVAILABLE — raw and normalized host sets differ{scope}"
+        )
+    return out
 
 
 # ---------------------------------------------------------------------------
