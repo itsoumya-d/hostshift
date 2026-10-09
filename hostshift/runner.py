@@ -115,7 +115,8 @@ def cmd_report(args) -> int:
     if not runs:
         print("no runs recorded yet; run the experiment or try `demo`")
         return 1
-    data = _compute_tables(runs, boot=getattr(args, "boot", 4000))
+    data = _compute_tables(runs, boot=getattr(args, "boot", 4000),
+                           calibration_store=CalibrationStore(args.calibration))
     if getattr(args, "json", False):
         print(_json.dumps(data, indent=2))
     else:
@@ -123,7 +124,8 @@ def cmd_report(args) -> int:
     return 0
 
 
-def _compute_tables(runs: list[RunRecord], boot: int = 4000) -> dict:
+def _compute_tables(runs: list[RunRecord], boot: int = 4000,
+                    calibration_store: CalibrationStore | None = None) -> dict:
     """Roll run records up into the five paper tables.
 
     Pure computation, no printing: `report` renders it for humans and
@@ -216,7 +218,8 @@ def _compute_tables(runs: list[RunRecord], boot: int = 4000) -> dict:
         })
 
     summary = calibration_summary(
-        collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]))
+        collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]),
+        store=calibration_store)
 
     return {
         "meta": {
@@ -429,7 +432,8 @@ def cmd_calibrate(args) -> int:
     runs = Store(args.runs).all_runs()
     if runs:
         summary = calibration_summary(
-            collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]))
+            collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]),
+            store=store)
         print()
         print(f"raw HLI {summary['raw_hli']:.3f}  ->  normalized "
               f"{summary['normalized_hli']:.3f}")
@@ -540,7 +544,7 @@ def cmd_demo(args) -> int:
 
     runs = store.all_runs()
     print(f"wrote {len(runs)} synthetic runs to {store.runlog}\n")
-    _emit_tables(_compute_tables(runs))
+    _emit_tables(_compute_tables(runs, calibration_store=CalibrationStore(args.calibration)))
     print()
     print("!! SYNTHETIC DATA -- pipeline check only. This is not a result.")
     return 0
