@@ -142,6 +142,77 @@ def test_suite_lint_rejects_bad_criterion_kind():
         assert code != 0
 
 
+
+def _synthetic_run(success, task="form-001", generator="synthetic", host="web",
+                   condition=None):
+    from hostshift.harness import CONDITION_B, RunRecord
+
+    return RunRecord(task_id=task, condition=condition or CONDITION_B, generator=generator,
+                     host=host, operator="synthetic", success=success)
+
+
+def test_per_host_majority_matches_headline_including_ties():
+    for votes, expected in (([True, True, False], 1.0),
+                            ([True, False], 0.0), ([True, False, False], 0.0)):
+        data = runner._compute_tables([_synthetic_run(v) for v in votes], boot=20)
+        assert data["interaction_parity_and_host_lock"][0]["ip"] == expected
+        assert data["per_host_interaction_parity"][0]["ip_by_host"]["web"] == expected
+
+
+def test_repeat_counts_do_not_reweight_tasks_in_per_host_table():
+    runs = [_synthetic_run(True)] * 9 + [_synthetic_run(False, task="form-002")]
+    data = runner._compute_tables(runs, boot=20)
+    assert data["per_host_interaction_parity"][0]["ip_by_host"]["web"] == 0.5
+    assert data["meta"]["runs"] == 10  # Raw counts/reliability remain observations.
+
+
+def test_per_host_votes_remain_scoped_to_generator_condition_and_host():
+    from hostshift.harness import CONDITION_A, CONDITION_B
+
+    runs = [_synthetic_run(v, condition=CONDITION_B) for v in (True, True, False)]
+    runs += [_synthetic_run(False, condition=CONDITION_A)]
+    runs += [_synthetic_run(False, generator="other", condition=CONDITION_B)]
+    runs += [_synthetic_run(False, host="tui", condition=CONDITION_B)]
+    data = runner._compute_tables(runs, boot=20)
+    rows = {(r["generator"], r["condition"]): r["ip_by_host"]
+            for r in data["per_host_interaction_parity"]}
+    assert rows[("synthetic", CONDITION_B)] == {"tui": 0.0, "web": 1.0}
+    assert rows[("synthetic", CONDITION_A)] == {"tui": None, "web": 0.0}
+    assert rows[("other", CONDITION_B)] == {"tui": None, "web": 0.0}
+
+
+def test_report_cli_json_and_text_distinguish_missing_from_failed_host():
+    from hostshift.harness import CONDITION_B, Store
+
+    with _in_tmp() as directory:
+        store = Store(directory)
+        for v in (True, True, False):
+            store.record(_synthetic_run(v, condition=CONDITION_B))
+        store.record(_synthetic_run(False, generator="other", host="tui",
+                                    condition=CONDITION_B))
+        args = ["report", "--runs", directory, "--boot", "20"]
+        code, output = _run(args + ["--json"])
+        assert code == 0
+        data = json.loads(output)
+        rows = {r["generator"]: r["ip_by_host"]
+                for r in data["per_host_interaction_parity"]}
+        assert rows == {"synthetic": {"tui": None, "web": 1.0},
+                        "other": {"tui": 0.0, "web": None}}
+        code, output = _run(args)
+        assert code == 0
+        table = output.split("TABLE 2", 1)[1].split("TABLE 3", 1)[0]
+        measured = next(line for line in table.splitlines() if line.startswith("synthetic"))
+        failed = next(line for line in table.splitlines() if line.startswith("other"))
+        assert measured.split()[-2:] == ["N/A", "1.000"]
+        assert failed.split()[-2:] == ["0.000", "N/A"]
+
+
+def test_no_repeats_preserve_per_host_results():
+    data = runner._compute_tables([_synthetic_run(True),
+                                   _synthetic_run(False, task="form-002")], boot=20)
+    assert data["per_host_interaction_parity"][0]["ip_by_host"] == {"web": 0.5}
+
+
 if __name__ == "__main__":
     import traceback
 
