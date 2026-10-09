@@ -69,14 +69,17 @@ tab — is documented in [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md).
 
 ## Applied counterpart: AutoPilot FDE
 
-This repository also contains [**AutoPilot FDE**](autopilot-fde/README.md) —
-the autonomous Forward Deployed Engineer (FDE) platform. It observes enterprise
-communication streams (Slack, WhatsApp, Email), extracts business workflows without
-templates, computes a mathematically grounded **Automation Potential Score (APS)**
-using Graph Transition Entropy, autonomously synthesizes **5 Production-Grade Enterprise Archetypes**
-(Knowledge RAG with ACLs, Stateful Intake Triage, Document Intel & Arithmetic Validation, Customer Data Onboarding with DLQ, and Ops Command Center with Canary Rollbacks), and provides a **100% Legally Compliant Model Distillation Studio** to train in-VPC open-source models for perpetual cost-free deployment.
+[**AutoPilot FDE**](https://github.com/itsoumya-d/autopilot-fde) is a
+**separate public workflow-tooling prototype**. It includes FastAPI/Next.js
+interfaces, communication-ingestion adapters, process discovery and scoring,
+MCP tooling, and risk-tiered action adapters. Its distillation component exports
+datasets and training recipes; those artifacts do not establish that model
+training, enterprise deployment or legal-compliance validation has occurred.
 
-It ships an MCP server (Claude Desktop / Claude Code / OpenAI Codex CLI / Cursor / Windsurf), risk-tiered tool adapters, and an interactive Next.js control center (`/archetypes` and `/distillation`). One-step setup: `bash autopilot-fde/install.sh --run`. Where HostShift *measures* whether generated UIs survive a change of host, AutoPilot FDE *deploys* agents that must live within that reality.
+This HostShift checkout does not include AutoPilot's source or installer. Use
+[AutoPilot's README](https://github.com/itsoumya-d/autopilot-fde/blob/main/README.md)
+for its setup, demo steps and verification limits. HostShift's synthetic
+pipeline check is separate from AutoPilot's demos.
 
 ---
 
