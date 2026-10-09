@@ -312,13 +312,16 @@ def _emit_tables(data: dict) -> None:
     summary = data["operator_calibration"]
     if summary.get("normalized_hli") is None:
         print("  " + summary["status"])
-        print("  Run `hostshift calibrate` first.")
+        print("  Record usable operator ceilings for the benchmark hosts before normalization.")
     else:
         print(f"  operator ceilings   {summary['ceilings']}")
         print(f"  raw HLI             {summary['raw_hli']:.3f}")
         print(f"  normalized HLI      {summary['normalized_hli']:.3f}")
-        print(f"  attributable to the operator, not the interface: "
-              f"{summary['attributable_to_operator']:.3f}")
+        if summary["attributable_to_operator"] is None:
+            print("  Operator attribution: " + summary["attribution_status"])
+        else:
+            print(f"  attributable to the operator, not the interface: "
+                  f"{summary['attributable_to_operator']:.3f}")
         if summary.get("warning"):
             print(f"  WARNING  {summary['warning']}")
 
@@ -435,10 +438,17 @@ def cmd_calibrate(args) -> int:
             collapse_repeats([TaskOutcome(r.task_id, r.host, r.success) for r in runs]),
             store=store)
         print()
+        if summary["normalized_hli"] is None:
+            print(f"raw HLI {summary['raw_hli']:.3f}")
+            print(summary["status"])
+            return 1
         print(f"raw HLI {summary['raw_hli']:.3f}  ->  normalized "
               f"{summary['normalized_hli']:.3f}")
-        print(f"{summary['attributable_to_operator']:.3f} of the apparent host-lock "
-              f"is operator competence, not interface portability")
+        if summary["attributable_to_operator"] is None:
+            print("Operator attribution: " + summary["attribution_status"])
+        else:
+            print(f"{summary['attributable_to_operator']:.3f} of the apparent host-lock "
+                  f"is operator competence, not interface portability")
         if summary.get("warning"):
             print(f"WARNING  {summary['warning']}")
     return 0
