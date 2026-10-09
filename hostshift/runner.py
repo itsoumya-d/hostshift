@@ -531,6 +531,7 @@ def cmd_demo(args) -> int:
         skill = rng.uniform(-0.06, 0.06)
         for t in tasks:
             difficulty = rng.uniform(-0.12, 0.12)
+            max_steps = t.get("max_steps", 18)
             for host, (pa, pn, pb) in profile.items():
                 for cond, base in ((CONDITION_A, pa), (CONDITION_B_NAIVE, pn),
                                    (CONDITION_B, pb)):
@@ -541,7 +542,7 @@ def cmd_demo(args) -> int:
                         store.record(RunRecord(
                             task_id=t["id"], condition=cond, generator=gen, host=host,
                             operator="synthetic", success=ok,
-                            steps=rng.randint(6, t.get("max_steps", 18)),
+                            steps=rng.randint(min(6, max_steps), max_steps),
                             criteria_met=total if ok else rng.randint(0, max(0, total - 1)),
                             criteria_total=total,
                             render_parity=min(1.0, max(0.0, rng.gauss(
