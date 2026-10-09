@@ -188,6 +188,11 @@ rendered on every host, so its outcomes are correlated — treating 7,200 runs a
 independent draws from 100 tasks would narrow every interval by roughly the
 repeat count and let noise pass as a finding.
 
+The headline and per-host interaction-parity tables use the same majority-voted
+task/host cells within each generator and condition; ties count as unsuccessful.
+An untested host is `null` in JSON reports and `N/A` in text, distinct from a
+measured success rate of zero.
+
 **Probes don't gate success.** "The task was achieved" and "the interface
 behaved well along the way" are different claims and get reported separately.
 

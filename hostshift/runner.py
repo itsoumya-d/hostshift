@@ -169,11 +169,15 @@ def _compute_tables(runs: list[RunRecord], boot: int = 4000) -> dict:
             rows = cells.get((gen, cond), [])
             if not rows:
                 continue
+            # Match Table 1's task/host majority vote within this generator
+            # and condition. Missing host observations are not failed trials.
+            outcomes = collapse_repeats(
+                [TaskOutcome(r.task_id, r.host, r.success) for r in rows])
             per_host = {}
             for h in hosts:
-                hr = [r for r in rows if r.host == h]
-                per_host[h] = round(
-                    sum(1 for r in hr if r.success) / len(hr) if hr else 0.0, 6)
+                hr = [o for o in outcomes if o.host == h]
+                per_host[h] = (
+                    round(sum(1 for o in hr if o.success) / len(hr), 6) if hr else None)
             table2.append({"generator": gen, "condition": cond, "ip_by_host": per_host})
 
     table3 = []
@@ -265,7 +269,8 @@ def _emit_tables(data: dict) -> None:
     for row in data["per_host_interaction_parity"]:
         line = f"{row['generator']:<22}{row['condition']:<12}"
         for h in hosts:
-            line += f"{row['ip_by_host'][h]:>10.3f}"
+            value = row["ip_by_host"][h]
+            line += f"{value:>10.3f}" if value is not None else f"{'N/A':>10}"
         print(line)
 
     print()
