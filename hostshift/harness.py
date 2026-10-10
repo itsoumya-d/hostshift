@@ -254,10 +254,10 @@ class AccessibilityTreeOperator:
 
     name = "a11y-scripted"
 
-    # Canonical action kinds from the Session contract (render/base.py), in
+    # Normalized action kinds derived from the Session contract (render/base.py), in
     # the order the scripted policy prefers them: fill inputs, set choices and
     # toggles, tap list rows, then press buttons.
-    _POLICY_ORDER = ("input", "choice", "boolean", "listItem", "action")
+    _POLICY_ORDER = ("input", "choice", "boolean", "item", "action")
 
     # Sessions legitimately report either the spec vocabulary ("field",
     # "select", "toggle", "button") or the canonical one ("input", ...):
@@ -268,6 +268,7 @@ class AccessibilityTreeOperator:
         "select": "choice",
         "toggle": "boolean",
         "button": "action",
+        "listitem": "item",
     }
 
     @classmethod
