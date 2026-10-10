@@ -175,7 +175,9 @@ def check(criterion: dict, state: dict, ui_facts: dict | None = None) -> Criteri
         return CriterionResult(kind, got == criterion["value"], f"field={got!r}")
 
     if kind == "options_contain":
-        opts = (ui_facts.get("options") or {}).get(criterion["field"], [])
+        opts = (ui_facts.get("options") or {}).get(criterion["field"])
+        if not isinstance(opts, list):
+            return CriterionResult(kind, False, "host did not report options for the field")
         bad = [o for o in criterion.get("not_contains", []) if o in opts]
         need = [o for o in criterion.get("contains", []) if o not in opts]
         return CriterionResult(kind, not bad and not need, f"stale={bad} missing={need}")
