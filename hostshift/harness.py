@@ -549,7 +549,10 @@ class Store:
                     ))
                     run_id = cur.lastrowid
                     for f in failures:
-                        conn.execute("INSERT INTO run_failures (run_id, failure) VALUES (?, ?)", (run_id, f))
+                        conn.execute(
+                            "INSERT INTO run_failures (run_id, failure) VALUES (?, ?)",
+                            (run_id, f),
+                        )
 
             # Populate artifacts
             art_dir = self.root / "artifacts"
