@@ -560,6 +560,21 @@ def cmd_demo(args) -> int:
     return 0
 
 
+def cmd_export_sql(args) -> int:
+    store = Store(args.runs)
+    if not store.runlog.exists():
+        print(f"error: run log not found at {store.runlog}", file=sys.stderr)
+        return 1
+    db_path = store.export_sqlite(args.out)
+    import sqlite3
+    conn = sqlite3.connect(str(db_path))
+    run_count = conn.execute("SELECT COUNT(*) FROM runs").fetchone()[0]
+    art_count = conn.execute("SELECT COUNT(*) FROM artifacts").fetchone()[0]
+    conn.close()
+    print(f"exported {run_count} runs and {art_count} artifacts to SQLite: {db_path}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(
         prog="hostshift",
@@ -624,6 +639,16 @@ def main(argv=None) -> int:
                     default="tasks/reference_specs/filter-001.json",
                     help="JSONL of UISpec fixtures (or a single JSON file)")
     rc.set_defaults(fn=cmd_render_check)
+
+    sq = sub.add_parser(
+        "export-sql",
+        help="export run log and artifacts to a queryable SQLite database",
+    )
+    sq.add_argument("--runs", default="runs",
+                    help="run store to export (default: runs)")
+    sq.add_argument("--out", default=None,
+                    help="output SQLite file path (default: <runs>/benchmark.db)")
+    sq.set_defaults(fn=cmd_export_sql)
 
     args = ap.parse_args(argv)
     return args.fn(args)
