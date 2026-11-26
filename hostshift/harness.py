@@ -420,3 +420,184 @@ class Store:
                 d.pop("ts", None)
                 out.append(RunRecord(**d))
         return out
+
+    def export_sqlite(self, db_path: str | Path | None = None) -> Path:
+        """Export run log and stored artifacts to a queryable SQLite database.
+
+        Creates tables for runs, run_failures, and artifacts, plus views for
+        quick summary aggregation across conditions and hosts.
+        """
+        import sqlite3
+
+        out_path = Path(db_path) if db_path else self.root / "benchmark.db"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        if out_path.exists():
+            out_path.unlink()
+
+        conn = sqlite3.connect(str(out_path))
+        with conn:
+            conn.execute("""
+                CREATE TABLE runs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id TEXT NOT NULL,
+                    condition TEXT NOT NULL,
+                    generator TEXT NOT NULL,
+                    host TEXT NOT NULL,
+                    operator TEXT NOT NULL,
+                    success INTEGER NOT NULL,
+                    steps INTEGER NOT NULL,
+                    criteria_met INTEGER NOT NULL,
+                    criteria_total INTEGER NOT NULL,
+                    probes_passed INTEGER NOT NULL,
+                    probes_total INTEGER NOT NULL,
+                    render_parity REAL,
+                    a11y_parity REAL,
+                    wall_ms INTEGER NOT NULL,
+                    error TEXT,
+                    ts INTEGER
+                )
+            """)
+            conn.execute("CREATE INDEX idx_runs_cond_host ON runs(condition, host)")
+            conn.execute("CREATE INDEX idx_runs_task ON runs(task_id)")
+            conn.execute("CREATE INDEX idx_runs_success ON runs(success)")
+
+            conn.execute("""
+                CREATE TABLE run_failures (
+                    run_id INTEGER NOT NULL,
+                    failure TEXT NOT NULL,
+                    FOREIGN KEY (run_id) REFERENCES runs(id) ON DELETE CASCADE
+                )
+            """)
+
+            conn.execute("""
+                CREATE TABLE artifacts (
+                    key TEXT PRIMARY KEY,
+                    task_id TEXT NOT NULL,
+                    condition TEXT NOT NULL,
+                    generator TEXT NOT NULL,
+                    host TEXT,
+                    valid INTEGER NOT NULL,
+                    repair_rounds INTEGER NOT NULL,
+                    gen_ms INTEGER NOT NULL,
+                    prompt_tokens INTEGER NOT NULL,
+                    completion_tokens INTEGER NOT NULL,
+                    error TEXT,
+                    payload_len INTEGER NOT NULL
+                )
+            """)
+            conn.execute("CREATE INDEX idx_art_task ON artifacts(task_id)")
+            conn.execute("CREATE INDEX idx_art_cond ON artifacts(condition)")
+
+            conn.execute("""
+                CREATE VIEW v_summary AS
+                SELECT
+                    condition,
+                    host,
+                    COUNT(*) AS total_runs,
+                    SUM(success) AS successes,
+                    ROUND(AVG(success) * 100.0, 2) AS success_pct,
+                    ROUND(AVG(steps), 2) AS avg_steps,
+                    ROUND(AVG(render_parity), 3) AS avg_render_parity,
+                    ROUND(AVG(a11y_parity), 3) AS avg_a11y_parity,
+                    ROUND(AVG(wall_ms), 1) AS avg_wall_ms
+                FROM runs
+                GROUP BY condition, host
+            """)
+
+            conn.execute("""
+                CREATE VIEW v_failures AS
+                SELECT
+                    failure,
+                    COUNT(*) AS count
+                FROM run_failures
+                GROUP BY failure
+                ORDER BY count DESC
+            """)
+
+            # Populate runs
+            if self.runlog.exists():
+                for line in self.runlog.read_text(encoding="utf-8").splitlines():
+                    if not line.strip():
+                        continue
+                    d = json.loads(line)
+                    ts = d.get("ts")
+                    failures = d.get("failures") or []
+                    cur = conn.execute("""
+                        INSERT INTO runs (
+                            task_id, condition, generator, host, operator,
+                            success, steps, criteria_met, criteria_total,
+                            probes_passed, probes_total, render_parity, a11y_parity,
+                            wall_ms, error, ts
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        d.get("task_id", ""),
+                        d.get("condition", ""),
+                        d.get("generator", ""),
+                        d.get("host", ""),
+                        d.get("operator", ""),
+                        1 if d.get("success") else 0,
+                        d.get("steps", 0),
+                        d.get("criteria_met", 0),
+                        d.get("criteria_total", 0),
+                        d.get("probes_passed", 0),
+                        d.get("probes_total", 0),
+                        d.get("render_parity"),
+                        d.get("a11y_parity"),
+                        d.get("wall_ms", 0),
+                        d.get("error"),
+                        ts,
+                    ))
+                    run_id = cur.lastrowid
+                    for f in failures:
+                        conn.execute(
+                            "INSERT INTO run_failures (run_id, failure) VALUES (?, ?)",
+                            (run_id, f),
+                        )
+
+            # Populate artifacts
+            art_dir = self.root / "artifacts"
+            if art_dir.exists():
+                for f in art_dir.glob("*.json"):
+                    try:
+                        data = json.loads(f.read_text(encoding="utf-8"))
+                        payload = data.get("payload") or ""
+                        key = f.stem
+                        conn.execute("""
+                            INSERT OR REPLACE INTO artifacts (
+                                key, task_id, condition, generator, host,
+                                valid, repair_rounds, gen_ms, prompt_tokens,
+                                completion_tokens, error, payload_len
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """, (
+                            key,
+                            data.get("task_id", ""),
+                            data.get("condition", ""),
+                            data.get("generator", ""),
+                            data.get("host"),
+                            1 if data.get("valid") else 0,
+                            data.get("repair_rounds", 0),
+                            data.get("gen_ms", 0),
+                            data.get("prompt_tokens", 0),
+                            data.get("completion_tokens", 0),
+                            data.get("error"),
+                            len(payload),
+                        ))
+                    except Exception:
+                        continue
+
+        conn.close()
+        return out_path
+
+    def query_sql(self, sql: str, params: tuple = ()) -> list[dict]:
+        """Execute a SQL SELECT query against an export of this store."""
+        import sqlite3
+
+        db_path = self.export_sqlite()
+        conn = sqlite3.connect(str(db_path))
+        conn.row_factory = sqlite3.Row
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, params)
+            return [dict(row) for row in cur.fetchall()]
+        finally:
+            conn.close()

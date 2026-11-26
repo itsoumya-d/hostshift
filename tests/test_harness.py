@@ -272,6 +272,47 @@ def test_store_empty_log_reads_empty():
         assert Store(d).all_runs() == []
 
 
+def test_store_export_sqlite_and_query():
+    with tempfile.TemporaryDirectory() as d:
+        store = Store(d)
+        a = Artifact(task_id="task_calc", condition="B-schema", generator="gpt",
+                     host=None, payload='{"version": "0.2"}', valid=True, gen_ms=120)
+        store.save_artifact(a)
+
+        r1 = RunRecord(task_id="task_calc", condition="B-schema", generator="gpt",
+                       host="web", operator="scripted", success=True, steps=5,
+                       criteria_met=3, criteria_total=3, wall_ms=250)
+        r2 = RunRecord(task_id="task_calc", condition="B-schema", generator="gpt",
+                       host="swiftui", operator="scripted", success=False, steps=2,
+                       criteria_met=1, criteria_total=3, wall_ms=310,
+                       failures=["timeout on button click"])
+        store.record(r1)
+        store.record(r2)
+
+        db_path = store.export_sqlite()
+        assert db_path.exists()
+
+        # Query runs
+        rows = store.query_sql("SELECT condition, host, success, steps FROM runs ORDER BY host")
+        assert len(rows) == 2
+        assert rows[0]["host"] == "swiftui" and rows[0]["success"] == 0
+        assert rows[1]["host"] == "web" and rows[1]["success"] == 1
+
+        # Query failures
+        fails = store.query_sql("SELECT failure FROM run_failures")
+        assert len(fails) == 1 and fails[0]["failure"] == "timeout on button click"
+
+        # Query artifacts
+        arts = store.query_sql("SELECT task_id, valid, payload_len FROM artifacts WHERE task_id = ?", ("task_calc",))
+        assert len(arts) == 1 and arts[0]["valid"] == 1 and arts[0]["payload_len"] > 0
+
+        # Query summary view
+        summary = store.query_sql("SELECT host, total_runs, successes FROM v_summary WHERE condition = 'B-schema' ORDER BY host")
+        assert len(summary) == 2
+        assert summary[0]["host"] == "swiftui" and summary[0]["successes"] == 0
+        assert summary[1]["host"] == "web" and summary[1]["successes"] == 1
+
+
 # ---------------------------------------------------------------------------
 # Repair loop
 # ---------------------------------------------------------------------------
