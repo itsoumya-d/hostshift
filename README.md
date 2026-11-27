@@ -561,6 +561,54 @@ across Compose/SwiftUI/Flutter. It's an engineering artifact with no paper, but
 it's the nearest competitor if its authors write one. Check it before you
 submit.
 
+## Verify-and-Repair Quality Loop
+
+HostShift evaluates generated declarative UI specifications through a strict rubric kept as data (`rubric.json`). A multi-round feedback loop scores the output from 0 to 100, repairs mechanical defects (missing versions, entry whitespace, uninitialized layout containers) over up to three rounds, logs every round to an audit ledger (`.jsonl`), and reports non-mechanical faults (such as undefined state bindings or invalid components) for human inspection without guessing.
+
+### Quality Rubric
+
+| Check ID | Weight | Threshold | Description |
+|---|---|---|---|
+| `valid_schema_root` | 25.0 | Pass | UISpec root defines version '0.2', title, entry identifier, and screens collection |
+| `entry_screen_exists` | 25.0 | Pass | Declared entry screen ID matches a valid screen in the screens list |
+| `widget_kinds_valid` | 20.0 | Pass | All widget kinds conform to canonical cross-platform UISpec vocabulary |
+| `state_binding_integrity` | 15.0 | Pass | Every widget `bind` property references a declared application state field |
+| `screen_has_children` | 15.0 | Pass | Declared screens contain a non-empty widget container |
+
+Minimum passing score: **80.0 / 100.0**.
+
+### Before & After Repair Example
+
+**Input (Malformed UISpec):**
+```json
+{
+  "version": "0.1",
+  "title": "Expense Entry",
+  "entry": " home ",
+  "state": {"amount": {"type": "number"}},
+  "screens": [{"id": "home", "title": "Home", "children": []}]
+}
+```
+*Initial Score:* **50.0 / 100.0** (Failed `valid_schema_root`, `screen_has_children`).
+
+**Repaired Output (Round 1):**
+```json
+{
+  "version": "0.2",
+  "title": "Expense Entry",
+  "entry": "home",
+  "state": {"amount": {"type": "number"}},
+  "screens": [
+    {
+      "id": "home",
+      "title": "Home",
+      "children": [{"kind": "heading", "id": "heading_home", "label": "Home"}]
+    }
+  ]
+}
+```
+*Final Score:* **100.0 / 100.0** (Status: `passed`, logged to audit ledger).
+
 ## Citation
 
 ```bibtex
