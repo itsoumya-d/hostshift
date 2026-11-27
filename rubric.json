@@ -1,0 +1,31 @@
+{
+  "version": "0.2",
+  "threshold": 80.0,
+  "checks": [
+    {
+      "id": "valid_schema_root",
+      "weight": 25.0,
+      "description": "UISpec root must define version '0.2', title, entry screen identifier, and non-empty screens collection"
+    },
+    {
+      "id": "entry_screen_exists",
+      "weight": 25.0,
+      "description": "Entry screen ID must match an existing screen declared in screens"
+    },
+    {
+      "id": "widget_kinds_valid",
+      "weight": 20.0,
+      "description": "All widget kinds must belong to supported UISpec vocabulary"
+    },
+    {
+      "id": "state_binding_integrity",
+      "weight": 15.0,
+      "description": "Widgets with binds must reference declared state fields"
+    },
+    {
+      "id": "screen_has_children",
+      "weight": 15.0,
+      "description": "Declared screens must contain a valid non-empty children list"
+    }
+  ]
+}
