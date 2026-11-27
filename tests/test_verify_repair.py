@@ -60,6 +60,24 @@ def test_verify_broken_spec_scores_low():
     print("  PASS test_verify_broken_spec_scores_low")
 
 
+def test_repair_spec_direct():
+    broken_spec = {
+        "version": "0.1",
+        "id": "test-spec",
+        "entry": " main ",
+        "screens": [{"id": "main", "children": []}],
+    }
+    score, diagnostics = verify_spec(broken_spec)
+    assert score < 80.0
+    repaired, fixed, unresolved = repair_spec(broken_spec, diagnostics)
+    assert repaired["version"] == "0.2"
+    assert repaired["entry"] == "main"
+    assert len(repaired["screens"][0]["children"]) == 1
+    assert len(fixed) >= 2
+    assert len(unresolved) == 0
+    print("  PASS test_repair_spec_direct")
+
+
 def test_repair_mechanical_faults():
     broken_spec = {
         "version": "0.1",
@@ -164,6 +182,7 @@ if __name__ == "__main__":
     test_rubric_load_and_sum()
     test_verify_clean_spec()
     test_verify_broken_spec_scores_low()
+    test_repair_spec_direct()
     test_repair_mechanical_faults()
     test_non_mechanical_fault_reported_not_guessed()
     test_repair_max_rounds_boundary()

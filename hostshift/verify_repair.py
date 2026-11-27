@@ -50,7 +50,7 @@ def load_rubric(path: str | pathlib.Path | None = None) -> dict[str, Any]:
     else:
         raise FileNotFoundError("rubric.json not found in hostshift/data or project root")
 
-    with open(candidate, "r", encoding="utf-8") as f:
+    with open(candidate, encoding="utf-8") as f:
         data = json.load(f)
 
     if not isinstance(data.get("checks"), list):
@@ -72,7 +72,9 @@ def _collect_widgets(node: Any) -> list[dict[str, Any]]:
     return widgets
 
 
-def verify_spec(spec: dict[str, Any], rubric: dict[str, Any] | None = None) -> tuple[float, list[dict[str, Any]]]:
+def verify_spec(
+    spec: dict[str, Any], rubric: dict[str, Any] | None = None
+) -> tuple[float, list[dict[str, Any]]]:
     """Score a UISpec from 0 to 100 against rubric rules.
 
     Returns:
@@ -135,10 +137,11 @@ def verify_spec(spec: dict[str, Any], rubric: dict[str, Any] | None = None) -> t
     if raw_entry and raw_entry in screen_ids:
         total_score += check_entry["weight"]
     else:
+        id_list = sorted(screen_ids)
         diagnostics.append({
             "check_id": "entry_screen_exists",
             "description": check_entry.get("description", ""),
-            "reasons": [f"entry '{raw_entry}' does not match any declared screen id in {sorted(screen_ids)}"],
+            "reasons": [f"entry '{raw_entry}' does not match any declared screen in {id_list}"],
             "mechanical": len(screen_ids) == 1 or spec.get("entry") != raw_entry,
         })
 
@@ -220,8 +223,9 @@ def repair_spec(
             if not repaired.get("title") and repaired.get("id"):
                 repaired["title"] = str(repaired["id"]).replace("-", " ").title()
                 fixed.append(f"derived title from id: {repaired['title']}")
-            if "entry" in repaired and isinstance(repaired["entry"], str) and repaired["entry"] != repaired["entry"].strip():
-                repaired["entry"] = repaired["entry"].strip()
+            entry_val = repaired.get("entry")
+            if isinstance(entry_val, str) and entry_val != entry_val.strip():
+                repaired["entry"] = entry_val.strip()
                 fixed.append("trimmed whitespace from entry id")
 
         elif cid == "entry_screen_exists":
@@ -250,16 +254,26 @@ def repair_spec(
             screens = repaired.get("screens")
             if isinstance(screens, list):
                 for s in screens:
-                    if isinstance(s, dict) and (not isinstance(s.get("children"), list) or len(s["children"]) == 0):
+                    needs_children = isinstance(s, dict) and (
+                        not isinstance(s.get("children"), list) or len(s["children"]) == 0
+                    )
+                    if needs_children:
                         sid = s.get("id", "main")
                         stitle = s.get("title") or sid.replace("-", " ").title()
-                        s["children"] = [{"kind": "heading", "id": f"heading_{sid}", "label": stitle}]
+                        s["children"] = [
+                            {"kind": "heading", "id": f"heading_{sid}", "label": stitle}
+                        ]
                         fixed.append(f"initialized default heading widget for screen '{sid}'")
             elif isinstance(screens, dict):
                 for sid, s in screens.items():
-                    if isinstance(s, dict) and (not isinstance(s.get("children"), list) or len(s["children"]) == 0):
+                    needs_children = isinstance(s, dict) and (
+                        not isinstance(s.get("children"), list) or len(s["children"]) == 0
+                    )
+                    if needs_children:
                         stitle = s.get("title") or sid.replace("-", " ").title()
-                        s["children"] = [{"kind": "heading", "id": f"heading_{sid}", "label": stitle}]
+                        s["children"] = [
+                            {"kind": "heading", "id": f"heading_{sid}", "label": stitle}
+                        ]
                         fixed.append(f"initialized default heading widget for screen '{sid}'")
 
         else:
@@ -293,15 +307,21 @@ def run_verify_repair_loop(
         new_score, new_diagnostics = verify_spec(repaired_spec, rubric)
 
         # Log round to ledger
+        status_label = "manual_review_needed"
+        if new_score >= threshold:
+            status_label = "passed"
+        elif fixed:
+            status_label = "repaired"
+
         record = {
-            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
             "round": round_num,
             "spec_title": current_spec.get("title", current_spec.get("id", "untitled")),
             "score_before": score,
             "score_after": new_score,
             "repaired": fixed,
             "unresolved": unresolved,
-            "status": "passed" if new_score >= threshold else ("repaired" if fixed else "manual_review_needed"),
+            "status": status_label,
         }
 
         if ledger_path:
