@@ -63,6 +63,17 @@ For development: `pip install -e .[dev]` adds ruff, coverage, Playwright and
 the GenAI SDK. Every CLI command is also available as
 `python -m hostshift <cmd>`.
 
+## Use it from an agent
+
+```bash
+git clone https://github.com/itsoumya-d/hostshift.git
+cd hostshift
+pip install -e .
+```
+
+First prompt:
+> "Read `skills/evaluate-ui-portability/SKILL.md` and run the validation and synthetic demo pipeline."
+
 **Customizing the benchmark for your own research** — swapping task suites,
 adding hosts, wiring generators, running experiments from the GitHub Actions
 tab — is documented in [docs/CUSTOMIZING.md](docs/CUSTOMIZING.md).
