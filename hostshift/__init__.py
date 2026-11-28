@@ -2,6 +2,12 @@
 
     from hostshift import runner
     from hostshift.render import open_session
+    from hostshift.workflows import (
+        FinancialWorkflowConfig,
+        WorkflowStep,
+        execute_workflow_transition,
+        synthesize_workflow_uispec,
+    )
 
 The command line is the primary interface:
 
@@ -11,6 +17,19 @@ The command line is the primary interface:
 
 from __future__ import annotations
 
+from .workflows import (
+    FinancialWorkflowConfig,
+    WorkflowStep,
+    execute_workflow_transition,
+    synthesize_workflow_uispec,
+)
+
 __version__ = "0.2.0"
 
-__all__ = ["__version__"]
+__all__ = [
+    "FinancialWorkflowConfig",
+    "WorkflowStep",
+    "__version__",
+    "execute_workflow_transition",
+    "synthesize_workflow_uispec",
+]

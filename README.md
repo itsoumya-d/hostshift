@@ -609,6 +609,54 @@ Minimum passing score: **80.0 / 100.0**.
 ```
 *Final Score:* **100.0 / 100.0** (Status: `passed`, logged to audit ledger).
 
+## Financial Workflow Pipeline
+
+HostShift includes a declarative financial workflow engine (`hostshift.workflows`) for modeling, validating, and generating cross-platform UI specifications for multi-tier financial operations (corporate card controls, approval hierarchies, and expense limits).
+
+### Capabilities
+- **Declarative Configuration**: Define `FinancialWorkflowConfig` with currency, strict spending thresholds, receipt requirements, and sequential review roles.
+- **State Transition Guardrails**: `execute_workflow_transition` enforces role authorizations, receipt mandates, and hard spending caps with deterministic outcomes.
+- **Cross-Platform UISpec Generation**: `synthesize_workflow_uispec` emits compliant HostShift 0.2 UISpec trees renderable on Web, Compose, Flutter, SwiftUI, and TUI.
+
+### Example
+```python
+from hostshift.workflows import (
+    FinancialWorkflowConfig,
+    WorkflowStep,
+    execute_workflow_transition,
+    synthesize_workflow_uispec,
+)
+
+config = FinancialWorkflowConfig(
+    workflow_id="wf_card_approval",
+    title="Corporate Card Expense Approval",
+    currency="CAD",
+    spending_limit=5000.0,
+    steps=[
+        WorkflowStep(step_id="manager_review", name="Manager Review", required_role="manager"),
+        WorkflowStep(step_id="finance_audit", name="Finance Audit", required_role="finance"),
+    ],
+)
+
+# Guarded state transition
+result = execute_workflow_transition(
+    current_state="manager_review",
+    action="approve",
+    amount=1250.0,
+    user_role="manager",
+    config=config,
+    has_receipt=True,
+)
+assert result.next_state == "finance_audit"
+
+# Emit cross-platform HostShift UI spec
+uispec = synthesize_workflow_uispec(config)
+```
+
+### Limitations
+- Multi-currency conversions are not evaluated inline; workflows currently require amounts in the configured ISO currency.
+- Asynchronous webhook dispatch is handled by host adapters rather than the core transition state machine.
+
 ## Citation
 
 ```bibtex
