@@ -668,6 +668,42 @@ uispec = synthesize_workflow_uispec(config)
 - Multi-currency conversions are not evaluated inline; workflows currently require amounts in the configured ISO currency.
 - Asynchronous webhook dispatch is handled by host adapters rather than the core transition state machine.
 
+## Infrastructure Environment Telemetry & Host Health Monitoring
+
+HostShift provides structured telemetry capture and operational health monitoring across multi-host benchmark execution environments:
+
+```python
+from hostshift.telemetry import (
+    HealthThresholds,
+    NodeTelemetrySample,
+    aggregate_cluster_telemetry,
+    detect_degraded_nodes,
+    evaluate_node_telemetry,
+)
+
+sample = NodeTelemetrySample(
+    node_id="host-runner-01",
+    timestamp_utc="2026-11-28T12:00:00Z",
+    cpu_percent=42.5,
+    memory_percent=61.0,
+    latency_ms=28.4,
+    active_workers=4,
+    error_count=0,
+)
+
+evaluation = evaluate_node_telemetry(sample)
+assert evaluation.status == "HEALTHY"
+assert evaluation.is_available is True
+
+report = aggregate_cluster_telemetry([sample])
+assert report.overall_availability_ratio == 1.0
+assert detect_degraded_nodes(report) == []
+```
+
+### Constraints & Scope
+- Telemetry evaluation computes deterministic health status based on configured operational thresholds.
+- Hardware sensor collection probes are delegated to environment-specific agent runners and OS daemons.
+
 ## Citation
 
 ```bibtex

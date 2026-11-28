@@ -17,6 +17,16 @@ The command line is the primary interface:
 
 from __future__ import annotations
 
+from .telemetry import (
+    ClusterTelemetryReport,
+    HealthThresholds,
+    NodeHealthEvaluation,
+    NodeTelemetrySample,
+    aggregate_cluster_telemetry,
+    detect_degraded_nodes,
+    evaluate_node_telemetry,
+    summarize_telemetry_json,
+)
 from .workflows import (
     FinancialWorkflowConfig,
     WorkflowStep,
@@ -27,9 +37,17 @@ from .workflows import (
 __version__ = "0.2.0"
 
 __all__ = [
+    "ClusterTelemetryReport",
     "FinancialWorkflowConfig",
+    "HealthThresholds",
+    "NodeHealthEvaluation",
+    "NodeTelemetrySample",
     "WorkflowStep",
     "__version__",
+    "aggregate_cluster_telemetry",
+    "detect_degraded_nodes",
+    "evaluate_node_telemetry",
     "execute_workflow_transition",
+    "summarize_telemetry_json",
     "synthesize_workflow_uispec",
 ]
